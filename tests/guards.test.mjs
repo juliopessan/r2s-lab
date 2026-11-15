@@ -51,3 +51,29 @@ test('schema file matches lib/progress.js', () => {
   assert.deepEqual(Object.keys(survey.properties.ratings.properties), RATINGS);
   assert.deepEqual(survey.properties.consent.enum, ['nao', 'anon', 'nome']);
 });
+
+test('squad/ ships only the template: an empty squad with every gate pending', () => {
+  const gates = JSON.parse(read('squad/gates.json'));
+  assert.equal(gates.squad, '');
+  assert.equal(gates.case, '');
+  assert.deepEqual(gates.members, []);
+  assert.deepEqual(Object.values(gates.gates).map((g) => g.status), ['pending', 'pending', 'pending', 'pending', 'pending']);
+  const files = readdirSync(path.join(root, 'squad')).sort();
+  assert.deepEqual(files, [
+    'A-case-brief.md', 'B-adr.md', 'C-pitch.md', 'D-sis.md', 'E-hearing.md', 'README.md', 'assessment.json', 'gates.json', 'golden-set.csv',
+  ]);
+  assert.deepEqual(JSON.parse(read('squad/assessment.json')).members, {});
+});
+
+test('the certificate page does not touch the exportable progress store', () => {
+  const js = read('js/certificado.js');
+  assert.ok(!js.includes('R2SStore'));
+  assert.ok(!js.includes('r2s-lab-progress'));
+});
+
+test('no forbidden wording in squad/, tools/ and lib/', () => {
+  const walk = (dir) => readdirSync(path.join(root, dir)).map((f) => `${dir}/${f}`);
+  for (const file of [...walk('squad'), ...walk('tools'), ...walk('lib')]) {
+    assert.ok(!read(file).includes('Requirement-to-Solution'), file);
+  }
+});

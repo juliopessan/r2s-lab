@@ -34,6 +34,16 @@ Se o vídeo não aparecer na sua tela, [abra o arquivo MP4](https://raw.githubus
 Nada do que você faz aqui é enviado a ninguém até você fazer o push: o seu progresso é privado e só a
 coordenação o consolida.
 
+## A jornada da squad
+
+Cada squad trabalha no seu próprio repositório (`r2s-lab-squad-<nome>`), copiado deste modelo.
+
+- Preencha os documentos A–E em `squad/`. Cada campo pendente termina em `[preencher]`; pendência não é erro, mas o verificador mostra quantos faltam.
+- Os gates G0 a G4 ficam em `squad/gates.json`. Quem aprova um gate é o coach (ou o patrocinador, no G0, G1 e G4): a mudança chega por pull request e o verificador barra o PR se o gate estiver aprovado com o dossiê incompleto.
+- Rode `node tools/check-squad.mjs` antes de abrir o PR. Ele mostra o gate atual, o percentual de cada documento, o golden set e, quando há avaliação, a nota da squad e o nível de cada pessoa.
+- A avaliação (`squad/assessment.json`) é preenchida pela coordenação e pelo coach, não pela squad.
+- Ao cumprir os critérios do nível, a coordenação emite o certificado em `05-encerramento/certificado.html` (imprimir ou salvar em PDF; nada sai do navegador).
+
 ## Estrutura do repositório
 
 A estrutura abaixo é a prevista; cada pasta chega na sua fase.
@@ -41,10 +51,11 @@ A estrutura abaixo é a prevista; cada pasta chega na sua fase.
 ```
 r2s-lab/
 ├─ 00-prework/           pre-work de 8 horas, em 5 partes
-├─ 05-encerramento/      pesquisa de satisfação (certificado, prova social e fotos chegam depois)
+├─ 05-encerramento/      pesquisa de satisfação e certificado
 ├─ templates/            A brief · B ADR · C pitch · D Social Impact Statement · E hearing
 ├─ starter-kits/         RAG · agente · avaliação · custo por transação
-├─ squad/                caso, ADR, golden set e gates da sua squad
+├─ squad/                dossiê A–E, golden set, gates.json e assessment.json da sua squad
+├─ tools/                check-squad.mjs: confere a pasta squad/
 └─ progress/             seu progresso individual
 ```
 

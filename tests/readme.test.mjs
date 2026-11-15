@@ -46,6 +46,7 @@ test('has the required sections in order', () => {
     'Veja o método em 90 segundos',
     'R · 2 · S',
     'Comece aqui',
+    'A jornada da squad',
     'Estrutura do repositório',
     'Regras do lab',
   ]);
@@ -79,4 +80,13 @@ test('explains how to open the pages and how to export', () => {
     assert.ok(readme.includes(needle), `README should mention "${needle}"`);
   }
   assert.ok(!readme.includes('chega com a fase 2'));
+});
+
+test('documents the squad flow and the certificate', () => {
+  for (const needle of [
+    'squad/', 'tools/check-squad.mjs', '[preencher]', '05-encerramento/certificado.html', 'gates.json', 'coach',
+  ]) {
+    assert.ok(readme.includes(needle), `README should mention "${needle}"`);
+  }
+  assert.ok(!readme.includes('chegam depois'));
 });
