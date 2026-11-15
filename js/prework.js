@@ -280,9 +280,7 @@
     $('#selfGrid').appendChild(label);
   });
 
-  /* ---------- exportar, importar e limpar ---------- */
-  var message = $('#export-msg');
-
+  /* ---------- exportar, importar e limpar (js/export-ui.js) ---------- */
   function hydrate() {
     $$('input[data-block]').forEach(function (box) { box.checked = state.prework.blocks[box.dataset.block] === true; });
     $('#gh').value = state.github || '';
@@ -294,72 +292,13 @@
     renderProgress();
   }
 
-  function readText(file) {
-    if (file.text) return file.text();
-    return new Promise(function (resolve, reject) {
-      var reader = new FileReader();
-      reader.onload = function () { resolve(String(reader.result)); };
-      reader.onerror = reject;
-      reader.readAsText(file);
-    });
-  }
-
-  $('#gh').value = state.github || '';
-  $('#gh').addEventListener('input', function () {
-    state.github = $('#gh').value.trim();
-    persist();
-  });
-
-  $('#export-btn').addEventListener('click', function () {
-    persist();
-    var result = store.buildExport($('#gh').value);
-    if (!result.ok) {
-      message.textContent = result.errors.join(' ');
-      return;
-    }
-    var link = document.createElement('a');
-    link.href = URL.createObjectURL(new Blob([result.json], { type: 'application/json' }));
-    link.download = result.filename;
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    setTimeout(function () { URL.revokeObjectURL(link.href); }, 1000);
-    message.textContent = 'Arquivo gerado: ' + result.filename +
-      '. Coloque-o na pasta progress/ do seu repositório privado, faça o commit e o push.';
-  });
-
-  $('#import-input').addEventListener('change', function (event) {
-    var input = event.target;
-    var file = input.files && input.files[0];
-    if (!file) return;
-    readText(file).then(function (text) {
-      var result = store.importProgress(text);
-      if (!result.ok) {
-        message.textContent = result.error;
-      } else {
-        state = store.load();
-        hydrate();
-        message.textContent = 'Progresso importado.';
-      }
-      input.value = '';
-    }, function () {
-      message.textContent = 'Não consegui ler o arquivo.';
-    });
-  });
-
-  var armed = false;
-  $('#reset-btn').addEventListener('click', function () {
-    var button = $('#reset-btn');
-    if (!armed) {
-      armed = true;
-      button.textContent = 'Confirmar: apagar tudo';
-      setTimeout(function () { armed = false; button.textContent = 'Limpar meu progresso'; }, 4000);
-      return;
-    }
-    store.clear();
-    drafts.clear();
-    fields.clear();
-    location.reload();
+  window.R2SExportUI.init({
+    store: store,
+    getState: function () { return state; },
+    setState: function (next) { state = next; },
+    persist: persist,
+    hydrate: hydrate,
+    clearDrafts: function () { drafts.clear(); fields.clear(); },
   });
 
   recalc();

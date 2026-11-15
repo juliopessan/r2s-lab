@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pesquisa R2S Lab</title>
+<link rel="stylesheet" href="../css/lab.css">
+</head>
+<body>
+<div class="topbar" role="banner">
+ <div class="topbar-in">
+  <div class="lock"><b>R2S Lab</b><i></i><span>Pesquisa de satisfação</span></div>
+ </div>
+</div>
+
+<div class="wrap">
+<header class="hero">
+ <p class="kick">R2S Lab · Encerramento</p>
+ <h1>Pesquisa de satisfação</h1>
+ <div class="rule"></div>
+ <p class="lede">Cerca de 6 minutos. Seja específico: uma frase concreta vale mais que uma nota alta.</p>
+ <div class="notice"><p id="aviso">Suas respostas são identificadas para a coordenação do lab. Citações em materiais de divulgação só acontecem conforme o consentimento que você marcar abaixo.</p></div>
+</header>
+
+<section style="padding-top:32px" aria-label="Perguntas">
+ <div class="tool"><form id="surveyForm" aria-label="Pesquisa de satisfação" onsubmit="return false"></form></div>
+ <noscript><p class="muted">Esta página precisa de JavaScript para funcionar.</p></noscript>
+</section>
+
+<section class="part" id="exportar" aria-labelledby="exportarH">
+ <div class="parthead"><div class="pnum" aria-hidden="true">↗</div><div><h2 id="exportarH">Exportar suas respostas</h2></div></div>
+ <p class="goal">As respostas entram no mesmo arquivo do seu progresso. Se você já exportou o pre-work, importe esse arquivo primeiro: assim o novo arquivo leva as duas partes.</p>
+ <div class="tool">
+  <h4>Seu arquivo de progresso</h4>
+  <div class="grid">
+   <label class="f">Seu usuário do GitHub <small>vira o nome do arquivo</small><input type="text" id="gh" autocomplete="off" spellcheck="false"></label>
+   <label class="f">Importar um arquivo exportado antes <small>restaura o seu progresso neste navegador</small><input type="file" id="import-input" accept=".json,application/json"></label>
+  </div>
+  <div class="row"><button class="btn" type="button" id="export-btn">Exportar respostas</button><button class="btn sec" type="button" id="reset-btn">Limpar meu progresso</button></div>
+  <p id="export-msg" role="status" aria-live="polite" style="margin:10px 0 0;font-size:14px"></p>
+ </div>
+</section>
+
+<footer>Pesquisa R2S Lab · Avanade Brazil Engineering HUB. Respostas salvas neste navegador; exporte para o seu repositório privado.</footer>
+</div>
+
+<script src="../lib/progress.js"></script>
+<script src="../lib/store.js"></script>
+<script src="../js/export-ui.js"></script>
+<script src="../js/pesquisa.js"></script>
+</body>
+</html>

@@ -105,3 +105,45 @@ test('npsCategory boundaries', () => {
   assert.equal(npsCategory(8), 'passive');
   assert.equal(npsCategory(9), 'promoter');
 });
+
+const { surveyFromDraft } = progress;
+const NOW_DATE = new Date('2026-12-03T12:00:00Z');
+const completeDraft = () => ({
+  nps: 9,
+  ratings: Object.fromEntries(RATINGS.map((k) => [k, 4])),
+  hoursPerWeek: '6',
+  open: { melhor: 'A mentoria.' },
+  consent: 'anon',
+});
+
+test('surveyFromDraft lists everything missing, in order', () => {
+  assert.deepEqual(surveyFromDraft({}, NOW_DATE), {
+    ok: false,
+    missing: ['nps', ...RATINGS, 'hoursPerWeek', 'consent'],
+  });
+});
+
+test('surveyFromDraft does not assume a consent', () => {
+  const draft = completeDraft();
+  delete draft.consent;
+  assert.deepEqual(surveyFromDraft(draft, NOW_DATE), { ok: false, missing: ['consent'] });
+  draft.consent = 'talvez';
+  assert.deepEqual(surveyFromDraft(draft, NOW_DATE), { ok: false, missing: ['consent'] });
+});
+
+test('surveyFromDraft rejects empty and negative hours', () => {
+  for (const hours of ['', '-1', 'abc', null]) {
+    const draft = { ...completeDraft(), hoursPerWeek: hours };
+    assert.deepEqual(surveyFromDraft(draft, NOW_DATE), { ok: false, missing: ['hoursPerWeek'] });
+  }
+});
+
+test('surveyFromDraft builds a valid survey', () => {
+  const result = surveyFromDraft(completeDraft(), NOW_DATE);
+  assert.equal(result.ok, true);
+  assert.deepEqual(result.survey.open, { melhor: 'A mentoria.', mudar: '', aplicou: '' });
+  assert.equal(result.survey.hoursPerWeek, 6);
+  assert.equal(result.survey.submittedAt, '2026-12-03T12:00:00.000Z');
+  const p = { ...emptyProgress('anasouza'), updatedAt: NOW, survey: result.survey };
+  assert.deepEqual(validateProgress(p), { ok: true, errors: [] });
+});

@@ -115,3 +115,20 @@ pre.prompt{white-space:pre-wrap;word-break:break-word;font-family:var(--mono);fo
 .final .btn.sec:hover{background:#fff;color:#FF5800}
 .final textarea{background:rgba(0,0,0,.25);color:#fff;border-color:rgba(255,255,255,.6);margin-top:12px;font-family:var(--mono);font-size:12.5px;min-height:150px}
 footer{margin-top:64px;padding-top:16px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+
+fieldset{border:0;padding:14px 0;margin:0;border-top:1px solid var(--line);min-width:0}
+fieldset:first-of-type{border-top:0}
+legend{font-weight:600;padding:0;margin-bottom:8px;max-width:68ch}
+.scale{display:flex;gap:6px;flex-wrap:wrap}
+.scale label{position:relative}
+.scale input{position:absolute;opacity:0;inset:0;cursor:pointer}
+.scale span{display:grid;place-items:center;min-width:44px;height:44px;border:1px solid var(--line);border-radius:2px;font-variant-numeric:tabular-nums;background:var(--card)}
+.scale input:checked+span{background:var(--brand);border-color:var(--brand);color:var(--brand-ink);font-weight:700}
+.scale input:focus-visible+span{outline:3px solid var(--brand);outline-offset:2px}
+.ends{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);max-width:520px;margin-top:4px}
+.nps .scale span{min-width:40px}
+.rating-row{margin:12px 0}
+.rating-label{font-size:15px}
+.radios{display:flex;gap:16px;flex-wrap:wrap}
+.radios label{display:flex;gap:8px;align-items:center;font-weight:400;cursor:pointer}
+.radios input{accent-color:var(--brand);width:18px;height:18px}
