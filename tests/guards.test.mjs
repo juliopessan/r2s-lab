@@ -7,9 +7,9 @@ import progress from '../lib/progress.js';
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (rel) => readFileSync(path.join(root, rel), 'utf8');
-const PAGES = ['00-prework/index.html', '05-encerramento/pesquisa.html'];
+const PAGES = ['00-prework/index.html', '05-encerramento/pesquisa.html', '05-encerramento/certificado.html'];
 const PUBLIC_FILES = [
-  'README.md', ...PAGES, 'css/lab.css', 'js/prework.js', 'js/pesquisa.js', 'js/quizzes.js', 'js/export-ui.js',
+  'README.md', ...PAGES, 'css/lab.css', 'js/prework.js', 'js/pesquisa.js', 'js/certificado.js', 'js/quizzes.js', 'js/export-ui.js',
   'lib/progress.js', 'lib/calc.js', 'lib/store.js',
 ];
 

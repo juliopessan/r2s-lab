@@ -134,3 +134,28 @@ legend{font-weight:600;padding:0;margin-bottom:8px;max-width:68ch}
 .radios input{accent-color:var(--brand);width:18px;height:18px}
 
 input[type=text],input[type=number],input[type=file],select,textarea,.opt,.scale span{border-color:var(--field)}
+
+/* ---------- certificado: o papel é sempre claro, mesmo no tema escuro ---------- */
+.cert{background:#FFFDF8;color:#1B1F26;border:1px solid #D9D2C3;border-top:8px solid var(--brand);border-radius:2px;padding:40px 32px;text-align:center;max-width:980px;margin:0 auto;aspect-ratio:297/210;display:flex;flex-direction:column;justify-content:center;gap:10px;overflow-wrap:anywhere}
+.cert p,.cert h2{margin:0;max-width:none}
+.cert-brand{font-size:13px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#B33C00}
+.cert-title{font-size:clamp(28px,5vw,48px);font-weight:300;letter-spacing:.04em}
+.cert-lead{font-size:15px;color:#4A515C}
+.cert-name{font-size:clamp(22px,4vw,38px);font-weight:600;border-bottom:1px solid #1B1F26;padding:0 16px 8px;align-self:center}
+.cert-text{font-size:clamp(13px,1.8vw,17px);max-width:70ch;align-self:center}
+.cert-level{font-weight:700;color:#B33C00;letter-spacing:.06em;text-transform:uppercase;font-size:14px}
+.cert-comp{font-size:13px;color:#4A515C}
+.cert-date{font-size:14px}
+.cert-sign{display:flex;gap:32px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.sig{min-width:180px;border-top:1px solid #1B1F26;padding-top:6px;font-size:14px}
+.sig b,.sig span{display:block}
+.sig span{color:#4A515C;font-size:13px}
+[hidden]{display:none !important}
+@page{size:A4 landscape;margin:0}
+@media print{
+ body{background:#fff;padding:0}
+ body::before{display:none}
+ .noprint{display:none}
+ .wrap{padding:0;margin:0;max-width:none}
+ .cert{border-radius:0;max-width:none;width:100vw;height:100vh;aspect-ratio:auto;page-break-inside:avoid;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}

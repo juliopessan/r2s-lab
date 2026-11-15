@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Certificado R2S Lab</title>
+<link rel="stylesheet" href="../css/lab.css">
+</head>
+<body>
+<div class="topbar noprint" role="banner">
+ <div class="topbar-in">
+  <div class="lock"><b>R2S Lab</b><i></i><span>Certificado</span></div>
+ </div>
+</div>
+
+<div class="wrap">
+<header class="hero noprint">
+ <p class="kick">R2S Lab · Encerramento</p>
+ <h1>Certificado de conclusão</h1>
+ <div class="rule"></div>
+ <p class="lede">Preencha os campos, confira a prévia e use “Imprimir ou salvar em PDF”. Nada sai deste navegador.</p>
+ <div class="notice"><p id="regra">Emita só para quem cumpriu os critérios do nível: Foundation, Practitioner ou Lead. A nota e o nível vêm do relatório da squad (npm run check:squad), não da vontade de ninguém.</p></div>
+</header>
+
+<section class="noprint" style="padding-top:32px" aria-label="Dados do certificado">
+ <div class="tool">
+  <h4>Dados do certificado</h4>
+  <div class="grid">
+   <label class="f">Nome completo <input type="text" id="c_nome" autocomplete="off"></label>
+   <label class="f">Turma <small>opcional</small><input type="text" id="c_turma" autocomplete="off"></label>
+   <label class="f">Data <input type="date" id="c_data"></label>
+   <label class="f">Carga horária (horas) <small>opcional</small><input type="text" id="c_horas" inputmode="numeric" autocomplete="off"></label>
+   <label class="f">Nível
+    <select id="c_nivel"><option value="">—</option><option>Foundation</option><option>Practitioner</option><option>Lead</option></select>
+   </label>
+  </div>
+  <div class="grid" style="margin-top:12px">
+   <label class="f">Texto do certificado <textarea id="c_texto"></textarea></label>
+   <label class="f">Competências <textarea id="c_comp"></textarea></label>
+  </div>
+  <div class="grid" style="margin-top:12px">
+   <label class="f">Assinatura 1 · nome <input type="text" id="c_s1" autocomplete="off"></label>
+   <label class="f">Assinatura 1 · cargo <input type="text" id="c_r1" autocomplete="off"></label>
+   <label class="f">Assinatura 2 · nome <input type="text" id="c_s2" autocomplete="off"></label>
+   <label class="f">Assinatura 2 · cargo <input type="text" id="c_r2" autocomplete="off"></label>
+  </div>
+  <div class="row"><button class="btn" type="button" id="printBtn">Imprimir ou salvar em PDF</button></div>
+ </div>
+</section>
+
+<section aria-label="Prévia do certificado">
+ <div class="cert" id="cert">
+  <p class="cert-brand">R2S Lab · Reskilling too Skilling</p>
+  <h2 class="cert-title">Certificado</h2>
+  <p class="cert-lead">Certificamos que</p>
+  <p class="cert-name" id="cv_nome">Nome do colaborador</p>
+  <p class="cert-text" id="cv_texto"></p>
+  <p class="cert-level" id="cv_nivel" hidden></p>
+  <p class="cert-comp" id="cv_comp"></p>
+  <p class="cert-date" id="cv_data"></p>
+  <div class="cert-sign">
+   <div class="sig" id="cv_sig1"><b id="cv_s1"></b><span id="cv_r1"></span></div>
+   <div class="sig" id="cv_sig2"><b id="cv_s2"></b><span id="cv_r2"></span></div>
+  </div>
+ </div>
+</section>
+
+<footer class="noprint">Certificado R2S Lab · Avanade Brazil Engineering HUB. O rascunho fica só neste navegador e não entra no arquivo de progresso.</footer>
+</div>
+
+<script src="../lib/store.js"></script>
+<script src="../js/certificado.js"></script>
+</body>
+</html>
