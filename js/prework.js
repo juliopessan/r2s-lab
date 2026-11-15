@@ -8,6 +8,7 @@
   var Q = window.R2SQuizzes;
   var drafts = window.R2SDrafts('r2s-prework-answers-v1');
   var answers = drafts.load();
+  var scoreUpdaters = [];
 
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
@@ -57,14 +58,16 @@
     box.appendChild(el('h4', null, box.dataset.title || 'Checagem rápida'));
     var score = el('p', 'score');
 
+    /* As respostas locais mandam; sem elas vale o resultado importado de um arquivo. */
     function updateScore() {
-      var s = Q.scoreQuiz(answers[id] || {}, id);
-      score.textContent = s.answered
+      var local = Q.scoreQuiz(answers[id] || {}, id);
+      if (local.answered) state.prework.quizzes[id] = local;
+      var s = state.prework.quizzes[id];
+      score.textContent = s && s.answered
         ? 'Acertos: ' + s.correct + ' de ' + set.length + (s.answered < set.length ? ' (' + s.answered + ' respondidas)' : '')
         : '';
-      if (s.answered) state.prework.quizzes[id] = s;
-      else delete state.prework.quizzes[id];
     }
+    scoreUpdaters.push(updateScore);
 
     set.forEach(function (q, i) {
       var wrap = el('div', 'q');
@@ -223,6 +226,143 @@
     }
   });
 
+  /* ---------- autoavaliação ---------- */
+  var SELF = [
+    ['problemFraming', 'Problem framing'],
+    ['valueCase', 'Value case'],
+    ['stakeholderCommunication', 'Stakeholder communication'],
+    ['techniqueSelection', 'Technique selection'],
+    ['build', 'Build (RAG, agents, apps)'],
+    ['evaluation', 'Evaluation'],
+    ['dataReadiness', 'Data readiness'],
+    ['responsibleAiFinops', 'Responsible AI e FinOps'],
+  ];
+  var ROUTES = {
+    'lab-zero': 'Com essa média, a regra de placement do lab indicaria começar pelo Lab Zero com pre-work. Confirme no diagnóstico da semana 0.',
+    cohort: 'Com essa média, a regra de placement do lab indicaria entrar direto na turma. Confirme no diagnóstico da semana 0.',
+    lead: 'Com essa média, a regra de placement do lab indicaria entrar como líder de squad ou coach em formação. Confirme no diagnóstico da semana 0.',
+  };
+
+  function selfValues() {
+    return SELF.map(function (c, i) { return Number($('#s_' + i).value); });
+  }
+
+  function renderSelf() {
+    var values = selfValues();
+    var avg = values.reduce(function (a, b) { return a + b; }, 0) / values.length;
+    $$('#selfGrid output.sv').forEach(function (o, i) { o.textContent = values[i]; });
+    $('#s_avg').textContent = num1.format(avg);
+    $('#s_route').textContent = ROUTES[P.routeForAverage(avg)];
+  }
+
+  SELF.forEach(function (c, i) {
+    var label = el('label', 'f');
+    label.appendChild(document.createTextNode(c[1] + ' '));
+    var out = el('output', 'sv', '2');
+    out.style.fontWeight = '700';
+    label.appendChild(out);
+    var range = document.createElement('input');
+    range.type = 'range';
+    range.min = 1;
+    range.max = 4;
+    range.step = 1;
+    range.id = 's_' + i;
+    range.value = state.selfAssessment && state.selfAssessment[c[0]] ? state.selfAssessment[c[0]] : 2;
+    range.setAttribute('aria-label', c[1]);
+    range.addEventListener('input', function () {
+      var values = selfValues();
+      state.selfAssessment = {};
+      SELF.forEach(function (item, k) { state.selfAssessment[item[0]] = values[k]; });
+      persist();
+      renderSelf();
+    });
+    label.appendChild(range);
+    $('#selfGrid').appendChild(label);
+  });
+
+  /* ---------- exportar, importar e limpar ---------- */
+  var message = $('#export-msg');
+
+  function hydrate() {
+    $$('input[data-block]').forEach(function (box) { box.checked = state.prework.blocks[box.dataset.block] === true; });
+    $('#gh').value = state.github || '';
+    SELF.forEach(function (c, i) {
+      $('#s_' + i).value = state.selfAssessment && state.selfAssessment[c[0]] ? state.selfAssessment[c[0]] : 2;
+    });
+    renderSelf();
+    scoreUpdaters.forEach(function (update) { update(); });
+    renderProgress();
+  }
+
+  function readText(file) {
+    if (file.text) return file.text();
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () { resolve(String(reader.result)); };
+      reader.onerror = reject;
+      reader.readAsText(file);
+    });
+  }
+
+  $('#gh').value = state.github || '';
+  $('#gh').addEventListener('input', function () {
+    state.github = $('#gh').value.trim();
+    persist();
+  });
+
+  $('#export-btn').addEventListener('click', function () {
+    persist();
+    var result = store.buildExport($('#gh').value);
+    if (!result.ok) {
+      message.textContent = result.errors.join(' ');
+      return;
+    }
+    var link = document.createElement('a');
+    link.href = URL.createObjectURL(new Blob([result.json], { type: 'application/json' }));
+    link.download = result.filename;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(function () { URL.revokeObjectURL(link.href); }, 1000);
+    message.textContent = 'Arquivo gerado: ' + result.filename +
+      '. Coloque-o na pasta progress/ do seu repositório privado, faça o commit e o push.';
+  });
+
+  $('#import-input').addEventListener('change', function (event) {
+    var input = event.target;
+    var file = input.files && input.files[0];
+    if (!file) return;
+    readText(file).then(function (text) {
+      var result = store.importProgress(text);
+      if (!result.ok) {
+        message.textContent = result.error;
+      } else {
+        state = store.load();
+        hydrate();
+        message.textContent = 'Progresso importado.';
+      }
+      input.value = '';
+    }, function () {
+      message.textContent = 'Não consegui ler o arquivo.';
+    });
+  });
+
+  var armed = false;
+  $('#reset-btn').addEventListener('click', function () {
+    var button = $('#reset-btn');
+    if (!armed) {
+      armed = true;
+      button.textContent = 'Confirmar: apagar tudo';
+      setTimeout(function () { armed = false; button.textContent = 'Limpar meu progresso'; }, 4000);
+      return;
+    }
+    store.clear();
+    drafts.clear();
+    fields.clear();
+    location.reload();
+  });
+
   recalc();
+  renderSelf();
   renderProgress();
 })();

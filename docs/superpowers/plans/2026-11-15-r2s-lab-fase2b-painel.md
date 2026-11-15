@@ -121,7 +121,7 @@ Radicais: `carga` = carga, tempo, horas, ritmo, protegid · `mentoria` = mentor,
 
 **Interfaces — Produces:**
 - `type FetchFile = (owner: string, repo: string, path: string) => Promise<{ status: number, text?: string }>`
-- `collectProgress(roster: RosterRow[], opts: { owner: string, fetchFile: FetchFile, concurrency?: number }): Promise<{ byHandle: Record<string, Progress>, missing: string[], errors: Array<{ github: string, message: string }> }>` — para cada pessoa busca `FetchFile(owner, 'r2s-lab-' + github, 'progress/' + github + '.json')`.
+- `collectProgress(roster: RosterRow[], opts: { owner: string, fetchFile: FetchFile, concurrency?: number }): Promise<{ byHandle: Record<string, Progress>, missing: string[], errors: Array<{ github: string, message: string }> }>` — para cada pessoa busca `FetchFile(owner, 'r2s-lab-' + github, 'progress/' + github.toLowerCase() + '.json')` (o arquivo exportado pelo pre-work sempre tem o nome em minúsculas, e os caminhos do GitHub diferenciam maiúsculas; o nome do repositório não).
 - `githubFetchFile(token: string): FetchFile` — `GET https://api.github.com/repos/{owner}/{repo}/contents/{path}` com `Authorization: Bearer <token>`, `Accept: application/vnd.github.raw+json`, `User-Agent: r2s-lab-dashboard`; devolve `{ status, text }`.
 - `localFetchFile(dir: string): FetchFile` — lê `dir/<path>`; `404` se não existir (ignora `owner` e `repo`).
 
