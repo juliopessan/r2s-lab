@@ -1,0 +1,50 @@
+{
+  "schema": "r2s-progress/1",
+  "github": "anasouza",
+  "updatedAt": "2026-12-03T12:00:00.000Z",
+  "prework": {
+    "blocks": {
+      "1.1": true,
+      "1.2": true,
+      "1.3": true,
+      "2.1": true,
+      "2.2": true,
+      "2.3": true,
+      "3.1": true,
+      "3.2": true,
+      "3.3": true,
+      "4.1": true,
+      "4.2": true,
+      "5.1": true,
+      "5.2": true
+    },
+    "quizzes": {
+      "m1_llm": {
+        "answered": 2,
+        "correct": 2
+      }
+    }
+  },
+  "selfAssessment": null,
+  "survey": {
+    "nps": 10,
+    "ratings": {
+      "conteudo": 5,
+      "hands": 5,
+      "mentoria": 5,
+      "carga": 5,
+      "patroc": 5,
+      "demo": 5,
+      "prework": 5,
+      "conf": 5
+    },
+    "hoursPerWeek": 6,
+    "consent": "nome",
+    "submittedAt": "2026-12-03T12:00:00.000Z",
+    "open": {
+      "melhor": "A mentoria com o coach foi o melhor momento.",
+      "mudar": "Mais tempo protegido para a squad.",
+      "aplicou": "Usei a regra do mais barato numa proposta."
+    }
+  }
+}

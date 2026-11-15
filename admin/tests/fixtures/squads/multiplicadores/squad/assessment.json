@@ -1,0 +1,110 @@
+{
+  "schema": "r2s-assessment/1",
+  "squadRubric": {
+    "framing": 3,
+    "design": 3,
+    "engineering": 3,
+    "evaluation": 2,
+    "cost": 3,
+    "communication": 3
+  },
+  "sandbox": {
+    "capUsd": 300,
+    "spentUsd": 120
+  },
+  "members": {
+    "anasouza": {
+      "labZeroCompleted": true,
+      "knowledgeCheckPct": 90,
+      "coachObservation": 4,
+      "peerReview": 4,
+      "attendancePct": 95,
+      "competencies": {
+        "diagnostic": {
+          "problemFraming": 2,
+          "valueCase": 2,
+          "stakeholderCommunication": 2,
+          "techniqueSelection": 2,
+          "build": 2,
+          "evaluation": 2,
+          "dataReadiness": 2,
+          "responsibleAiFinops": 2
+        },
+        "final": {
+          "problemFraming": 3,
+          "valueCase": 3,
+          "stakeholderCommunication": 3,
+          "techniqueSelection": 3,
+          "build": 3,
+          "evaluation": 3,
+          "dataReadiness": 3,
+          "responsibleAiFinops": 3
+        }
+      },
+      "coachedNextCohort": false,
+      "assetReused": false
+    },
+    "brunolima": {
+      "labZeroCompleted": true,
+      "knowledgeCheckPct": 70,
+      "coachObservation": 3,
+      "peerReview": 3,
+      "attendancePct": 90,
+      "competencies": {
+        "diagnostic": {
+          "problemFraming": 2,
+          "valueCase": 2,
+          "stakeholderCommunication": 2,
+          "techniqueSelection": 2,
+          "build": 2,
+          "evaluation": 2,
+          "dataReadiness": 2,
+          "responsibleAiFinops": 2
+        },
+        "final": {
+          "problemFraming": 3,
+          "valueCase": 3,
+          "stakeholderCommunication": 3,
+          "techniqueSelection": 3,
+          "build": 3,
+          "evaluation": 3,
+          "dataReadiness": 3,
+          "responsibleAiFinops": 3
+        }
+      },
+      "coachedNextCohort": false,
+      "assetReused": false
+    },
+    "carlamendes": {
+      "labZeroCompleted": true,
+      "knowledgeCheckPct": 60,
+      "coachObservation": 2,
+      "peerReview": 3,
+      "attendancePct": 80,
+      "competencies": {
+        "diagnostic": {
+          "problemFraming": 2,
+          "valueCase": 2,
+          "stakeholderCommunication": 2,
+          "techniqueSelection": 2,
+          "build": 2,
+          "evaluation": 2,
+          "dataReadiness": 2,
+          "responsibleAiFinops": 2
+        },
+        "final": {
+          "problemFraming": 3,
+          "valueCase": 3,
+          "stakeholderCommunication": 3,
+          "techniqueSelection": 3,
+          "build": 3,
+          "evaluation": 3,
+          "dataReadiness": 3,
+          "responsibleAiFinops": 3
+        }
+      },
+      "coachedNextCohort": false,
+      "assetReused": false
+    }
+  }
+}

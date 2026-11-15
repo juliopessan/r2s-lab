@@ -1,0 +1,24 @@
+name: site-ci
+
+on:
+  push:
+  pull_request:
+
+defaults:
+  run:
+    working-directory: site
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      # O vídeo é H.264/AAC; o Chromium de código aberto do Playwright pode não reproduzi-lo.
+      PW_CHANNEL: chrome
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install
+      - run: npx playwright install --with-deps chrome
+      - run: npm test

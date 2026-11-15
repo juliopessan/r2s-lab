@@ -1,0 +1,83 @@
+{
+  "schema": "r2s-squad/1",
+  "squad": "multiplicadores",
+  "case": "Fechamento do caixa",
+  "sponsor": "Controladoria",
+  "coach": "coach-exemplo",
+  "members": [
+    {
+      "github": "anasouza",
+      "role": "product-lead"
+    },
+    {
+      "github": "brunolima",
+      "role": "data-lead"
+    },
+    {
+      "github": "carlamendes",
+      "role": "ai-engineer"
+    }
+  ],
+  "gates": {
+    "G0": {
+      "status": "passed",
+      "attempts": 1,
+      "approvedBy": "Controladoria",
+      "approvedAt": "2026-09-10"
+    },
+    "G1": {
+      "status": "passed",
+      "attempts": 2,
+      "approvedBy": "Controladoria",
+      "approvedAt": "2026-09-24",
+      "annualValue": 360000,
+      "annualRunCost": 60000
+    },
+    "G2": {
+      "status": "passed",
+      "attempts": 1,
+      "approvedBy": "coach-exemplo",
+      "approvedAt": "2026-10-08"
+    },
+    "G3": {
+      "status": "in_review",
+      "attempts": 1,
+      "approvedBy": null,
+      "approvedAt": null,
+      "costPerTransaction": null
+    },
+    "G4": {
+      "status": "pending",
+      "attempts": 0,
+      "approvedBy": null,
+      "approvedAt": null,
+      "decision": null
+    }
+  },
+  "roles": {
+    "G1": {
+      "product-lead": "anasouza",
+      "data-lead": "brunolima",
+      "ai-engineer": "carlamendes",
+      "eval-risk-lead": "carlamendes",
+      "storyteller": "anasouza"
+    },
+    "G2": {
+      "product-lead": "anasouza",
+      "data-lead": "brunolima",
+      "ai-engineer": "carlamendes",
+      "eval-risk-lead": "carlamendes",
+      "storyteller": "anasouza"
+    },
+    "G3": {
+      "product-lead": "anasouza",
+      "data-lead": "brunolima",
+      "ai-engineer": "carlamendes",
+      "eval-risk-lead": "carlamendes",
+      "storyteller": "anasouza"
+    }
+  },
+  "assets": [
+    "kit-de-avaliacao"
+  ]
+}

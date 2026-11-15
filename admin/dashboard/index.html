@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Painel R2S Lab</title>
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+<header class="top">
+ <div class="top-in">
+  <b>R2S Lab</b><span class="sep" aria-hidden="true"></span><span>Painel de controle</span>
+  <span id="generated" class="muted"></span>
+ </div>
+</header>
+
+<main id="conteudo">
+ <p id="error" role="alert" hidden>Não encontrei os dados do painel. Rode o build e abra o index.html gerado em dist/.</p>
+
+ <div id="app" hidden>
+  <p id="unread-banner" role="alert" hidden></p>
+  <section aria-labelledby="h-geral">
+   <h2 id="h-geral">Visão geral</h2>
+   <ul class="kpis">
+    <li class="kpi"><span class="kpi-label">Convidados</span><b id="kpi-invited">—</b></li>
+    <li class="kpi"><span class="kpi-label">Iniciaram</span><b id="kpi-started">—</b></li>
+    <li class="kpi"><span class="kpi-label">Concluíram o pre-work</span><b id="kpi-done">—</b></li>
+    <li class="kpi"><span class="kpi-label">Faltam concluir</span><b id="kpi-missing">—</b></li>
+    <li class="kpi"><span class="kpi-label">Meta do FY27 (pessoas)</span><b id="kpi-target">—</b></li>
+   </ul>
+   <p id="scope-note" class="muted">Na visão geral, "concluíram" significa pre-work concluído. Os níveis Foundation, Practitioner e Lead aparecem em "Certificação".</p>
+  </section>
+
+  <section aria-labelledby="h-funil">
+   <h2 id="h-funil">Funil</h2>
+   <ol id="funnel" class="funnel"></ol>
+   <h3>Por onda</h3>
+   <ul id="waves" class="plain"></ul>
+   <p id="multipliers" class="muted"></p>
+  </section>
+
+  <section aria-labelledby="h-squads">
+   <h2 id="h-squads">Squads</h2>
+   <p id="squads-note" role="status" hidden></p>
+   <ul id="squads" class="squads plain"></ul>
+  </section>
+
+  <section aria-labelledby="h-cert">
+   <h2 id="h-cert">Certificação</h2>
+   <div id="cert-counts"></div>
+   <div class="tw"><table id="cert-people" class="people">
+    <caption class="muted">Pessoas avaliadas (usuário do GitHub, sem nomes)</caption>
+    <thead><tr><th scope="col">Usuário</th><th scope="col">Squad</th><th scope="col">Nota final</th><th scope="col">Nível</th></tr></thead>
+    <tbody></tbody>
+   </table></div>
+  </section>
+
+  <section aria-labelledby="h-score">
+   <h2 id="h-score">Scorecard</h2>
+   <ul id="scorecard" class="scorecard plain"></ul>
+  </section>
+
+  <section aria-labelledby="h-sat">
+   <h2 id="h-sat">Satisfação</h2>
+   <div class="nps-row">
+    <div><span class="kpi-label">NPS</span><b id="nps" class="big">—</b></div>
+    <p id="nps-detail" class="muted"></p>
+   </div>
+   <ul id="ratings" class="ratings"></ul>
+   <p id="hours"></p>
+  </section>
+
+  <section aria-labelledby="h-fb">
+   <h2 id="h-fb">Feedbacks e sugestões</h2>
+   <div id="filters" class="filters" role="group" aria-label="Filtrar por tema"></div>
+   <ul id="feedback" class="feedback"></ul>
+  </section>
+
+  <section aria-labelledby="h-q">
+   <h2 id="h-q">Qualidade dos dados</h2>
+   <div id="quality"></div>
+  </section>
+ </div>
+</main>
+
+<footer class="foot muted">R2S Lab · Avanade Brazil Engineering HUB. Painel interno da coordenação: contém dado pessoal, não compartilhe.</footer>
+
+<script src="data.js"></script>
+<script src="dashboard.js"></script>
+</body>
+</html>

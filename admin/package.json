@@ -1,0 +1,11 @@
+{
+  "name": "r2s-lab-admin",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Repositório privado da coordenação do R2S Lab: lista do RH e painel.",
+  "scripts": {
+    "test": "node --test",
+    "demo": "node scripts/demo.mjs"
+  }
+}

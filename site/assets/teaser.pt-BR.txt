@@ -1,0 +1,21 @@
+TEXTO EXIBIDO NO VÍDEO (a transcrição da narração está pendente)
+
+R2S Lab — Reskilling too Skilling. Vídeo de apresentação do método, com 90 segundos.
+
+Um colaborador pergunta ao negócio: "Dá pra resolver isso com IA?"
+
+Menos curso. Mais lab. Em vez de assistir a aulas, a squad pega um problema real, como "Fechar o caixa leva 4 horas", e o leva até uma solução.
+
+R2S Lab: 7 etapas, 5 gates, 12 semanas, 5 pessoas por squad. As etapas são Intake, Discover, Frame Value, Design, Build, Evaluate e Pitch & Hand off, com gates de G0 a G4.
+
+Prove o valor. A solução é montada em etapas: fonte, pipeline, modelo e aplicativo.
+
+Escolha o mais barato que funciona. Regra, ML, LLM ou agente, do mais barato ao mais caro.
+
+Meça. O golden set chega a 90% e o custo por transação é acompanhado.
+
+Proteja. Um botão mostra a palavra BLOQUEADO sobre um prompt.
+
+A cada gate, um novo papel: Product Lead, Data Lead, AI Engineer, Eval & Risk Lead e Storyteller.
+
+Demo day. O negócio decide: Escalar, Iterar ou Encerrar.

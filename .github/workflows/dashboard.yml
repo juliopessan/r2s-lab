@@ -1,0 +1,37 @@
+name: dashboard
+
+# Gera o painel da coordenação. O resultado tem dado pessoal: vira só um artefato privado
+# (7 dias), nunca uma página publicada. A lista do RH vem de um secret, nunca do git.
+on:
+  schedule:
+    - cron: '0 11 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: admin
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Gravar a lista do RH
+        run: printf '%s\n' "$LAB_ROSTER_CSV" > roster/roster.csv
+        env:
+          LAB_ROSTER_CSV: ${{ secrets.LAB_ROSTER_CSV }}
+      - name: Gerar o painel
+        run: node src/build.mjs --out dist
+        env:
+          LAB_READ_TOKEN: ${{ secrets.LAB_READ_TOKEN }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: dashboard
+          path: admin/dist
+          retention-days: 7

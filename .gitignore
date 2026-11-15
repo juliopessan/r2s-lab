@@ -1,2 +1,5 @@
 .superpowers/
+admin/dist/
+admin/roster/roster.csv
 node_modules/
+site/node_modules/

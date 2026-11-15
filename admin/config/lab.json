@@ -1,0 +1,6 @@
+{
+  "owner": "",
+  "target": 100,
+  "protectedHoursPerWeek": 6,
+  "rosterPath": "roster/roster.csv"
+}

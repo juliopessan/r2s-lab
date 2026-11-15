@@ -1,0 +1,14 @@
+{
+  "schema": "r2s-progress/1",
+  "github": "diegoalves",
+  "updatedAt": "2026-12-03T12:00:00.000Z",
+  "prework": {
+    "blocks": {
+      "1.1": true,
+      "1.2": true
+    },
+    "quizzes": {}
+  },
+  "selfAssessment": null,
+  "survey": null
+}

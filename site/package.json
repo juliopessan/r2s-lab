@@ -1,0 +1,14 @@
+{
+  "name": "r2s-lab-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "R2S Lab — Reskilling too Skilling: landing page.",
+  "scripts": {
+    "test": "node --test",
+    "serve": "node -e \"require('./tests/helpers/browser.cjs').startServer().then(s=>console.log(s.url))\""
+  },
+  "devDependencies": {
+    "playwright": "1.63.0"
+  }
+}
