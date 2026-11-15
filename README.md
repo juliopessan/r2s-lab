@@ -13,14 +13,15 @@ passando por gates que pedem evidência, e não presença.
 
 ## Comece aqui
 
-1. Clone este repositório na sua máquina. O endereço é divulgado pela coordenação.
+1. Crie o seu repositório **privado** a partir deste template. No GitHub, clique em *Use this template* → *Create a new repository*, escolha **Private** e use o nome `r2s-lab-<seu-usuario>`. O endereço do template é divulgado pela coordenação.
+2. Clone o **seu** repositório (e não este template) na sua máquina.
 
    ```bash
-   git clone <endereço do repositório divulgado pela coordenação>
+   git clone <endereço do seu repositório privado>
    ```
 
-2. Abra a pasta no VS Code.
-3. Siga o pre-work em `00-prework/`. Ele chega com a fase 2, em dezembro.
+3. Abra a pasta no VS Code.
+4. Siga o pre-work em `00-prework/`. Ele chega com a fase 2, em dezembro.
 
 Nada do que você faz aqui é enviado a ninguém até você fazer o push: o seu progresso é privado e só a
 coordenação o consolida.

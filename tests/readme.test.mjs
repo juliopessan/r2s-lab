@@ -49,3 +49,10 @@ test('has the required sections in order', () => {
     'Regras do lab',
   ]);
 });
+
+test('sends people to their own private repo, not to the shared template', () => {
+  assert.ok(readme.includes('Use this template'));
+  assert.ok(readme.includes('r2s-lab-<seu-usuario>'));
+  assert.ok(readme.includes('privado'));
+  assert.ok(!readme.includes('Clone este repositório'));
+});
