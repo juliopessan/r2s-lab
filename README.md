@@ -5,6 +5,12 @@
 Aqui você aprende fazendo: leva um requisito real do negócio até uma solução pronta para demonstrar,
 passando por gates que pedem evidência, e não presença.
 
+## Veja o método em 90 segundos
+
+<video src="https://raw.githubusercontent.com/juliopessan/r2s-lab/main/docs/source-assets/R2S_Lab_teaser_90s_narrado_16x9.mp4" controls muted playsinline width="100%"></video>
+
+Se o vídeo não aparecer na sua tela, [abra o arquivo MP4](https://raw.githubusercontent.com/juliopessan/r2s-lab/main/docs/source-assets/R2S_Lab_teaser_90s_narrado_16x9.mp4).
+
 ## R · 2 · S
 
 - R de **Reskilling**: quem muda de papel aprende fazendo, em um caso real.

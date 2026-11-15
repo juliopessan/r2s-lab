@@ -43,6 +43,7 @@ test('has the required sections in order', () => {
   const headings = [...readme.matchAll(/^#{1,2} (.+)$/gm)].map((m) => m[1]);
   assert.deepEqual(headings, [
     'R2S Lab',
+    'Veja o método em 90 segundos',
     'R · 2 · S',
     'Comece aqui',
     'Estrutura do repositório',
@@ -55,4 +56,18 @@ test('sends people to their own private repo, not to the shared template', () =>
   assert.ok(readme.includes('r2s-lab-<seu-usuario>'));
   assert.ok(readme.includes('privado'));
   assert.ok(!readme.includes('Clone este repositório'));
+});
+
+const MP4 =
+  'https://raw.githubusercontent.com/juliopessan/r2s-lab/main/docs/source-assets/R2S_Lab_teaser_90s_narrado_16x9.mp4';
+
+test('embeds the teaser video with a plain link fallback', () => {
+  assert.ok(readme.includes(`<video src="${MP4}"`), 'missing <video> embed');
+  assert.match(readme, /<video[^>]*\bcontrols\b[^>]*>/);
+  assert.ok(readme.includes(`](${MP4})`), 'missing plain link to the mp4');
+});
+
+test('the video is shown before the R·2·S section', () => {
+  assert.ok(readme.indexOf('<video') > -1);
+  assert.ok(readme.indexOf('<video') < readme.indexOf('## R · 2 · S'));
 });
