@@ -5,6 +5,9 @@
   var P = window.R2SProgress;
   var store = window.R2SStore;
   var state = store.load();
+  var Q = window.R2SQuizzes;
+  var drafts = window.R2SDrafts('r2s-prework-answers-v1');
+  var answers = drafts.load();
 
   function $(s, r) { return (r || document).querySelector(s); }
   function $$(s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
@@ -39,6 +42,76 @@
       renderProgress();
     });
   });
+
+  function el(tag, cls, txt) {
+    var n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (txt !== undefined) n.textContent = txt;
+    return n;
+  }
+
+  function renderQuiz(box) {
+    var id = box.dataset.quiz;
+    var set = Q.QUIZZES[id];
+    if (!set) return;
+    box.appendChild(el('h4', null, box.dataset.title || 'Checagem rápida'));
+    var score = el('p', 'score');
+
+    function updateScore() {
+      var s = Q.scoreQuiz(answers[id] || {}, id);
+      score.textContent = s.answered
+        ? 'Acertos: ' + s.correct + ' de ' + set.length + (s.answered < set.length ? ' (' + s.answered + ' respondidas)' : '')
+        : '';
+      if (s.answered) state.prework.quizzes[id] = s;
+      else delete state.prework.quizzes[id];
+    }
+
+    set.forEach(function (q, i) {
+      var wrap = el('div', 'q');
+      wrap.appendChild(el('p', null, q.q));
+      var opts = el('div', 'opts');
+      var fb = el('p', 'fb');
+      fb.setAttribute('role', 'status');
+      var buttons = [];
+
+      function reveal(v) {
+        buttons.forEach(function (b, j) {
+          b.disabled = true;
+          if (j === q.a) b.classList.add('right');
+          else if (j === v) b.classList.add('wrong');
+        });
+        fb.textContent = '';
+        fb.appendChild(el('b', v === q.a ? 'ok' : 'no', v === q.a ? 'Correto. ' : 'Não é essa. A resposta é “' + q.o[q.a] + '”. '));
+        fb.appendChild(document.createTextNode(q.w));
+      }
+
+      q.o.forEach(function (text, j) {
+        var b = el('button', 'opt', text);
+        b.type = 'button';
+        buttons.push(b);
+        b.addEventListener('click', function () {
+          answers[id] = answers[id] || {};
+          answers[id][i] = j;
+          drafts.save(answers);
+          reveal(j);
+          updateScore();
+          persist();
+        });
+        opts.appendChild(b);
+      });
+
+      wrap.appendChild(opts);
+      wrap.appendChild(fb);
+      box.appendChild(wrap);
+      var previous = (answers[id] || {})[i];
+      if (previous !== undefined && previous !== null) reveal(previous);
+    });
+
+    box.appendChild(score);
+    updateScore();
+  }
+
+  $$('[data-quiz]').forEach(renderQuiz);
 
   renderProgress();
 })();
