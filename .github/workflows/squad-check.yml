@@ -1,0 +1,21 @@
+name: squad-check
+
+# Confere a pasta squad/ a cada pull request e push: valida o gates.json e cruza os gates
+# aprovados com os documentos do dossiê. Pendências não são erro.
+on:
+  pull_request:
+  push:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Conferir a squad
+        run: node tools/check-squad.mjs
