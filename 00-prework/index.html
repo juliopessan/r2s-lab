@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pre-work R2S Lab</title>
+<link rel="stylesheet" href="../css/lab.css">
+</head>
+<body>
+<div class="topbar" role="banner">
+ <div class="topbar-in">
+  <div class="lock"><b>R2S Lab</b><i></i><span>Pre-work</span></div>
+  <div class="prog-txt" aria-live="polite"><b id="progHours">0 min</b> de 8 h · <span id="progPct">0%</span></div>
+ </div>
+ <div class="bar" role="progressbar" aria-label="Progresso do pre-work" aria-valuemin="0" aria-valuemax="480" aria-valuenow="0" id="progBar"><i id="progFill"></i></div>
+</div>
+
+<div class="wrap">
+<header class="hero">
+ <p class="kick">R2S Lab · Pre-work</p>
+ <h1>GenAI, prompting e negócio em um dia útil</h1>
+ <div class="rule"></div>
+ <p class="lede">Oito horas para chegar ao diagnóstico da semana 0 falando a mesma língua do lab: escrever um prompt que funciona, escolher a técnica mais barata, transformar um pedido vago em métrica, baseline e meta, e calcular se o caso vale o custo.</p>
+ <ul class="chips"><li class="on">8 h · 1 dia útil</li><li>5 partes</li><li>Sem dados de cliente</li><li>Piloto · 1º trimestre 2027</li></ul>
+ <div class="notice"><p><b>Antes de começar.</b> Use só texto público ou sintético nos exercícios com ferramentas de GenAI: nada de dado de cliente nem dado pessoal. Seu progresso e seu rascunho ficam salvos neste navegador; nada é enviado a ninguém até você exportar o arquivo e dar o push no seu repositório privado.</p></div>
+</header>
+
+<section aria-labelledby="planoH" style="padding-top:48px">
+ <h2 id="planoH">Plano do dia</h2>
+ <p class="muted" style="margin-top:8px">Uma sugestão de agenda. Você pode dividir em dois meio-dias, desde que feche as oito horas antes do diagnóstico.</p>
+ <div class="agenda">
+  <a class="ag" href="#p1"><span class="t">09:00 – 11:30</span><span class="n">1 · GenAI na prática<small>Como o modelo gera texto, prompting, regra ou ML ou LLM ou agente</small></span><span class="d">2 h 30</span></a>
+  <a class="ag" href="#p2"><span class="t">11:30 – 13:15</span><span class="n">2 · Do pedido ao problema<small>Métrica, baseline, meta, escopo e árvore de KPI</small></span><span class="d">1 h 45</span></a>
+  <div class="ag break"><span class="t">13:15 – 14:15</span><span class="n">Almoço</span><span class="d">—</span></div>
+  <a class="ag" href="#p3"><span class="t">14:15 – 15:45</span><span class="n">3 · Valor e custo<small>Receita, custo ou risco; custo por transação; regra do G1</small></span><span class="d">1 h 30</span></a>
+  <a class="ag" href="#p4"><span class="t">15:45 – 17:00</span><span class="n">4 · Responsabilidade e decisão<small>Quem responde pelo erro; pitch que termina em decisão</small></span><span class="d">1 h 15</span></a>
+  <a class="ag" href="#p5"><span class="t">17:00 – 18:00</span><span class="n">5 · Exercício final<small>Seu case brief e a autoavaliação</small></span><span class="d">1 h 00</span></a>
+ </div>
+</section>
+
+<!-- PARTE 1 -->
+<section class="part" id="p1" aria-labelledby="p1h">
+ <div class="parthead"><div class="pnum" aria-hidden="true">1</div><div><h2 id="p1h">GenAI na prática</h2><p class="pmeta">2 h 30 · prepara o módulo M1 do lab (GenAI foundations e prompting)</p></div></div>
+ <p class="goal">Ao final você explica em dois minutos por que um modelo erra com segurança, escreve um prompt com estrutura e escolhe a técnica mais barata que resolve o problema.</p>
+
+ <article class="block">
+  <div class="bh"><h3>1.1 Como um LLM gera texto</h3><span class="min">45 min</span></div>
+  <p>Um LLM é treinado para prever o próximo token a partir de tudo o que veio antes. Token é um pedaço de texto: uma palavra, parte de uma palavra ou pontuação. Tudo no modelo se mede em tokens: o preço (entrada mais saída), a janela de contexto e o espaço que sobra para a resposta. Prompt maior custa mais e deixa menos espaço para responder.</p>
+  <p>O modelo não consulta fatos: ele produz o texto mais provável. Por isso responde com segurança mesmo quando erra. É por isso que o lab exige um golden set e avaliação antes de qualquer solução ir adiante.</p>
+  <div class="do"><b>Fazer · 15 min</b><p>Peça a uma ferramenta de GenAI aprovada que resuma um texto público que você conhece bem. Confira três afirmações do resumo contra a fonte e anote quantas estavam corretas.</p></div>
+  <div class="quiz" data-quiz="m1_llm" data-title="Checagem rápida"></div>
+  <ul class="refs">
+   <li><a href="https://learn.microsoft.com/dotnet/ai/conceptual/understanding-tokens" target="_blank" rel="noopener">Understand tokens</a><small>Microsoft Learn · inglês</small></li>
+   <li><a href="https://learn.microsoft.com/dotnet/ai/conceptual/how-genai-and-llms-work" target="_blank" rel="noopener">How generative AI and LLMs work</a><small>Microsoft Learn · inglês</small></li>
+   <li><a href="https://learn.microsoft.com/training/modules/explore-generative-ai/" target="_blank" rel="noopener">AI fluency: Explore generative AI</a><small>módulo opcional, nível iniciante · inglês</small></li>
+  </ul>
+  <label class="done"><input type="checkbox" data-block="1.1" data-min="45"> Concluí o bloco 1.1</label>
+ </article>
+
+ <article class="block">
+  <div class="bh"><h3>1.2 Prompting que funciona</h3><span class="min">60 min</span></div>
+  <p>Um prompt útil tem seis partes: papel, contexto, tarefa, formato da resposta, exemplos e uma saída de escape para quando o dado não existe. Seja específico e deixe pouco para interpretação. Few-shot significa colocar pares de entrada e saída no próprio prompt: o modelo não aprende de forma permanente, só fica condicionado àquela chamada. Depois, itere: teste, compare, ajuste.</p>
+  <div class="tool" id="tPrompt">
+   <h4>Monte um prompt</h4>
+   <div class="grid">
+    <label class="f">Papel<input type="text" id="pr_papel" data-persist value="analista de FP&amp;A que explica números para executivos"></label>
+    <label class="f">Formato da resposta<input type="text" id="pr_formato" data-persist value="texto corrido, sem jargão, com uma linha de destaque no início"></label>
+   </div>
+   <div class="grid" style="margin-top:12px">
+    <label class="f">Contexto<textarea id="pr_contexto" data-persist>Variação semanal de vendas por região contra a semana anterior (dados colados abaixo).</textarea></label>
+    <label class="f">Tarefa<textarea id="pr_tarefa" data-persist>Resuma em até 5 linhas o que mudou e por quê, citando os números.</textarea></label>
+   </div>
+   <div class="grid" style="margin-top:12px">
+    <label class="f">Exemplo de boa resposta <small>opcional, vira few-shot</small><textarea id="pr_exemplo" data-persist></textarea></label>
+    <label class="f">Saída de escape<textarea id="pr_escape" data-persist>Se o dado necessário não estiver no contexto, responda "não encontrado" em vez de estimar.</textarea></label>
+   </div>
+   <pre class="prompt" id="pr_out" aria-live="polite"></pre>
+   <div class="row"><button class="btn" type="button" id="pr_copy">Copiar prompt</button><small id="pr_stat"></small></div>
+  </div>
+  <div class="do"><b>Fazer · 30 min</b><p>Rode o prompt numa ferramenta aprovada com um texto seu que não seja confidencial. Rode duas versões, sem exemplo e com exemplo, e compare. Depois peça a mesma tarefa sem a saída de escape e veja se o modelo passa a inventar.</p></div>
+  <div class="quiz wide" data-quiz="m1_prompt" data-title="Checagem rápida"></div>
+  <ul class="refs">
+   <li><a href="https://learn.microsoft.com/azure/foundry/openai/concepts/prompt-engineering" target="_blank" rel="noopener">Prompt engineering techniques</a><small>Microsoft Learn · inglês</small></li>
+   <li><a href="https://learn.microsoft.com/azure/foundry/openai/concepts/advanced-prompt-engineering" target="_blank" rel="noopener">System message design</a><small>Microsoft Learn · inglês</small></li>
+  </ul>
+  <label class="done"><input type="checkbox" data-block="1.2" data-min="60"> Concluí o bloco 1.2</label>
+ </article>
+
+ <article class="block">
+  <div class="bh"><h3>1.3 Regra, ML, LLM ou agente?</h3><span class="min">45 min</span></div>
+  <p>É a regra 4 do lab: a técnica mais barata que funciona. Regra e SQL antes de ML, ML antes de LLM, uma chamada de LLM antes de um agente. Escolher a técnica faz parte da nota, e o ADR do G2 precisa comparar pelo menos uma alternativa mais barata.</p>
+  <div class="ladder" aria-label="Escada de custo"><span>Regra<em>$</em></span><span>ML<em>$$</em></span><span>LLM<em>$$$</em></span><span>Agente<em>$$$$</em></span></div>
+  <p>Um agente costuma chamar o modelo várias vezes por tarefa. Por isso o custo por transação, a unidade que o lab mede em toda solução, cresce com o número de chamadas.</p>
+  <div class="tool" id="tCost">
+   <h4>Custo por transação <small style="text-transform:none;letter-spacing:0">valores de exemplo: use o preço vigente do modelo que você vai usar</small></h4>
+   <div class="grid">
+    <label class="f">Tokens de entrada<input type="number" id="c_in" data-persist value="2000" min="0" step="100"></label>
+    <label class="f">Tokens de saída<input type="number" id="c_out" data-persist value="500" min="0" step="50"></label>
+    <label class="f">Preço de entrada <small>R$ por 1 milhão</small><input type="number" id="c_pin" data-persist value="10" min="0" step="0.5"></label>
+    <label class="f">Preço de saída <small>R$ por 1 milhão</small><input type="number" id="c_pout" data-persist value="40" min="0" step="0.5"></label>
+    <label class="f">Chamadas ao modelo por transação<input type="number" id="c_calls" data-persist value="1" min="1" step="1"></label>
+    <label class="f">Transações por mês<input type="number" id="c_vol" data-persist value="5000" min="0" step="100"></label>
+   </div>
+   <div class="out"><div class="kpi"><span>Custo por transação</span><b id="c_tx">—</b></div><div class="kpi"><span>Custo por mês</span><b id="c_mo">—</b></div><div class="kpi"><span>Custo por ano</span><b id="c_yr">—</b></div></div>
+  </div>
+  <div class="quiz wide" data-quiz="m1_tech" data-title="Escolha a técnica mais barata que resolve"></div>
+  <div class="do"><b>Fazer · 10 min</b><p>Mude “chamadas por transação” para 6, como num agente que lê, converte e testa. Veja o que acontece com o custo por mês e anote em que ponto a técnica deixa de caber no valor do caso (você vai usar isso na parte 3).</p></div>
+  <label class="done"><input type="checkbox" data-block="1.3" data-min="45"> Concluí o bloco 1.3</label>
+ </article>
+</section>
+
+<!-- PARTE 2 -->
+<section class="part" id="p2" aria-labelledby="p2h">
+ <div class="parthead"><div class="pnum" aria-hidden="true">2</div><div><h2 id="p2h">Do pedido ao problema</h2><p class="pmeta">1 h 45 · prepara o módulo M2 (problem framing e árvores de KPI)</p></div></div>
+ <p class="goal">Transformar “dá pra resolver isso com IA?” em uma métrica, um baseline, uma meta e um escopo que o patrocinador assina.</p>
+
+ <article class="block">
+  <div class="bh"><h3>2.1 Anatomia de um pedido vago</h3><span class="min">30 min</span></div>
+  <p>O pedido chega como desejo (“melhorar as vendas”) ou como solução (“quero um chatbot”). Nenhum dos dois entra no lab. Para passar do G0, o caso precisa de um patrocinador nomeado que reserva duas horas a cada duas semanas, uma métrica que dá para medir e um baseline.</p>
+  <p>O case brief abre como narrativa: uma pessoa com nome ou papel, diante de uma decisão, com prazo. É esse formato que obriga a equipe a enxergar quem decide e quem sente o problema antes de pensar em modelo.</p>
+  <div class="do"><b>Fazer · 15 min</b><p>Reescreva um pedido real do seu trabalho em três frases: quem decide, o que dói hoje e até quando. Guarde o texto, ele alimenta o exercício final.</p></div>
+  <div class="quiz wide" data-quiz="m2_mc" data-title="Checagem rápida"></div>
+  <label class="done"><input type="checkbox" data-block="2.1" data-min="30"> Concluí o bloco 2.1</label>
+ </article>
+
+ <article class="block">
+  <div class="bh"><h3>2.2 Métrica, baseline, meta e escopo</h3><span class="min">45 min</span></div>
+  <p>Quatro peças que o patrocinador assina no G1. A métrica diz o que muda. O baseline diz onde você está hoje e como mediu. A meta diz que número torna o esforço válido. O escopo diz o que entra e o que fica de fora. Exemplo do caso “fechamento diário do caixa” (números ilustrativos):</p>
+  <div class="tw"><table class="mini"><tbody>
+   <tr><th>Métrica</th><td>Horas para fechar o caixa do dia</td></tr>
+   <tr><th>Baseline</th><td>4 horas, medidas em fechamentos reais de um mês, com a fonte da medição anotada</td></tr>
+   <tr><th>Meta</th><td>Fechar em até 1 hora</td></tr>
+   <tr><th>Escopo</th><td>Conciliação dos extratos do banco principal; fica de fora a conciliação intercompany</td></tr>
+  </tbody></table></div>
+  <div class="quiz wide" data-quiz="m2_class" data-title="Classifique cada frase como métrica, baseline, meta ou escopo"></div>
+  <div class="do"><b>Fazer · 15 min</b><p>Preencha as quatro peças para o pedido que você reescreveu em 2.1. Se não sabe o baseline, escreva como faria para medir em uma semana.</p></div>
+  <label class="done"><input type="checkbox" data-block="2.2" data-min="45"> Concluí o bloco 2.2</label>
+ </article>
+
+ <article class="block">
+  <div class="bh"><h3>2.3 Árvore de KPI</h3><span class="min">30 min</span></div>
+  <p>A árvore de KPI quebra a métrica em fatores que se somam ou se multiplicam. Ela mostra em qual galho a IA mexe, e evita prometer ganho no galho errado. Exemplo para o tempo de preparo de um relatório semanal:</p>
+  <ul class="tree">
+   <li>Tempo de preparo do relatório semanal
+    <ul>
+     <li>Coletar os dados</li>
+     <li>Montar tabelas e gráficos</li>
+     <li class="ai">Escrever a análise do que mudou</li>
+     <li>Revisar e distribuir</li>
+    </ul>
+   </li>
+  </ul>
+  <div class="do"><b>Fazer · 20 min</b><p>No papel ou num quadro, desenhe a árvore de um indicador do seu trabalho com dois níveis. Marque o galho em que a IA poderia atuar e escreva uma frase dizendo por que não nos outros.</p></div>
+  <label class="done"><input type="checkbox" data-block="2.3" data-min="30"> Concluí o bloco 2.3</label>
+ </article>
+</section>
+
+<!-- PARTE 3 -->
+<section class="part" id="p3" aria-labelledby="p3h">
+ <div class="parthead"><div class="pnum" aria-hidden="true">3</div><div><h2 id="p3h">Valor e custo</h2><p class="pmeta">1 h 30 · prepara o módulo M3 (unit economics de IA e value case)</p></div></div>
+ <p class="goal">Dizer, com número e premissa, se um caso vale o que custa para rodar, e saber por que ele pode morrer no G1 sem culpa de ninguém.</p>
+
+ <article class="block">
+  <div class="bh"><h3>3.1 Três tipos de valor</h3><span class="min">25 min</span></div>
+  <p>A hipótese de valor do lab é de um destes tipos: receita, custo ou risco. Escolha um, escreva a premissa e diga quem confirma o número.</p>
+  <div class="tw"><table class="mini"><tbody>
+   <tr><th>Receita</th><td>As propostas saem em horas e não em dias, então mais propostas chegam ao cliente no prazo.</td></tr>
+   <tr><th>Custo</th><td>O fechamento do caixa cai de quatro horas para uma, então essas horas voltam para trabalho de maior valor.</td></tr>
+   <tr><th>Risco</th><td>Incidentes de dados são detectados antes de o cliente reclamar, então diminui a exposição contratual.</td></tr>
+  </tbody></table></div>
+  <div class="quiz wide" data-quiz="m3_types" data-title="Checagem rápida"></div>
+  <label class="done"><input type="checkbox" data-block="3.1" data-min="25"> Concluí o bloco 3.1</label>
+ </article>
+
+ <article class="block">
+  <div class="bh"><h3>3.2 Custo de build e custo de run</h3><span class="min">25 min</span></div>
+  <p>Build é o esforço de construir: horas do time e do patrocinador. Run é o que se paga todo ano para manter: tokens, infraestrutura, monitoramento e a revisão humana. O custo por transação, que você calculou em 1.3, liga as duas pontas.</p>
+  <p>No G1, o patrocinador assina a métrica, o baseline e a hipótese de valor, e o valor anual precisa exceder três vezes o custo anual estimado de run. A regra é deliberada: ela mata cedo o caso fraco, e aprender a parar um caso no G1 é uma habilidade de negócio.</p>
+  <div class="quiz wide" data-quiz="m3_g1" data-title="Checagem rápida"></div>
+  <label class="done"><input type="checkbox" data-block="3.2" data-min="25"> Concluí o bloco 3.2</label>
+ </article>
+
+ <article class="block">
+  <div class="bh"><h3>3.3 Calculadora: o caso passa no G1?</h3><span class="min">40 min</span></div>
+  <p>Altere os números e veja quando o caso passa. Os valores iniciais são um exemplo; troque pelos do seu caso. O custo da hora da equipe é um dado que você traz: o lab ainda precisa definir o custo horário carregado.</p>
+  <div class="tool" id="tValue">
+   <h4>Valor anual contra o custo de run</h4>
+   <div class="grid">
+    <label class="f">Transações por mês<input type="number" id="v_tx" data-persist value="800" min="0" step="50"></label>
+    <label class="f">Minutos economizados por transação<input type="number" id="v_min" data-persist value="15" min="0" step="1"></label>
+    <label class="f">Custo da hora <small>R$ por hora</small><input type="number" id="v_h" data-persist value="90" min="0" step="5"></label>
+    <label class="f">Adoção esperada <small>% de uso real</small><input type="number" id="v_ad" data-persist value="70" min="0" max="100" step="5"></label>
+    <label class="f">Custo anual de run <small>R$ por ano</small><input type="number" id="v_run" data-persist value="60000" min="0" step="1000"></label>
+   </div>
+   <div class="out"><div class="kpi"><span>Valor anual</span><b id="v_val">—</b></div><div class="kpi"><span>3× o custo de run (limiar do G1)</span><b id="v_thr">—</b></div><div class="kpi"><span>Valor ÷ custo de run</span><b id="v_mul">—</b></div></div>
+   <div class="verdict" id="v_ver" aria-live="polite"></div>
+  </div>
+  <div class="quiz wide" data-quiz="m3_adopt" data-title="Checagem rápida"></div>
+  <div class="do"><b>Fazer · 15 min</b><p>Tente fazer o caso passar de duas formas diferentes: reduzindo o custo de run e aumentando a adoção. Anote qual das duas é mais realista e por quê. É essa conversa que o patrocinador vai ter com você no G1.</p></div>
+  <label class="done"><input type="checkbox" data-block="3.3" data-min="40"> Concluí o bloco 3.3</label>
+ </article>
+</section>
+
+<!-- PARTE 4 -->
+<section class="part" id="p4" aria-labelledby="p4h">
+ <div class="parthead"><div class="pnum" aria-hidden="true">4</div><div><h2 id="p4h">Responsabilidade e decisão</h2><p class="pmeta">1 h 15 · prepara os módulos M7 (Responsible AI) e M10 (storytelling e pitch)</p></div></div>
+ <p class="goal">Nomear quem responde quando o algoritmo erra e terminar uma apresentação com um pedido que o negócio consegue decidir.</p>
+
+ <article class="block">
+  <div class="bh"><h3>4.1 Quem responde pelo erro</h3><span class="min">30 min</span></div>
+  <p>O lab parte de um princípio do FAT/ML: uma pessoa nomeada é sempre responsável por qualquer decisão tomada ou informada por um algoritmo. “O algoritmo fez” nunca é resposta aceitável. Cada squad mantém uma Social Impact Statement com cinco princípios: Responsabilidade (<i>Responsibility</i>), Explicabilidade (<i>Explainability</i>), Acurácia (<i>Accuracy</i>), Auditabilidade (<i>Auditability</i>) e Equidade (<i>Fairness</i>).</p>
+  <p>A Microsoft organiza o tema em seis princípios próprios: justiça, confiabilidade e segurança, privacidade e segurança, inclusão, transparência e responsabilização. Os dois conjuntos se complementam, e você vai encontrar os dois na Azure.</p>
+  <div class="do"><b>Fazer · 15 min</b><p>Para o caso “triagem de qualidade de dados” (o time só descobre pipelines quebrados quando o cliente reclama), escreva: quem é a pessoa afetada, qual é o erro mais caro (falso positivo ou falso negativo) e quem responde por ele.</p></div>
+  <div class="quiz wide" data-quiz="m4_rai" data-title="Checagem rápida"></div>
+  <ul class="refs">
+   <li><a href="https://learn.microsoft.com/azure/machine-learning/concept-responsible-ai" target="_blank" rel="noopener">What is Responsible AI?</a><small>Microsoft Learn · inglês</small></li>
+   <li><a href="https://learn.microsoft.com/agents/center-of-excellence/responsible-ai" target="_blank" rel="noopener">Apply responsible AI</a><small>Microsoft Learn · inglês</small></li>
+  </ul>
+  <label class="done"><input type="checkbox" data-block="4.1" data-min="30"> Concluí o bloco 4.1</label>
+ </article>
+
+ <article class="block">
+  <div class="bh"><h3>4.2 Um pitch de 10 minutos que termina em decisão</h3><span class="min">45 min</span></div>
+  <p>No demo day, o painel executivo nota quatro coisas: clareza do problema e do valor, credibilidade da solução e das evidências, risco e custo sob controle, e a qualidade do pedido final. O pitch tem seis partes:</p>
+  <div class="pitch" role="img" aria-label="Seis partes do pitch: problema, 1 minuto; métrica e valor, 1; opções, 1; demo ao vivo, 3; avaliação, riscos e custo, 2; o pedido, 2">
+   <div style="flex:1"><b>1 min</b>O problema e o custo de hoje</div>
+   <div style="flex:1"><b>1 min</b>Métrica e valor</div>
+   <div style="flex:1"><b>1 min</b>Opções</div>
+   <div class="demo" style="flex:3"><b>3 min</b>Demo ao vivo</div>
+   <div style="flex:2"><b>2 min</b>Avaliação, risco, custo</div>
+   <div style="flex:2"><b>2 min</b>O pedido</div>
+  </div>
+  <p>O pedido tem sempre uma de três formas: escalar, iterar ou matar. Matar é um resultado legítimo. O que não vale é terminar sem pedir nada.</p>
+  <div class="tool">
+   <h4>Seu pedido em uma frase</h4>
+   <div class="grid">
+    <label class="f">Decisão<select id="ask_dec" data-persist><option value="">Escolha</option><option>Escalar</option><option>Iterar</option><option>Matar</option></select></label>
+    <label class="f">O que é preciso para isso acontecer<input type="text" id="ask_need" data-persist placeholder="ex.: dois meses de um engenheiro e acesso ao CRM"></label>
+   </div>
+   <pre class="prompt" id="ask_out" aria-live="polite"></pre>
+  </div>
+  <div class="do"><b>Fazer · 25 min</b><p>Pense em um projeto que você apresentou ou vai apresentar. Escreva o pedido final em uma frase com decisão, prazo e o que é preciso. Leia em voz alta: se o ouvinte não sabe o que fazer depois, reescreva.</p></div>
+  <label class="done"><input type="checkbox" data-block="4.2" data-min="45"> Concluí o bloco 4.2</label>
+ </article>
+</section>
+
+<!-- PARTE 5 -->
+<section class="part" id="p5" aria-labelledby="p5h">
+ <div class="parthead"><div class="pnum" aria-hidden="true">5</div><div><h2 id="p5h">Exercício final</h2><p class="pmeta">1 h · seu case brief e a autoavaliação</p></div></div>
+ <p class="goal">Juntar as quatro partes num case brief de uma página, sobre um problema real do seu trabalho, e medir como você se vê agora nas oito competências do lab.</p>
+
+ <article class="block">
+  <div class="bh"><h3>5.1 Seu case brief</h3><span class="min">40 min</span></div>
+  <p>É o mesmo formato que o patrocinador preenche no G0. Use um problema real, descrito sem dado de cliente nem dado pessoal. Se faltar um número, escreva como você o mediria.</p>
+  <div class="tool">
+   <h4>Case brief</h4>
+   <div class="grid">
+    <label class="f">Nome curto do caso<input type="text" id="b_nome" data-persist></label>
+    <label class="f">Quem decide e até quando<input type="text" id="b_decide" data-persist></label>
+   </div>
+   <label class="f" style="margin-top:12px">O requisito, nas palavras do patrocinador <small>o que dói hoje, para quem, com que frequência</small><textarea id="b_req" data-persist></textarea></label>
+   <div class="grid" style="margin-top:12px">
+    <label class="f">Métrica<input type="text" id="b_metrica" data-persist></label>
+    <label class="f">Baseline hoje <small>número e como foi medido</small><input type="text" id="b_base" data-persist></label>
+    <label class="f">Meta que tornaria isso válido<input type="text" id="b_meta" data-persist></label>
+   </div>
+   <div class="grid" style="margin-top:12px">
+    <label class="f">Tipo de valor<select id="b_tipo" data-persist><option value="">Escolha</option><option>Receita</option><option>Custo</option><option>Risco</option></select></label>
+    <label class="f">Valor anual aproximado e a premissa<input type="text" id="b_valor" data-persist></label>
+    <label class="f">Dados: fontes e acesso em 5 dias úteis?<input type="text" id="b_dados" data-persist></label>
+   </div>
+   <label class="f" style="margin-top:12px">Restrições <small>sistemas, regulação, ferramentas dos usuários</small><textarea id="b_restr" data-persist></textarea></label>
+   <p class="muted" style="margin:12px 0 0;font-size:14px" id="b_stat"></p>
+  </div>
+  <label class="done"><input type="checkbox" data-block="5.1" data-min="40"> Concluí o bloco 5.1</label>
+ </article>
+
+ <article class="block">
+  <div class="bh"><h3>5.2 Autoavaliação e fechamento</h3><span class="min">20 min</span></div>
+  <p>Marque de 1 a 4 como você se vê hoje em cada competência: 1 Aware, 2 Developing, 3 Practitioner, 4 Lead. Esta é uma autoavaliação preliminar. O diagnóstico oficial acontece na semana 0 e é ele que define sua rota.</p>
+  <div class="tool">
+   <h4>Oito competências do lab</h4>
+   <div class="grid" id="selfGrid"></div>
+   <div class="out"><div class="kpi"><span>Média da autoavaliação</span><b id="s_avg">—</b></div></div>
+   <div class="verdict" id="s_route" aria-live="polite"></div>
+  </div>
+  <label class="done"><input type="checkbox" data-block="5.2" data-min="20"> Concluí o bloco 5.2</label>
+ </article>
+
+ 
+</section>
+
+<footer>Pre-work R2S Lab · Avanade Brazil Engineering HUB · piloto do 1º trimestre de 2027. Progresso salvo neste navegador; exporte para o seu repositório privado. Links de leitura levam à documentação oficial da Microsoft, em inglês.</footer>
+</div>
+<script src="../lib/progress.js"></script>
+<script src="../lib/calc.js"></script>
+<script src="../lib/store.js"></script>
+<script src="../js/prework.js"></script>
+</body>
+</html>
