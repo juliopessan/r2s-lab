@@ -11,7 +11,8 @@ test('renders five parts and thirteen blocks with the contract ids, titles and m
   await withPage({}, async (page, url) => {
     await page.goto(url + OPEN, { waitUntil: 'load' });
     assert.equal(await page.title(), 'Pre-work R2S Lab');
-    assert.equal(await page.locator('section.part').count(), 5);
+    assert.equal(await page.locator('section.part[id^="p"]').count(), 5);
+    assert.equal(await page.locator('section#exportar').count(), 1);
     const blocks = await page.locator('article.block').evaluateAll((els) =>
       els.map((e) => ({
         id: e.querySelector('input[data-block]').dataset.block,
