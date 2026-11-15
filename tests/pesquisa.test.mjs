@@ -109,6 +109,12 @@ test('hours must be a non-negative number', async () => {
 test('a complete survey exports', async () => {
   await withPage({}, async (page, url) => {
     await page.goto(url + OPEN, { waitUntil: 'load' });
+    await page.evaluate(() => {
+      const p = window.R2SStore.load();
+      p.prework.blocks['1.1'] = true;
+      window.R2SStore.save(p);
+    });
+    await page.reload({ waitUntil: 'load' });
     await page.fill('#gh', 'anasouza');
     await answer(page, { consent: 'anon', nps: '10' });
     const [download] = await Promise.all([page.waitForEvent('download'), page.click('#export-btn')]);

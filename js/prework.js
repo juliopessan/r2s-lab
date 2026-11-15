@@ -19,9 +19,16 @@
     return h + ' h' + (r ? ' ' + r + ' min' : '');
   }
 
+  /* Esta página só é dona de github, prework e autoavaliação: relê o armazenamento para não
+   * sobrescrever a pesquisa gravada por outra aba. */
   function persist() {
-    state.updatedAt = new Date().toISOString();
-    store.save(state);
+    var fresh = store.load();
+    fresh.github = state.github;
+    fresh.prework = state.prework;
+    fresh.selfAssessment = state.selfAssessment;
+    fresh.updatedAt = new Date().toISOString();
+    state.updatedAt = fresh.updatedAt;
+    store.save(fresh);
   }
 
   function renderProgress() {
@@ -58,10 +65,11 @@
     box.appendChild(el('h4', null, box.dataset.title || 'Checagem rápida'));
     var score = el('p', 'score');
 
-    /* As respostas locais mandam; sem elas vale o resultado importado de um arquivo. */
+    /* As respostas locais só mandam se cobrirem pelo menos o que veio de um arquivo importado. */
     function updateScore() {
       var local = Q.scoreQuiz(answers[id] || {}, id);
-      if (local.answered) state.prework.quizzes[id] = local;
+      var kept = state.prework.quizzes[id];
+      if (local.answered && (!kept || local.answered >= kept.answered)) state.prework.quizzes[id] = local;
       var s = state.prework.quizzes[id];
       score.textContent = s && s.answered
         ? 'Acertos: ' + s.correct + ' de ' + set.length + (s.answered < set.length ? ' (' + s.answered + ' respondidas)' : '')

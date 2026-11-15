@@ -1,4 +1,4 @@
-:root{--bg:#0E1116;--card:#151A21;--soft:#1C222B;--fg:#F2F4F7;--muted:#A8B0BC;--line:#2A313B;--brand:#FF5800;--brand-ink:#0E1116;--brand-text:#FF7A33;--ok:#3DD68C;--bad:#FF7A66;--info:#5CB3FF;--font:'Segoe UI','Segoe UI Variable',system-ui,-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;--mono:ui-monospace,'Cascadia Mono',Menlo,Consolas,monospace;color-scheme:dark}
+:root{--field:#667084;--bg:#0E1116;--card:#151A21;--soft:#1C222B;--fg:#F2F4F7;--muted:#A8B0BC;--line:#2A313B;--brand:#FF5800;--brand-ink:#0E1116;--brand-text:#FF7A33;--ok:#3DD68C;--bad:#FF7A66;--info:#5CB3FF;--font:'Segoe UI','Segoe UI Variable',system-ui,-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;--mono:ui-monospace,'Cascadia Mono',Menlo,Consolas,monospace;color-scheme:dark}
 *{box-sizing:border-box}
 body{background:var(--bg);color:var(--fg);font-family:var(--font);font-size:16px;line-height:1.6;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--bg)}
@@ -132,3 +132,5 @@ legend{font-weight:600;padding:0;margin-bottom:8px;max-width:68ch}
 .radios{display:flex;gap:16px;flex-wrap:wrap}
 .radios label{display:flex;gap:8px;align-items:center;font-weight:400;cursor:pointer}
 .radios input{accent-color:var(--brand);width:18px;height:18px}
+
+input[type=text],input[type=number],input[type=file],select,textarea,.opt,.scale span{border-color:var(--field)}

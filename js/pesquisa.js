@@ -48,12 +48,18 @@
   draft.ratings = draft.ratings || {};
   draft.open = draft.open || {};
 
+  /* Esta página só é dona de github e survey: relê o armazenamento para não sobrescrever o pre-work
+   * gravado por outra aba. */
   function commit() {
     drafts.save(draft);
     var result = P.surveyFromDraft(draft);
     state.survey = result.ok ? result.survey : null;
-    state.updatedAt = new Date().toISOString();
-    store.save(state);
+    var fresh = store.load();
+    fresh.github = state.github;
+    fresh.survey = state.survey;
+    fresh.updatedAt = new Date().toISOString();
+    state.updatedAt = fresh.updatedAt;
+    store.save(fresh);
   }
 
   /* ---------- formulário ---------- */
@@ -153,11 +159,10 @@
 
   /* ---------- importar, exportar e limpar ---------- */
   function hydrate() {
-    drafts.clear();
-    draft = state.survey ? draftFromSurvey(state.survey) : {};
+    /* Só uma pesquisa vinda do arquivo substitui o que já foi respondido aqui. */
+    if (state.survey) draft = draftFromSurvey(state.survey);
     draft.ratings = draft.ratings || {};
     draft.open = draft.open || {};
-    drafts.save(draft);
 
     $$('input[name="nps"]').forEach(function (i) { i.checked = Number(i.value) === draft.nps; });
     RATES.forEach(function (r) {
@@ -167,6 +172,7 @@
     OPEN.forEach(function (o) { $('#' + o[1]).value = draft.open[o[0]] || ''; });
     $$('input[name="consent"]').forEach(function (i) { i.checked = i.value === draft.consent; });
     $('#gh').value = state.github || '';
+    commit();
   }
 
   var MISSING_LABELS = { nps: 'NPS', hoursPerWeek: 'Horas por semana', consent: 'consentimento de citação' };
@@ -179,6 +185,11 @@
     persist: function () { commit(); },
     hydrate: hydrate,
     clearDrafts: function () { drafts.clear(); },
+    guard: function () {
+      return P.hasPreworkProgress(store.load())
+        ? null
+        : 'Seu arquivo vai sem o pre-work: importe antes o seu progress/<usuario>.json ou faça o pre-work neste navegador.';
+    },
     validate: function () {
       var result = P.surveyFromDraft(draft);
       return result.ok ? [] : result.missing.map(function (key) { return MISSING_LABELS[key]; });

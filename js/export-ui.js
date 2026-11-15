@@ -39,6 +39,7 @@
       opts.persist();
     });
 
+    var guardArmed = false;
     $('#export-btn').addEventListener('click', function () {
       opts.persist();
       var missing = opts.validate ? opts.validate() : [];
@@ -46,11 +47,19 @@
         message.textContent = 'Antes de exportar, responda: ' + missing.join(', ') + '.';
         return;
       }
+      var warning = opts.guard ? opts.guard() : null;
+      if (warning && !guardArmed) {
+        guardArmed = true;
+        message.textContent = warning + ' Se mesmo assim quiser exportar, clique em Exportar de novo.';
+        setTimeout(function () { guardArmed = false; }, 10000);
+        return;
+      }
       var result = opts.store.buildExport(gh.value);
       if (!result.ok) {
         message.textContent = result.errors.join(' ');
         return;
       }
+      guardArmed = false;
       download(result.filename, result.json);
       message.textContent = 'Arquivo gerado: ' + result.filename +
         '. Coloque-o na pasta progress/ do seu repositório privado, faça o commit e o push.';
@@ -84,8 +93,8 @@
         setTimeout(function () { armed = false; button.textContent = 'Limpar meu progresso'; }, 4000);
         return;
       }
-      opts.store.clear();
-      opts.clearDrafts();
+      opts.store.clearAll();
+      if (opts.clearDrafts) opts.clearDrafts();
       location.reload();
     });
   }
