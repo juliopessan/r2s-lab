@@ -2,7 +2,6 @@
   "name": "r2s-lab",
   "version": "0.1.0",
   "private": true,
-  "type": "module",
   "description": "R2S Lab — Reskilling too Skilling: repositório do laboratório.",
   "scripts": {
     "test": "node --test"
