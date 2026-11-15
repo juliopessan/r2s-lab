@@ -1,0 +1,16 @@
+{
+  "schema": "r2s-assessment/1",
+  "squadRubric": {
+    "framing": null,
+    "design": null,
+    "engineering": null,
+    "evaluation": null,
+    "cost": null,
+    "communication": null
+  },
+  "sandbox": {
+    "capUsd": 300,
+    "spentUsd": null
+  },
+  "members": {}
+}

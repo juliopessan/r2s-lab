@@ -4,11 +4,29 @@
 import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { pathToFileURL } from 'node:url';
+import assessmentLib from '../lib/assessment.js';
 import squadLib from '../lib/squad.js';
 
 const { DOCS, DOC_FILES, DOC_NAMES, validateSquad, dossierStatus, currentGate, squadChecks } = squadLib;
 
+const { validateAssessment, squadScore, individualScore, finalScore, levelFor } = assessmentLib;
+
 const readIfExists = (file) => (existsSync(file) ? readFileSync(file, 'utf8') : undefined);
+
+/** Nota da squad e o nível de cada membro; nada se não houver dados. */
+function assessmentLines(assessment) {
+  const rubric = assessment.squadRubric;
+  const members = Object.entries(assessment.members);
+  const score = squadScore(rubric);
+  const hasData = score !== null || Object.values(rubric).some((v) => v !== null) || members.length > 0;
+  if (!hasData) return [];
+  const lines = [score === null ? 'Nota da squad: incompleta' : `Nota da squad: ${score.toFixed(2)}`];
+  for (const [handle, member] of members) {
+    const final = finalScore(score, individualScore(member));
+    lines.push(`- ${handle}: nível ${levelFor(member, rubric)} (${final === null ? 'sem nota final' : `nota final ${final.toFixed(2)}`})`);
+  }
+  return lines;
+}
 
 /** Devolve as linhas do relatório e a lista de erros (pendências não são erro). */
 export function runCheck(dir) {
@@ -56,6 +74,21 @@ export function runCheck(dir) {
   lines.push(`Golden set: ${goldenRows} casos`);
 
   if (contract.ok) errors.push(...squadChecks(gates, { docs, goldenRows }));
+
+  const assessmentText = readIfExists(path.join(dir, 'assessment.json'));
+  if (assessmentText !== undefined) {
+    let assessment;
+    try {
+      assessment = JSON.parse(assessmentText);
+    } catch {
+      errors.push('assessment.json não é um JSON válido.');
+    }
+    if (assessment) {
+      const check = validateAssessment(assessment);
+      errors.push(...check.errors);
+      if (check.ok) lines.push(...assessmentLines(assessment));
+    }
+  }
   return { errors, lines };
 }
 
