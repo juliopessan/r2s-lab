@@ -56,6 +56,8 @@ r2s-lab/
 ├─ starter-kits/         RAG · agente · avaliação · custo por transação
 ├─ squad/                dossiê A–E, golden set, gates.json e assessment.json da sua squad
 ├─ tools/                check-squad.mjs: confere a pasta squad/
+├─ site/                 landing page com o teaser (npm run serve)
+├─ admin/                painel da coordenação (npm run demo); a lista do RH real nunca entra no git
 └─ progress/             seu progresso individual
 ```
 
