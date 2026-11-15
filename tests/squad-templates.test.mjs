@@ -74,3 +74,11 @@ test('no forbidden wording in the squad templates', () => {
     assert.ok(!read(f).includes('Requirement-to-Solution'), f);
   }
 });
+
+test('squad/README documents who may change gates and the assessment', () => {
+  const readme = readFileSync(path.join(root, 'squad', 'README.md'), 'utf8');
+  for (const needle of ['CODEOWNERS', 'squad-check', 'branch protegida', 'assessment.json']) {
+    assert.ok(readme.includes(needle), `squad/README should mention "${needle}"`);
+  }
+  assert.ok(!readme.includes('pelo coach e pelo painel'), 'the dashboard only reads the assessment');
+});

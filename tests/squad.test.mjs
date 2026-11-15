@@ -189,3 +189,6 @@ test('section finds the three reviews', () => {
   assert.match(section(d, 'd90'), /90 dias/);
   assert.equal(section('nada', 'g2'), '');
 });
+
+rejects('G2 approved while the squad has no coach', (s) => { s.coach = ''; s.gates.G2.approvedBy = s.members[0].github; });
+rejects('G3 approved while the coach is not a valid GitHub user', (s) => { s.coach = 'não é usuário'; s.gates.G2.approvedBy = 'não é usuário'; s.gates.G3.approvedBy = 'não é usuário'; });
