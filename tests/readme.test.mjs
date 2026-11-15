@@ -71,3 +71,12 @@ test('the video is shown before the R·2·S section', () => {
   assert.ok(readme.indexOf('<video') > -1);
   assert.ok(readme.indexOf('<video') < readme.indexOf('## R · 2 · S'));
 });
+
+test('explains how to open the pages and how to export', () => {
+  for (const needle of [
+    '00-prework/index.html', '05-encerramento/pesquisa.html', 'Exportar progresso', 'progress/', 'commit', 'push',
+  ]) {
+    assert.ok(readme.includes(needle), `README should mention "${needle}"`);
+  }
+  assert.ok(!readme.includes('chega com a fase 2'));
+});

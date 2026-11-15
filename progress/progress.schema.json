@@ -1,0 +1,268 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "r2s-progress/1",
+  "title": "R2S Lab — progresso do participante",
+  "description": "Arquivo progress/<usuario>.json gerado pelas páginas do pre-work e da pesquisa. Não edite à mão.",
+  "type": "object",
+  "required": [
+    "schema",
+    "github",
+    "updatedAt",
+    "prework",
+    "selfAssessment",
+    "survey"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {
+      "const": "r2s-progress/1"
+    },
+    "github": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9](?:[A-Za-z0-9-]{0,37}[A-Za-z0-9])?$"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "prework": {
+      "type": "object",
+      "properties": {
+        "blocks": {
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "1.1",
+              "1.2",
+              "1.3",
+              "2.1",
+              "2.2",
+              "2.3",
+              "3.1",
+              "3.2",
+              "3.3",
+              "4.1",
+              "4.2",
+              "5.1",
+              "5.2"
+            ]
+          },
+          "additionalProperties": {
+            "const": true
+          }
+        },
+        "quizzes": {
+          "type": "object",
+          "propertyNames": {
+            "enum": [
+              "m1_llm",
+              "m1_prompt",
+              "m1_tech",
+              "m2_mc",
+              "m2_class",
+              "m3_types",
+              "m3_g1",
+              "m3_adopt",
+              "m4_rai"
+            ]
+          },
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "answered": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              },
+              "correct": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 1000000
+              }
+            },
+            "required": [
+              "answered",
+              "correct"
+            ],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": [
+        "blocks",
+        "quizzes"
+      ],
+      "additionalProperties": false
+    },
+    "selfAssessment": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "problemFraming": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            },
+            "valueCase": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            },
+            "stakeholderCommunication": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            },
+            "techniqueSelection": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            },
+            "build": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            },
+            "evaluation": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            },
+            "dataReadiness": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            },
+            "responsibleAiFinops": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "survey": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "required": [
+            "nps",
+            "ratings",
+            "hoursPerWeek",
+            "open",
+            "consent",
+            "submittedAt"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "nps": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 10
+            },
+            "ratings": {
+              "type": "object",
+              "properties": {
+                "conteudo": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 5
+                },
+                "hands": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 5
+                },
+                "mentoria": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 5
+                },
+                "carga": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 5
+                },
+                "patroc": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 5
+                },
+                "demo": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 5
+                },
+                "prework": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 5
+                },
+                "conf": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 5
+                }
+              },
+              "required": [
+                "conteudo",
+                "hands",
+                "mentoria",
+                "carga",
+                "patroc",
+                "demo",
+                "prework",
+                "conf"
+              ],
+              "additionalProperties": false
+            },
+            "hoursPerWeek": {
+              "type": "number",
+              "minimum": 0
+            },
+            "open": {
+              "type": "object",
+              "properties": {
+                "melhor": {
+                  "type": "string"
+                },
+                "mudar": {
+                  "type": "string"
+                },
+                "aplicou": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "melhor",
+                "mudar",
+                "aplicou"
+              ],
+              "additionalProperties": false
+            },
+            "consent": {
+              "enum": [
+                "nao",
+                "anon",
+                "nome"
+              ]
+            },
+            "submittedAt": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

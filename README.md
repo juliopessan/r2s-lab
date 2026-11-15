@@ -27,7 +27,9 @@ Se o vídeo não aparecer na sua tela, [abra o arquivo MP4](https://raw.githubus
    ```
 
 3. Abra a pasta no VS Code.
-4. Siga o pre-work em `00-prework/`. Ele chega com a fase 2, em dezembro.
+4. Faça o pre-work: abra `00-prework/index.html` no navegador (duplo clique no arquivo ou a extensão de servidor local do VS Code). Ele leva um dia útil, e o seu andamento fica salvo no navegador.
+5. Quando quiser registrar o andamento, clique em **Exportar progresso**, coloque o arquivo gerado em `progress/`, faça o commit e o push no seu repositório privado. Detalhes em `progress/README.md`.
+6. No fim da turma, responda a pesquisa em `05-encerramento/pesquisa.html` e exporte de novo.
 
 Nada do que você faz aqui é enviado a ninguém até você fazer o push: o seu progresso é privado e só a
 coordenação o consolida.
@@ -39,7 +41,7 @@ A estrutura abaixo é a prevista; cada pasta chega na sua fase.
 ```
 r2s-lab/
 ├─ 00-prework/           pre-work de 8 horas, em 5 partes
-├─ 05-encerramento/      pesquisa, certificado, prova social e fotos
+├─ 05-encerramento/      pesquisa de satisfação (certificado, prova social e fotos chegam depois)
 ├─ templates/            A brief · B ADR · C pitch · D Social Impact Statement · E hearing
 ├─ starter-kits/         RAG · agente · avaliação · custo por transação
 ├─ squad/                caso, ADR, golden set e gates da sua squad
