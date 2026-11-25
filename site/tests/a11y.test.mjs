@@ -47,7 +47,17 @@ for (const scheme of ['light', 'dark']) test(`contrast meets AA (${scheme})`, as
       ['.video-links', 'body'],
       ['.video-links a', 'body'],
       ['.support', 'body'],
-      ['.beat h2', 'body'],
+      ['.secao h2', 'body'],
+      ['.lede', 'body'],
+      ['.principio p', '.principio'],
+      ['.etapa-nome', '.etapas li'],
+      ['.gate', '.gate'],
+      ['.numeros .n', '.numeros li'],
+      ['.numeros .l', '.numeros li'],
+      ['.final h2', '.final'],
+      ['.final p', '.final'],
+      ['.final .cta', '.final .cta'],
+      ['.topo-nav a', '.topo'],
       ['#marca .rs li:nth-child(2) .letter', '#marca .rs li'],
       ['#marca .rs li:nth-child(1) .letter', '#marca .rs li'],
       ['.word', '#marca .rs li'],
@@ -59,7 +69,7 @@ for (const scheme of ['light', 'dark']) test(`contrast meets AA (${scheme})`, as
       ['#cta-academy', '#cta-academy'],
       ['.levar .num', '.levar li'],
       ['.levar li span:last-child', '.levar li'],
-      ['.rehook p', 'body'],
+      ['.rehook-texto p', 'body'],
       ['.tema-btn', '.tema-btn'],
     ];
     for (const [fgSel, bgSel] of pairs) {
@@ -79,14 +89,10 @@ for (const scheme of ['light', 'dark']) test(`contrast meets AA (${scheme})`, as
 test('reduced motion shows everything without animation', async () => {
   await withPage({ reducedMotion: 'reduce' }, async (page, url) => {
     await page.goto(url, { waitUntil: 'load' });
-    const beats = await page.locator('.beat').evaluateAll((els) =>
-      els.map((e) => {
-        const s = getComputedStyle(e);
-        return [s.opacity, s.animationName, s.transitionDuration];
-      }),
-    );
-    assert.equal(beats.length, 8);
-    for (const [opacity, animationName, transitionDuration] of beats) {
+    const parts = await page.locator('.reveal').evaluateAll((els) =>
+      els.map((e) => { const s = getComputedStyle(e); return [s.opacity, s.animationName, s.transitionDuration]; }));
+    assert.ok(parts.length >= 6);
+    for (const [opacity, animationName, transitionDuration] of parts) {
       assert.equal(opacity, '1');
       assert.equal(animationName, 'none');
       assert.ok(['0s', ''].includes(transitionDuration), `transition ${transitionDuration}`);
@@ -95,30 +101,22 @@ test('reduced motion shows everything without animation', async () => {
   });
 });
 
-test('with motion allowed, beats become visible when scrolled into view', async () => {
+test('with motion allowed, sections become visible when scrolled into view', async () => {
   await withPage({ reducedMotion: 'no-preference' }, async (page, url) => {
     await page.goto(url, { waitUntil: 'load' });
-    for (let i = 1; i <= 8; i++) {
-      const beat = page.locator(`.beat[data-beat="${i}"]`);
-      await beat.scrollIntoViewIfNeeded();
-      await page.waitForFunction(
-        (n) => getComputedStyle(document.querySelector(`.beat[data-beat="${n}"]`)).opacity === '1',
-        i,
-        { timeout: 5000 },
-      );
+    const ids = await page.locator('.reveal').evaluateAll((els) => els.map((e) => e.id));
+    for (const id of ids) {
+      await page.locator('#' + id).scrollIntoViewIfNeeded();
+      await page.waitForFunction((n) => getComputedStyle(document.getElementById(n)).opacity === '1', id, { timeout: 5000 });
     }
   });
 });
 
-test('no JavaScript still shows all beats', async () => {
+test('no JavaScript still shows every section', async () => {
   await withPage({ javaScriptEnabled: false }, async (page, url) => {
     await page.goto(url, { waitUntil: 'load' });
-    const headings = page.locator('.beat h2');
-    assert.equal(await headings.count(), 8);
-    for (let i = 0; i < 8; i++) {
-      assert.ok(await headings.nth(i).isVisible());
-      assert.equal(await headings.nth(i).evaluate((e) => getComputedStyle(e.closest('.beat')).opacity), '1');
-    }
+    const opacities = await page.locator('.reveal').evaluateAll((els) => els.map((e) => getComputedStyle(e).opacity));
+    assert.ok(opacities.every((o) => o === '1'));
   });
 });
 
@@ -134,7 +132,7 @@ test('keyboard: skip link is first and focus is visible', async () => {
     assert.equal(await page.evaluate(() => document.activeElement.id), 'conteudo');
 
     await page.goto(url, { waitUntil: 'load' });
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < 14; i++) {
       await page.keyboard.press('Tab');
       if (await page.evaluate(() => document.activeElement.id === 'teaser')) break;
     }

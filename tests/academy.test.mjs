@@ -74,7 +74,7 @@ test('each card shows type, lessons, quizzes and duration', async () => {
       'Curso · 2 lições · 1 h',
     ]);
     assert.deepEqual(await rows(page, '#cursos li.curso .curso-titulo'), ['GenAI na prática', 'Do pedido ao problema', 'Valor e custo', 'Responsabilidade e decisão', 'Exercício final']);
-    assert.equal(await page.locator('#cursos li.curso .badge').count(), 5, 'every card carries its badge art');
+    assert.equal(await page.locator('#cursos li.curso .ficha-badge').count(), 5, 'every card carries its badge tile');
   });
 });
 
@@ -130,8 +130,10 @@ test('the badge collection shows earned and locked badges', async () => {
     await seed(page, { '5.1': true, '5.2': true });
     await page.goto(url + HOME, { waitUntil: 'load' });
     assert.equal(await text(page, '#selos-resumo'), '1 de 11 selos.');
-    assert.deepEqual(await rows(page, '#selos li.selo.ganho'), ['Exercício final Concluído']);
-    assert.match(await text(page, '#selos li.selo:not(.ganho) >> nth=0'), /Bloqueado/);
+    assert.deepEqual(await rows(page, '#selos li.selo.ganho .selo-titulo'), ['Exercício final']);
+    assert.match(await text(page, '#selos li.selo.ganho .selo-legenda'), /^Emitido em \d{1,2} de [a-zç]+ de \d{4}$/);
+    assert.equal(await text(page, '#selos li.selo:not(.ganho) >> nth=0 >> .selo-legenda'), 'Faltam 3 lições');
+    assert.equal(await page.locator('#selos li.selo:not(.ganho) .ficha.bloqueada').count(), 10, 'locked badges are the grey tile');
   });
 });
 
@@ -493,7 +495,7 @@ test('squad lessons go to the academy section of the exported progress, never to
     await page.goto(url + COURSE('s2'), { waitUntil: 'load' });
     assert.equal(await text(page, '#cta'), 'Revisar');
     await page.goto(url + HOME, { waitUntil: 'load' });
-    assert.deepEqual(await rows(page, '#selos li.selo.ganho .selo-titulo'), ['Discover: ouvir antes de resolver']);
+    assert.deepEqual((await page.locator('#selos li.selo.ganho .selo-titulo').allTextContents()), ['Discover: ouvir antes de resolver']);
   });
 });
 
@@ -662,9 +664,47 @@ test('the Avanade re-skin: Segoe UI, light headings and an orange primary button
     assert.equal(m.h1, '300');
     assert.equal(m.btn, 'rgb(180, 60, 20)');
     assert.equal(m.btnFg, 'rgb(255, 255, 255)');
+    const theme = readFileSync(path.join(root, 'css', 'theme.css'), 'utf8');
+    assert.match(theme, /--ava-orange:#FF5800/);
     const css = readFileSync(path.join(root, 'css', 'academy.css'), 'utf8');
-    assert.match(css, /--ava-orange:#FF5800/);
+    assert.ok(!/--bg:|--fg:|--cta-bg:/.test(css), 'academy.css does not redefine the shared theme');
     assert.ok(!/Iowan|Palatino|Georgia/.test(css), 'no serif display font left');
+  });
+});
+
+/* ---------- fichas (formato da página de selos da Claude Academy) ---------- */
+
+test('a tile is a pastel polygon with the course icon and the title centred inside', async () => {
+  await withPage({}, async (page, url) => {
+    await page.goto(url + HOME, { waitUntil: 'load' });
+    const m = await page.evaluate(() => {
+      const svg = document.querySelector('#cursos li.curso .ficha');
+      const t = svg.querySelector('.ficha-titulo');
+      const tb = t.getBBox();
+      const ib = svg.querySelector('.selo-icone').getBBox();
+      return { lines: [...t.querySelectorAll('tspan')].map((x) => x.textContent), tcx: tb.x + tb.width / 2, tw: tb.width, icx: ib.x + ib.width / 2, fill: svg.querySelector('.ficha-forma').getAttribute('fill') };
+    });
+    assert.deepEqual(m.lines, ['GenAI na', 'prática']);
+    assert.ok(Math.abs(m.tcx - 160) < 1, `title centre ${m.tcx}`);
+    assert.ok(m.tw <= 253, `title width ${m.tw}`);
+    assert.ok(Math.abs(m.icx) < 1, `icon centre ${m.icx}`);
+    assert.equal(m.fill, '#FFE0CC');
+  });
+});
+
+test('titles break into balanced lines', async () => {
+  const art = (await import('../lib/badge-art.js')).default;
+  assert.deepEqual(art.quebrarTitulo('Valor e custo'), ['Valor e custo']);
+  assert.deepEqual(art.quebrarTitulo('Build, Evaluate e o G3'), ['Build, Evaluate', 'e o G3']);
+  assert.deepEqual(art.quebrarTitulo('Discover: ouvir antes de resolver'), ['Discover:', 'ouvir antes', 'de resolver']);
+});
+
+test('every course tile and the course hero use the same tile', async () => {
+  await withPage({}, async (page, url) => {
+    await page.goto(url + HOME, { waitUntil: 'load' });
+    assert.equal(await page.locator('#cursos .ficha, #cursos-squad .ficha').count(), 11);
+    await page.goto(url + COURSE('s3'), { waitUntil: 'load' });
+    assert.equal(await page.locator('.faixa .ficha').count(), 1);
   });
 });
 
@@ -675,7 +715,7 @@ test('the motion layer adds the hero illustration, card plates and lesson anchor
     await page.goto(url + HOME, { waitUntil: 'load' });
     await page.waitForSelector('.m-hero-art');
     assert.equal(await page.locator('.m-hero-art').count(), 1);
-    assert.equal(await page.locator('.curso-capa .m-blob').count(), 11);
+    assert.equal(await page.locator('.curso-capa .m-blob').count(), 0, 'the tile is already the plate');
     await page.goto(url + LESSON('p1', '1.1'), { waitUntil: 'load' });
     await page.waitForSelector('.m-ancora');
     assert.ok(await page.locator('.conteudo-licao .m-ancora').count() >= 2);
