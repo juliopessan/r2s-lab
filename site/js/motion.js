@@ -225,6 +225,134 @@ export function montarEtapas(ol, animar, observar) {
   return { seek, dur };
 }
 
+/** Toca uma linha do tempo seek(t) uma vez ao entrar na tela; de novo ao passar o mouse. */
+function tocador(alvo, cena, animar, observar) {
+  if (!animar) { cena.seek(cena.dur); alvo.dataset.estado = 'final'; return; }
+  cena.seek(0);
+  let raf = 0;
+  const tocar = () => {
+    cancelAnimationFrame(raf);
+    const inicio = performance.now();
+    alvo.dataset.estado = 'tocando';
+    const quadro = (agora) => {
+      const t = (agora - inicio) / 1000;
+      cena.seek(Math.min(t, cena.dur));
+      if (t < cena.dur) raf = requestAnimationFrame(quadro); else alvo.dataset.estado = 'final';
+    };
+    raf = requestAnimationFrame(quadro);
+  };
+  observar(alvo, tocar);
+  alvo.addEventListener('mouseenter', () => { if (alvo.dataset.estado === 'final') tocar(); });
+}
+
+function letras(el) {
+  const nos = [...el.childNodes];
+  const out = [];
+  nos.forEach((n) => {
+    if (n.nodeType !== 3) return;
+    const frag = document.createDocumentFragment();
+    for (const ch of n.textContent) {
+      const s = document.createElement('span');
+      s.className = 'l';
+      s.textContent = ch;
+      frag.appendChild(s);
+      out.push(s);
+    }
+    el.replaceChild(frag, n);
+  });
+  return out;
+}
+
+/* Chamada final: "Menos curso." chega grande, encolhe e é riscada; "Mais lab" sobe letra a letra e o
+ * ponto laranja cai com mola até virar o ponto final. Saída e entrada com tempos separados. */
+export function montarKin(kin, animar, observar) {
+  if (!kin || kin.dataset.mo) return null;
+  kin.dataset.mo = '1';
+  if (!animar) { kin.dataset.estado = 'final'; return null; }
+  const menos = kin.querySelector('.kin-menos'), mais = kin.querySelector('.kin-mais'), ponto = kin.querySelector('.kin-ponto');
+  const lm = letras(menos), lM = letras(mais);
+  const cena = {
+    dur: 3.4,
+    seek(t) {
+      const cabe = Math.max(1, Math.min(2.2, (kin.clientWidth || 600) / Math.max(1, menos.offsetWidth)));
+      lm.forEach((l, i) => {
+        const p = spring(t - 0.1 - i * 0.028);
+        l.style.transform = `translateY(${(0.7 * (1 - p)).toFixed(3)}em)`;
+        l.style.opacity = String(clamp(p * 1.4));
+      });
+      const encolhe = spring(t - 1.15, 0.6, 11);
+      menos.style.transform = `scale(${lerp(cabe, 1, encolhe).toFixed(3)})`;
+      menos.style.setProperty('--risco', seg(t, 1.55, 1.95).toFixed(3));
+      lM.forEach((l, i) => {
+        const p = spring(t - 1.7 - i * 0.05, 0.45, 14);
+        l.style.transform = `translateY(${(0.55 * (1 - p)).toFixed(3)}em)`;
+        l.style.opacity = t < 1.7 + i * 0.05 ? '0' : String(clamp(p * 1.6));
+      });
+      const q = spring(t - 2.35, 0.3, 15);
+      ponto.style.opacity = t < 2.35 ? '0' : '1';
+      ponto.style.transform = `translateY(${(-2.2 * (1 - q)).toFixed(3)}em)`;
+    },
+  };
+  tocador(kin, cena, animar, observar);
+  return cena;
+}
+
+/* Hub dos papéis: cinco pessoas em volta da squad; a cada gate os papéis giram uma posição com mola.
+ * O ponto laranja é você: a cada gate, um papel diferente. */
+export function montarHub(box, animar, observar) {
+  if (!box || box.dataset.mo) return null;
+  box.dataset.mo = '1';
+  const lista = box.parentElement.querySelector('.roles');
+  const PAPEIS = lista ? [...lista.querySelectorAll('li')].map((li) => li.textContent.trim()) : [];
+  if (PAPEIS.length !== 5) return null;
+  const svg = document.createElementNS(NS, 'svg');
+  svg.setAttribute('viewBox', '0 0 520 268');
+  svg.setAttribute('aria-hidden', 'true');
+  svg.setAttribute('focusable', 'false');
+  box.appendChild(svg);
+  lista.classList.add('com-hub');
+  const CX = 260, CY = 124, RX = 182, RY = 96, PX = 112, PY = 56;
+  const ang = (k) => -Math.PI / 2 + (k * 2 * Math.PI) / 5;
+  for (let i = 0; i < 5; i++) {
+    const a = ang(i);
+    mk(svg, 'path', { class: 'hub-elo', d: `M${CX} ${CY}Q${CX + 0.5 * RX * Math.cos(a + 0.35)} ${CY + 0.5 * RY * Math.sin(a + 0.35)} ${CX + PX * Math.cos(a)} ${CY + PY * Math.sin(a)}` });
+  }
+  mk(svg, 'circle', { class: 'hub-centro', cx: CX, cy: CY, r: 32 });
+  const gate = mk(svg, 'text', { class: 'hub-gate', x: CX, y: CY + 2, 'text-anchor': 'middle' }, 'G0');
+  mk(svg, 'text', { class: 'hub-sub', x: CX, y: CY + 16, 'text-anchor': 'middle' }, 'squad');
+  for (let i = 0; i < 5; i++) {
+    const a = ang(i);
+    mk(svg, 'circle', { class: 'hub-pessoa' + (i === 0 ? ' voce' : ''), cx: CX + PX * Math.cos(a), cy: CY + PY * Math.sin(a), r: i === 0 ? 7 : 5.5 });
+  }
+  const pilulas = PAPEIS.map((nome) => {
+    const g = mk(svg, 'g', { class: 'hub-papel' });
+    const w = nome.length * 7.7 + 24;
+    mk(g, 'rect', { x: -w / 2, y: -13, width: w, height: 26, rx: 13 });
+    mk(g, 'text', { x: 0, y: 4.5, 'text-anchor': 'middle' }, nome);
+    return g;
+  });
+  mk(svg, 'text', { class: 'hub-legenda', x: CX, y: 262, 'text-anchor': 'middle' }, '[ você passa por mais de uma função ]');
+  const PASSO = 0.95, T0 = 0.7;
+  const cena = {
+    dur: T0 + 4 * PASSO + 0.8,
+    seek(t) {
+      let k = 0, g = 0;
+      for (let n = 1; n <= 4; n++) { const s = spring(t - T0 - (n - 1) * PASSO, 0.42, 12); k += s; if (s > 0.5) g = n; }
+      gate.textContent = 'G' + g;
+      pilulas.forEach((p, i) => {
+        const a = ang(i + k);
+        const x = CX + RX * Math.cos(a), y = CY + RY * Math.sin(a);
+        const slot = ((Math.round(i + k) % 5) + 5) % 5;
+        p.classList.toggle('on', slot === 0);
+        const entra = spring(t - 0.05 - i * 0.07);
+        p.setAttribute('transform', `translate(${x.toFixed(2)} ${y.toFixed(2)}) scale(${Math.max(0, entra).toFixed(3)})`);
+      });
+    },
+  };
+  tocador(box, cena, animar, observar);
+  return cena;
+}
+
 export const CENAS = { valor: cenaValor, barato: cenaBarato, medir: cenaMedir, proteger: cenaProteger };
 
 /** Monta a cena no card; com movimento, toca ao entrar na tela e de novo ao passar o mouse. */
@@ -285,5 +413,7 @@ export function enableMotion(doc = document) {
   const observar = (el, fn) => { el.__tocar = fn; io.observe(el); };
   doc.querySelectorAll('[data-cena]').forEach((card) => montarCena(card, animar, observar));
   montarEtapas(doc.querySelector('#como .etapas'), animar, observar);
+  montarHub(doc.querySelector('[data-hub]'), animar, observar);
+  montarKin(doc.querySelector('#final .kin'), animar, observar);
   doc.querySelectorAll('.numeros .n, .levar .num').forEach((el) => contar(el, animar, observar));
 }
