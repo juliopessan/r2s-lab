@@ -668,6 +668,33 @@ test('the Avanade re-skin: Segoe UI, light headings and an orange primary button
   });
 });
 
+/* ---------- camada de movimento ---------- */
+
+test('the motion layer adds the hero illustration, card plates and lesson anchors, and stays off with reduced motion', async () => {
+  await withPage({ viewport: { width: 1280, height: 900 } }, async (page, url) => {
+    await page.goto(url + HOME, { waitUntil: 'load' });
+    await page.waitForSelector('.m-hero-art');
+    assert.equal(await page.locator('.m-hero-art').count(), 1);
+    assert.equal(await page.locator('.curso-capa .m-blob').count(), 11);
+    await page.goto(url + LESSON('p1', '1.1'), { waitUntil: 'load' });
+    await page.waitForSelector('.m-ancora');
+    assert.ok(await page.locator('.conteudo-licao .m-ancora').count() >= 2);
+    assert.equal(await page.locator('.m-leitura').count(), 1);
+  });
+  await withPage({ reducedMotion: 'reduce' }, async (page, url) => {
+    await page.goto(url + HOME, { waitUntil: 'load' });
+    assert.equal(await page.evaluate(() => document.documentElement.classList.contains('m-on')), false, 'no scroll reveal with reduced motion');
+  });
+});
+
+test('the finish burst fires when a lesson is marked complete', async () => {
+  await withPage({}, async (page, url) => {
+    await page.goto(url + LESSON('p2', '2.1'), { waitUntil: 'load' });
+    await page.click('#concluir');
+    assert.ok(await page.locator('.m-estrela').count() > 0);
+  });
+});
+
 /* ---------- qualidade ---------- */
 
 const PAGES = [HOME, COURSE('p1'), LESSON('p1', '1.3'), LESSON('p4', '4.2'), BADGE('p5'), BADGE('p4'), COURSE('s4'), LESSON('s1', 's1.1'), LESSON('s1', 's1.2'), 'academy/jornada.html'];
@@ -684,7 +711,7 @@ test('no page loads anything external, scrolls sideways at 360 px or throws', as
       assert.deepEqual(page.errors || [], [], p);
     });
   }
-  for (const f of ['academy/index.html', 'academy/curso.html', 'academy/licao.html', 'academy/selo.html', 'academy/jornada.html', 'js/academy.js', 'css/academy.css']) {
+  for (const f of ['academy/index.html', 'academy/curso.html', 'academy/licao.html', 'academy/selo.html', 'academy/jornada.html', 'js/academy.js', 'js/academy-motion.js', 'css/academy.css', 'css/academy-motion.css']) {
     const t = readFileSync(path.join(root, f), 'utf8');
     assert.ok(!t.includes('Requirement-to-Solution'), f);
     assert.ok(!/innerHTML\s*=/.test(t), `${f} writes HTML from strings`);
@@ -709,6 +736,7 @@ test('the theme toggle switches light and dark and remembers it', async () => {
     await page.goto(url + HOME, { waitUntil: 'load' });
     const before = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
     await page.click('#tema-toggle');
+    await page.waitForTimeout(500); // a troca de tema tem uma transição curta
     const after = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
     assert.notEqual(before, after);
     const theme = await page.evaluate(() => document.documentElement.dataset.theme);

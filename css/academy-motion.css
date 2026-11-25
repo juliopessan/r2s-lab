@@ -1,0 +1,104 @@
+/* R2S Academy · camada de motion e ilustração
+ * Segue o ritmo medido no Claude Academy: micro-transições curtas, painéis de ~300 ms,
+ * ease-out-quart (.165,.84,.44,1), entrada com deslocamento pequeno, skeleton/progress sweep.
+ * Carregar DEPOIS de academy.css. Tudo que se move fica em prefers-reduced-motion:no-preference. */
+
+:root{--m-ease:cubic-bezier(.165,.84,.44,1);--m-snap:cubic-bezier(.4,0,.2,1)}
+
+/* ---------- Estático (sempre visível) ---------- */
+.hero{position:relative}
+.m-hero-art{display:none;pointer-events:none}
+.m-hero-art .m-p{fill:var(--surface);stroke:var(--line)}
+.m-hero-art .m-chip rect{fill:var(--soft);stroke:var(--line)}
+.m-hero-art .m-chip text{fill:var(--fg);font:600 13px var(--sans)}
+.m-hero-art .m-lbl{fill:var(--muted);font:12px var(--sans)}
+.m-hero-art .m-trk{fill:var(--soft)}
+.m-hero-art .m-fill{fill:var(--field)}
+.m-hero-art .m-fill.top{fill:var(--brand)}
+.m-hero-art .m-pct{fill:var(--fg);font:600 12px var(--sans);font-variant-numeric:tabular-nums}
+.m-hero-art .m-caret{fill:var(--brand)}
+.m-hero-art .m-link{fill:none;stroke:var(--field);stroke-width:1.2;stroke-dasharray:3 4}
+@media (min-width:1180px){
+  .m-hero-art{display:block;position:absolute;right:0;top:48px;width:360px}
+}
+
+.curso-capa{position:relative;overflow:hidden}
+.m-blob{position:absolute;inset:0;margin:auto;width:140px;height:140px;z-index:0;pointer-events:none;overflow:visible}
+.m-blob polygon{fill:color-mix(in srgb,var(--surface) 55%,transparent);transform-box:fill-box;transform-origin:center}
+.curso-capa .badge{position:relative;z-index:1}
+
+.m-leitura{position:fixed;inset:0 0 auto 0;height:3px;z-index:40;background:var(--brand);transform:scaleX(0);transform-origin:0 50%;pointer-events:none}
+
+.conteudo-licao :is(h2,h3){position:relative;scroll-margin-top:84px}
+.m-ancora{position:absolute;left:-1.15em;top:0;color:var(--muted);text-decoration:none;font-family:var(--sans);font-size:.8em;opacity:0}
+.conteudo-licao :is(h2,h3):hover .m-ancora,.m-ancora:focus-visible{opacity:1}
+
+.m-estrela{position:fixed;left:0;top:0;z-index:60;pointer-events:none;fill:var(--brand)}
+
+@media print{html.m-on .mrev{opacity:1!important;transform:none!important}}
+
+/* ---------- Com movimento ---------- */
+@media (prefers-reduced-motion:no-preference){
+  @view-transition{navigation:auto}
+  .top{view-transition-name:topo}
+  ::view-transition-old(root){animation:m-sai .16s var(--m-snap) both}
+  ::view-transition-new(root){animation:m-entra .26s var(--m-ease) both}
+
+  html{scroll-behavior:smooth}
+
+  /* revelação por scroll (a classe m-on só entra se o JS funcionar) */
+  html.m-on .mrev{opacity:0;transform:translateY(14px)}
+  html.m-on .mrev.in{opacity:1;transform:none;transition:opacity .55s var(--m-ease) var(--md,0ms),transform .55s var(--m-ease) var(--md,0ms)}
+  html.m-on .curso.cair{animation:none}
+
+  /* cartões de curso */
+  .curso a{transition:transform .28s var(--m-ease),box-shadow .28s var(--m-ease),border-color .15s ease}
+  .curso a:hover{transform:translateY(-3px);box-shadow:0 14px 28px -14px rgba(0,0,0,.32)}
+  .curso a:active{transform:translateY(-1px);transition-duration:.08s}
+  .m-blob{transition:transform .6s var(--m-ease)}
+  .m-blob polygon{animation:m-flutua 9s ease-in-out infinite alternate;animation-delay:calc(var(--i,0) * -1.3s)}
+  .curso-capa .badge{transition:transform .45s var(--m-ease)}
+  .curso a:hover .m-blob{transform:rotate(9deg) scale(1.08)}
+  .curso a:hover .curso-capa .badge{transform:translateY(-3px) scale(1.05)}
+
+  .tema button{transition:transform .22s var(--m-ease),border-color .15s ease,background-color .15s ease}
+  .tema button:hover{transform:translateY(-2px)}
+  .licao a:hover{transform:translateX(3px)}
+  .btn:active,.btn-sec:active{transform:scale(.97);transition-duration:.06s}
+  .sumario li a{transition:color .15s ease,border-color .2s ease,padding-left .25s var(--m-ease)}
+  .sumario li a.ativo{padding-left:16px}
+
+  /* progresso: faixa de brilho que corre pela barra */
+  .barra i{position:relative;overflow:hidden}
+  .barra i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent);transform:translateX(-100%);animation:m-varre 2.8s var(--m-ease) 1.2s infinite}
+
+  /* painel Explorar */
+  .menu-explorar:not([hidden]){transform-origin:top left;animation:m-painel .3s var(--m-ease) both}
+
+  /* tema claro/escuro */
+  #tema-toggle svg{transition:transform .45s var(--m-ease)}
+  #tema-toggle:hover svg{transform:rotate(-18deg)}
+  #tema-toggle:active svg{transform:rotate(-40deg) scale(.9)}
+  html.m-tema *,html.m-tema *::before,html.m-tema *::after{transition:background-color .35s ease,color .35s ease,border-color .35s ease,fill .35s ease,stroke .35s ease!important}
+
+  .brand-mark{transition:transform .6s var(--m-ease)}
+  .brand:hover .brand-mark{transform:rotate(72deg)}
+
+  /* ilustração do hero: tokens entram um a um, barras de probabilidade crescem */
+  .m-hero-art{animation:m-entra .8s var(--m-ease) .25s both}
+  .m-hero-art .m-chip{animation:m-ficha 9s var(--m-ease) infinite both;animation-delay:calc(.5s + var(--i) * .45s);transform-box:fill-box}
+  .m-hero-art .m-bar{transform-box:fill-box;transform-origin:left center;animation:m-barra 9s var(--m-ease) infinite both;animation-delay:calc(3s + var(--i) * .25s)}
+  .m-hero-art .m-pct,.m-hero-art .m-lbl.m-cand{animation:m-ficha 9s var(--m-ease) infinite both;animation-delay:calc(3.1s + var(--i) * .25s)}
+  .m-hero-art .m-caret{animation:m-pisca 1s steps(2,start) infinite}
+  .m-hero-art .m-link{stroke-dashoffset:0;animation:m-traco 9s linear infinite}
+}
+
+@keyframes m-entra{from{opacity:0;transform:translateY(6px)}}
+@keyframes m-sai{to{opacity:0}}
+@keyframes m-painel{from{opacity:0;transform:translateY(-4px) scale(.985)}}
+@keyframes m-flutua{from{transform:translateY(-2px) rotate(-2deg)}to{transform:translateY(3px) rotate(3deg)}}
+@keyframes m-varre{0%{transform:translateX(-100%)}60%,100%{transform:translateX(100%)}}
+@keyframes m-ficha{0%{opacity:0;transform:translateY(6px)}6%,86%{opacity:1;transform:none}96%,100%{opacity:0}}
+@keyframes m-barra{0%{transform:scaleX(0)}8%,86%{transform:scaleX(1)}96%,100%{transform:scaleX(0)}}
+@keyframes m-pisca{to{opacity:0}}
+@keyframes m-traco{to{stroke-dashoffset:-28}}
