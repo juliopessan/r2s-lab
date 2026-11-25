@@ -94,7 +94,7 @@ test('start section follows the last beat and the footer follows main', async ()
     const order = await page.evaluate(() => {
       const after = (a, b) => Boolean(a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING);
       return [
-        after(document.querySelector('.beat[data-beat="8"]'), document.querySelector('#comecar')),
+        after(document.querySelector('#final'), document.querySelector('#comecar')),
         after(document.querySelector('main'), document.querySelector('footer')),
       ];
     });

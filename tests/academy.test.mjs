@@ -662,8 +662,10 @@ test('the Avanade re-skin: Segoe UI, light headings and an orange primary button
     assert.equal(m.h1, '300');
     assert.equal(m.btn, 'rgb(180, 60, 20)');
     assert.equal(m.btnFg, 'rgb(255, 255, 255)');
+    const theme = readFileSync(path.join(root, 'css', 'theme.css'), 'utf8');
+    assert.match(theme, /--ava-orange:#FF5800/);
     const css = readFileSync(path.join(root, 'css', 'academy.css'), 'utf8');
-    assert.match(css, /--ava-orange:#FF5800/);
+    assert.ok(!/--bg:|--fg:|--cta-bg:/.test(css), 'academy.css does not redefine the shared theme');
     assert.ok(!/Iowan|Palatino|Georgia/.test(css), 'no serif display font left');
   });
 });

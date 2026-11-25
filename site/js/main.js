@@ -46,7 +46,7 @@ export function enableReveal() {
     },
     { threshold: 0.15 },
   );
-  document.querySelectorAll('.beat').forEach((beat) => observer.observe(beat));
+  document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 }
 
 /** Tema claro ou escuro pelo botão; a escolha vale também na Academy (mesma chave). */

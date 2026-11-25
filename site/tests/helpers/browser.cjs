@@ -5,6 +5,9 @@ const path = require('node:path');
 const { chromium } = require('playwright');
 
 const SITE_ROOT = path.resolve(__dirname, '..', '..');
+/* A landing usa o tema compartilhado (../css/theme.css): o servidor serve a raiz do repositório e a
+ * landing abre em /site/, como em produção. */
+const REPO_ROOT = path.resolve(SITE_ROOT, '..');
 const TYPES = {
   '.html': 'text/html; charset=utf-8',
   '.css': 'text/css; charset=utf-8',
@@ -22,7 +25,8 @@ const TYPES = {
 function handler(root) {
   return (req, res) => {
     const urlPath = decodeURIComponent(new URL(req.url, 'http://x').pathname);
-    const rel = urlPath === '/' ? 'index.html' : urlPath.replace(/^\/+/, '');
+    const clean = urlPath.replace(/^\/+/, '');
+    const rel = clean === '' || clean.endsWith('/') ? clean + 'index.html' : clean;
     const file = path.resolve(root, rel);
     if (!file.startsWith(root + path.sep) || !fs.existsSync(file) || !fs.statSync(file).isFile()) {
       res.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' });
@@ -50,7 +54,7 @@ function handler(root) {
 }
 
 /** Static server for the site. Resolves with the base url and a close function. */
-function startServer(root = SITE_ROOT) {
+function startServer(root = REPO_ROOT) {
   return new Promise((resolve) => {
     const server = http.createServer(handler(path.resolve(root)));
     server.listen(0, '127.0.0.1', () => {
@@ -85,7 +89,7 @@ async function withPage(opts, fn) {
       if (m.type() === 'error') page.errors.push(m.text());
     });
     page.on('pageerror', (e) => page.errors.push(String(e)));
-    await fn(page, server.url);
+    await fn(page, server.url + 'site/');
   } finally {
     await browser.close();
     await server.close();
