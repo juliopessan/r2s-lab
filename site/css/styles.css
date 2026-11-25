@@ -106,6 +106,24 @@ main {
 .principio h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; }
 .principio p { margin: 0; color: var(--muted); }
 
+/* sistema do ponto laranja (js/motion.js): cenas nos cards das regras. Uma cor de acento, sem gradiente. */
+.mo { display: block; width: 100%; height: auto; margin: 0 0 1.1rem; overflow: visible; }
+.mo text { font-family: var(--sans); font-size: 12px; fill: var(--muted); }
+.mo .mo-ink { fill: var(--fg); font-weight: 600; }
+.mo .mo-dot { fill: var(--brand); }
+.mo .mo-linha { fill: none; stroke: var(--line); stroke-width: 1.5; }
+.mo .mo-alvo { fill: none; stroke: var(--field); stroke-width: 1.2; stroke-dasharray: 3 4; }
+.mo .mo-curva { fill: none; stroke: var(--fg); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.mo .mo-barra { fill: var(--line); }
+.mo .mo-barra.on { fill: var(--brand); }
+.mo .mo-caso { fill: var(--line); }
+.mo .mo-ok { fill: var(--field); }
+.mo .mo-falha { fill: none; stroke: var(--brand-text); stroke-width: 1.5; }
+.mo .mo-chip rect { fill: var(--cta-bg); }
+.mo .mo-chip text { fill: var(--cta-fg); font-weight: 700; }
+.mo .mo-forma { fill: var(--brand); }
+.mo .mo-forma-txt { fill: #000; font-size: 13px; font-weight: 700; }
+
 /* papéis e decisão */
 .dupla { display: grid; gap: 3rem; grid-template-columns: minmax(0, 1fr); }
 @media (min-width: 960px) { .dupla { grid-template-columns: 1fr 1fr; } }
