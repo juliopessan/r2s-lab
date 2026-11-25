@@ -8,7 +8,6 @@
   var store = window.R2SStore;
   var C = window.R2S_ACADEMY;
   var SQ = window.R2S_ACADEMY_SQUAD || { courses: [], lessons: {} };
-  var THEME_KEY = 'r2s-academy-theme';
   var UI_KEY = 'r2s-academy-ui-v1';
   var SVG = 'http://www.w3.org/2000/svg';
 
@@ -18,14 +17,7 @@
   function ui() { try { return JSON.parse(lsGet(UI_KEY) || '{}') || {}; } catch (e) { return {}; } }
   function setUi(patch) { var u = ui(); Object.keys(patch).forEach(function (k) { u[k] = patch[k]; }); lsSet(UI_KEY, JSON.stringify(u)); }
 
-  /* ---------- tema ---------- */
-  var root = document.documentElement;
-  var savedTheme = lsGet(THEME_KEY);
-  if (savedTheme === 'light' || savedTheme === 'dark') root.dataset.theme = savedTheme;
-  function effectiveTheme() {
-    if (root.dataset.theme) return root.dataset.theme;
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
-  }
+  /* ---------- tema: js/tema.js cuida do botão e da regra (a mesma em todas as páginas) ---------- */
 
   /* ---------- catálogo ---------- */
   var TEMAS = [
@@ -281,11 +273,6 @@
   function alinharTudo() { ART.alinhar(document); }
 
   /* ---------- cabeçalho e rodapé ---------- */
-  function trocarTema() {
-    var next = effectiveTheme() === 'dark' ? 'light' : 'dark';
-    root.dataset.theme = next;
-    lsSet(THEME_KEY, next);
-  }
   /* Os mesmos eixos no menu Explorar e no rodapé: tema e tipo. */
   function eixos() {
     return [
@@ -305,9 +292,6 @@
     return col;
   }
   function chrome() {
-    var toggle = $('#tema-toggle');
-    if (toggle) toggle.addEventListener('click', trocarTema);
-
     var botao = $('#explorar');
     var menu = $('#menu-explorar');
     if (botao && menu) {
@@ -333,7 +317,7 @@
     var tb = el('button', 'rodape-tema', 'Alternar tema claro e escuro');
     tb.type = 'button';
     tb.id = 'tema-toggle-rodape';
-    tb.addEventListener('click', trocarTema);
+    tb.setAttribute('data-tema-toggle', '');
     pref.appendChild(tb);
     pref.appendChild(el('p', null, 'Idioma: português (Brasil)'));
     inner.appendChild(pref);

@@ -1,6 +1,6 @@
-/* R2S Lab — tema único da plataforma (landing e Academy). Um padrão só:
+/* R2S Lab — tema único da plataforma (landing e Academy). Um padrão só, em todas as páginas (landing, Academy, pre-work, pesquisa, certificado; o painel tem cópia):
  *   1. sem escolha, segue o sistema (prefers-color-scheme);
- *   2. o botão de tema grava a escolha (localStorage "r2s-academy-theme") e ela vale em todas as páginas;
+ *   2. o botão de tema (js/tema.js) troca o tema que está na tela e grava a escolha (localStorage "r2s-academy-theme") e ela vale em todas as páginas;
  *   3. as mesmas cores nos dois lados. Tokens em duas camadas: primitivos Avanade e, depois, papéis.
  * Contraste conferido nos testes: texto em AA nos dois temas; o botão principal é Flame no claro
  * (branco sobre #B43C14 dá 6,1:1) e Orange no escuro (preto sobre #FF5800). */
@@ -40,12 +40,19 @@
   --shadow-lg:0 18px 40px -18px rgba(0,0,0,.8);
   color-scheme:dark}
 
-/* botão de tema: o mesmo componente nas duas partes. Mostra a lua no claro e o sol no escuro. */
-.tema-btn{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer;padding:0}
+/* botão de tema: um interruptor com o sol à esquerda e a lua à direita. O círculo laranja fica sobre o
+ * tema ATIVO, então a tela e o botão sempre dizem a mesma coisa. A posição segue a mesma regra das cores. */
+.tema-btn{position:relative;display:inline-flex;align-items:center;justify-content:space-between;flex:none;width:64px;height:34px;padding:0 8px;border-radius:999px;border:1px solid var(--line);background:var(--soft);color:var(--muted);cursor:pointer}
 .tema-btn:hover{border-color:var(--field)}
-.tema-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tema-btn::before{content:"";position:absolute;top:2px;left:2px;width:28px;height:28px;border-radius:50%;background:var(--brand)}
+.tema-btn svg{position:relative;z-index:1;width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .tema-btn .lua path{fill:currentColor;stroke:none}
-.tema-btn .sol{display:none}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tema-btn .lua{display:none}:root:not([data-theme="light"]) .tema-btn .sol{display:inline}}
-:root[data-theme="dark"] .tema-btn .lua{display:none}
-:root[data-theme="dark"] .tema-btn .sol{display:inline}
+.tema-btn .sol{order:-1;color:var(--ava-black)}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .tema-btn::before{transform:translateX(30px)}
+  :root:not([data-theme="light"]) .tema-btn .sol{color:var(--muted)}
+  :root:not([data-theme="light"]) .tema-btn .lua{color:var(--ava-black)}}
+:root[data-theme="dark"] .tema-btn::before{transform:translateX(30px)}
+:root[data-theme="dark"] .tema-btn .sol{color:var(--muted)}
+:root[data-theme="dark"] .tema-btn .lua{color:var(--ava-black)}
+@media (prefers-reduced-motion:no-preference){.tema-btn::before{transition:transform .2s ease}}
