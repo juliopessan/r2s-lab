@@ -361,3 +361,9 @@ html{overflow-x:clip}
 .rodape-col-titulo{font-family:var(--sans);font-size:.95rem;font-weight:600;margin-bottom:10px}
 .rodape-tema{font:inherit;font-size:.93rem;color:var(--foot-fg);background:transparent;border:1px solid var(--foot-muted);border-radius:8px;padding:6px 12px;cursor:pointer}
 .rodape p{margin:8px 0 0;font-size:.9rem;color:var(--foot-muted)}
+.registrar .passos{margin:0 0 14px;padding-left:20px;max-width:66ch}
+.grade-campos{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr))}
+.campo{display:grid;gap:4px;font-size:.92rem;font-weight:600;min-width:0}
+.campo input{font:inherit;font-weight:400;color:var(--fg);background:var(--surface);border:1px solid var(--field);border-radius:8px;padding:9px 12px;min-width:0;width:100%}
+#export-msg{margin:10px 0 0;font-size:.95rem}
+#export-msg:empty{display:none}

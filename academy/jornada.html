@@ -36,6 +36,23 @@
    <h2 id="salvos-titulo">Salvos</h2>
    <ul id="salvos" class="linhas plain"></ul>
   </section>
+  <section aria-labelledby="registrar-titulo" class="registrar">
+   <h2 id="registrar-titulo">Registrar no painel da coordenação</h2>
+   <p class="muted">O painel lê o arquivo de progresso do seu repositório privado. Ele leva o pre-work, a pesquisa, as lições da jornada da squad e os seus selos com data. Seu nome no selo não vai.</p>
+   <ol class="passos">
+    <li>Informe o seu usuário do GitHub e clique em Exportar progresso.</li>
+    <li>Coloque o arquivo na pasta progress/ do seu repositório r2s-lab-&lt;usuario&gt;.</li>
+    <li>Faça o commit e o push. O painel atualiza na próxima execução agendada.</li>
+   </ol>
+   <div class="cartao">
+    <div class="grade-campos">
+     <label class="campo">Seu usuário do GitHub <input type="text" id="gh" autocomplete="off" spellcheck="false"></label>
+     <label class="campo">Importar um arquivo exportado antes <input type="file" id="import-input" accept=".json,application/json"></label>
+    </div>
+    <div class="acoes"><button class="btn" type="button" id="export-btn">Exportar progresso</button><button class="btn-sec" type="button" id="reset-btn">Limpar meu progresso</button></div>
+    <p id="export-msg" role="status" aria-live="polite"></p>
+   </div>
+  </section>
  </div>
 </main>
 
@@ -46,6 +63,7 @@
 <script src="../lib/badge-art.js"></script>
 <script src="../js/academy-content.js"></script>
 <script src="../js/academy-squad.js"></script>
+<script src="../js/export-ui.js"></script>
 <script src="../js/academy.js"></script>
 </body>
 </html>

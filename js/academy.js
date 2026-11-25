@@ -124,8 +124,39 @@
   /* Pre-work: o estado exportável (prework.blocks). Jornada da squad: só neste navegador, porque o progresso
    * real da squad é o gates.json do repositório dela. */
   function feito(c, id, state) {
-    if (c.fonte === 'squad') return (ui().lidas || {})[id] === true;
+    if (c.fonte === 'squad') return academia(state).lidas.indexOf(id) !== -1;
     return state.prework.blocks[id] === true;
+  }
+  /* A seção academy do progresso exportável (lições da squad e selos com data). */
+  function academia(state) { return state.academy || { lidas: [], selos: {} }; }
+  /** Altera só a seção academy, relendo o estado para não apagar o que outra aba salvou. */
+  function alterarAcademia(fn) {
+    var fresh = store.load();
+    var a = academia(fresh);
+    a = { lidas: a.lidas.slice(), selos: Object.assign({}, a.selos) };
+    fn(a);
+    fresh.academy = a;
+    fresh.updatedAt = new Date().toISOString();
+    store.save(fresh);
+    return fresh;
+  }
+  /** Garante a data de emissão de cada selo ganho (e migra o que versões anteriores guardavam na interface). */
+  function sincronizarSelos() {
+    var antigo = ui();
+    var state = store.load();
+    var a = academia(state);
+    var faltam = CURSOS.filter(function (c) { return concluido(c, state) && !a.selos[c.id]; });
+    var lidasAntigas = Object.keys(antigo.lidas || {}).filter(function (id) { return a.lidas.indexOf(id) === -1; });
+    if (!faltam.length && !lidasAntigas.length) return state;
+    var datasAntigas = antigo.concluidoEm || {};
+    state = alterarAcademia(function (x) {
+      lidasAntigas.forEach(function (id) { x.lidas.push(id); });
+    });
+    state = alterarAcademia(function (x) {
+      CURSOS.forEach(function (c) { if (concluido(c, state) && !x.selos[c.id]) x.selos[c.id] = datasAntigas[c.id] || hoje(); });
+    });
+    setUi({ lidas: null, concluidoEm: null });
+    return state;
   }
   function minutos(c) { return licoes(c).reduce(function (a, b) { return a + b.min; }, 0); }
   function cursoPorId(id) { return CURSOS.filter(function (c) { return c.id === id; })[0]; }
@@ -718,21 +749,22 @@
       var antesCompleto = concluido(c, fresh);
       var jaFeito = feito(c, l.id, fresh);
       if (c.fonte === 'squad') {
-        var lidas = ui().lidas || {};
-        if (jaFeito) delete lidas[l.id]; else lidas[l.id] = true;
-        setUi({ lidas: lidas });
+        alterarAcademia(function (a) {
+          if (jaFeito) a.lidas = a.lidas.filter(function (x) { return x !== l.id; });
+          else a.lidas.push(l.id);
+        });
       } else {
         if (jaFeito) delete fresh.prework.blocks[l.id];
         else fresh.prework.blocks[l.id] = true;
         fresh.updatedAt = new Date().toISOString();
         store.save(fresh);
       }
+      fresh = store.load();
       pintar(!jaFeito);
       var feitoAgora = !jaFeito;
       var conquista = $('#conquista');
       if (!antesCompleto && concluido(c, fresh)) {
-        var datas = ui().concluidoEm || {};
-        if (!datas[c.id]) { datas[c.id] = hoje(); setUi({ concluidoEm: datas }); }
+        sincronizarSelos();
         clear(conquista);
         conquista.appendChild(badge(c, true, 96));
         var t = el('div');
@@ -811,6 +843,23 @@
     secao('#concluidos', prontos, 'Você ainda não concluiu nenhum curso.', false);
     secao('#salvos', guardados, 'Nada salvo ainda. Use o marcador nos cards para guardar um curso aqui.', false);
     $('#resumo-jornada').textContent = prontos.length + ' de ' + CURSOS.length + ' cursos concluídos · ' + andamento.length + ' em andamento';
+
+    /* Exportar: o mesmo componente do pre-work e da pesquisa; esta página só é dona do campo github. */
+    if (window.R2SExportUI) {
+      var atual = store.load();
+      window.R2SExportUI.init({
+        store: store,
+        getState: function () { return atual; },
+        setState: function (next) { atual = next; },
+        persist: function () {
+          var fresh = store.load();
+          fresh.github = atual.github;
+          store.save(fresh);
+        },
+        hydrate: function () { location.reload(); },
+        clearDrafts: function () {},
+      });
+    }
     alinharTudo();
   }
 
@@ -829,8 +878,7 @@
     $('#titulo').textContent = 'Selo ' + c.titulo;
     $('#voltar').href = 'curso.html?c=' + c.id;
 
-    var datas = ui().concluidoEm || {};
-    if (ganho && !datas[c.id]) { datas[c.id] = hoje(); setUi({ concluidoEm: datas }); }
+    var datas = academia(sincronizarSelos()).selos;
     var arte = $('#arte-selo');
     function desenhar() {
       clear(arte);
@@ -864,6 +912,7 @@
   }
 
   chrome();
+  sincronizarSelos();
   if ($('#cursos')) home();
   else if ($('#curso')) curso();
   else if ($('#licao')) licao();

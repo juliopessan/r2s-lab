@@ -46,5 +46,15 @@
       "mudar": "Mais tempo protegido para a squad.",
       "aplicou": "Usei a regra do mais barato numa proposta."
     }
+  },
+  "academy": {
+    "lidas": [
+      "s1.1",
+      "s1.2",
+      "s1.3"
+    ],
+    "selos": {
+      "s1": "2026-11-20"
+    }
   }
 }

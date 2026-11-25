@@ -12,9 +12,10 @@ const lab = path.resolve(process.argv[2] || path.join(admin, '..'));
 const read = (file) => readFileSync(path.join(lab, file), 'utf8');
 
 /* ---------- contratos copiados ---------- */
-for (const name of ['squad', 'assessment']) {
+const SCHEMAS = { progress: 'r2s-progress/1', squad: 'r2s-squad/1', assessment: 'r2s-assessment/1' };
+for (const name of ['progress', 'squad', 'assessment']) {
   const body = read(`lib/${name}.js`).replace("require('./progress.js')", "require('./progress.cjs')");
-  const header = `// Copiado de r2s-lab/lib/${name}.js (${name === 'squad' ? 'r2s-squad/1' : 'r2s-assessment/1'}). Não edite aqui.\n`;
+  const header = `// Copiado de r2s-lab/lib/${name}.js (${SCHEMAS[name]}). Não edite aqui.\n`;
   writeFileSync(path.join(admin, 'src', 'vendor', `${name}.cjs`), header + body);
 }
 

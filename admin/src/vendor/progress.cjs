@@ -110,7 +110,30 @@
         if (!isIso(s.submittedAt)) errors.push('submittedAt deve ser uma data ISO.');
       }
     }
+    if (p.academy !== undefined && p.academy !== null) errors.push.apply(errors, validateAcademy(p.academy));
     return { ok: errors.length === 0, errors: errors };
+  }
+
+  /* Seção opcional da R2S Academy: lições da jornada da squad lidas e selos com a data de emissão.
+   * Nunca leva nome: o nome que a pessoa digita no selo fica só no navegador. */
+  var ACADEMY_LESSON = /^s[1-6]\.[1-9]$/;
+  var ACADEMY_COURSE = /^(p[1-5]|s[1-6])$/;
+  var DAY = /^\d{4}-\d{2}-\d{2}$/;
+  function validateAcademy(a) {
+    var errors = [];
+    if (!isObject(a)) return ['academy deve ser nulo ou um objeto.'];
+    Object.keys(a).forEach(function (k) { if (k !== 'lidas' && k !== 'selos') errors.push('Campo desconhecido em academy: ' + k + '.'); });
+    if (!Array.isArray(a.lidas) || a.lidas.some(function (id) { return typeof id !== 'string' || !ACADEMY_LESSON.test(id); })) {
+      errors.push('academy.lidas deve ser uma lista de lições da jornada da squad (s1.1 a s6.9).');
+    } else if (a.lidas.length !== new Set(a.lidas).size) errors.push('academy.lidas tem lições repetidas.');
+    if (!isObject(a.selos)) errors.push('academy.selos deve ser um objeto.');
+    else {
+      Object.keys(a.selos).forEach(function (k) {
+        if (!ACADEMY_COURSE.test(k)) errors.push('Selo de curso desconhecido: ' + k + '.');
+        else if (typeof a.selos[k] !== 'string' || !DAY.test(a.selos[k]) || isNaN(Date.parse(a.selos[k]))) errors.push('Selo ' + k + ' deve ter a data no formato AAAA-MM-DD.');
+      });
+    }
+    return errors;
   }
 
   function preworkMinutes(p) {
@@ -183,7 +206,7 @@
     surveyFromDraft: surveyFromDraft, hasPreworkProgress: hasPreworkProgress,
     SCHEMA_ID: SCHEMA_ID, TOTAL_MIN: TOTAL_MIN, PREWORK_BLOCKS: PREWORK_BLOCKS, QUIZ_IDS: QUIZ_IDS,
     COMPETENCIES: COMPETENCIES, RATINGS: RATINGS, CONSENTS: CONSENTS, HANDLE: HANDLE,
-    emptyProgress: emptyProgress, validateProgress: validateProgress, preworkMinutes: preworkMinutes,
+    emptyProgress: emptyProgress, validateProgress: validateProgress, validateAcademy: validateAcademy, preworkMinutes: preworkMinutes,
     mergeProgress: mergeProgress, routeForAverage: routeForAverage, npsCategory: npsCategory,
   };
 });

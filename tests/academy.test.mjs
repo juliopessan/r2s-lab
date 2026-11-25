@@ -479,7 +479,7 @@ test('a lesson shows the dossier template fields straight from squad/', async ()
   });
 });
 
-test('squad lessons are tracked in this browser only and never touch the exported progress', async () => {
+test('squad lessons go to the academy section of the exported progress, never to the pre-work blocks', async () => {
   await withPage({}, async (page, url) => {
     await page.goto(url + LESSON('s2', 's2.1'), { waitUntil: 'load' });
     await page.click('#concluir');
@@ -487,6 +487,9 @@ test('squad lessons are tracked in this browser only and never touch the exporte
     await page.click('#concluir');
     assert.match(await text(page, '#conquista'), /Você ganhou o selo Discover: ouvir antes de resolver/);
     assert.deepEqual(await savedBlocks(page), {});
+    const academy = await page.evaluate((key) => JSON.parse(localStorage.getItem(key)).academy, KEY);
+    assert.deepEqual(academy.lidas, ['s2.1', 's2.2']);
+    assert.match(academy.selos.s2, /^\d{4}-\d{2}-\d{2}$/);
     await page.goto(url + COURSE('s2'), { waitUntil: 'load' });
     assert.equal(await text(page, '#cta'), 'Revisar');
     await page.goto(url + HOME, { waitUntil: 'load' });

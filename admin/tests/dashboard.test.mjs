@@ -391,3 +391,16 @@ test('the 90-day review shows pending and overdue states', async () => {
     assert.equal(await text(page, '.squad-decision'), 'Decisão do patrocinador: escalar');
   });
 });
+
+test('the dashboard shows the R2S Academy badges per course', async () => {
+  const out = await buildDist();
+  await open(out, {}, async (page) => {
+    assert.equal(await text(page, '#ac-selos'), '16');
+    assert.equal(await text(page, '#ac-pessoas'), '3');
+    assert.equal(await text(page, '#ac-leitores'), '1');
+    const rowsAc = (await page.locator('#ac-cursos tbody tr').allInnerTexts()).map((t) => t.replace(/\s+/g, ' ').trim());
+    assert.equal(rowsAc.length, 11);
+    assert.equal(rowsAc[0], 'GenAI na prática Pre-work 3 50%');
+    assert.equal(rowsAc[5], 'Intake e o G0 Jornada da squad 1 17%');
+  });
+});

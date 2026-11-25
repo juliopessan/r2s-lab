@@ -1,5 +1,8 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import progress from '../lib/progress.js';
 
 const {
@@ -146,4 +149,34 @@ test('surveyFromDraft builds a valid survey', () => {
   assert.equal(result.survey.submittedAt, '2026-12-03T12:00:00.000Z');
   const p = { ...emptyProgress('anasouza'), updatedAt: NOW, survey: result.survey };
   assert.deepEqual(validateProgress(p), { ok: true, errors: [] });
+});
+
+/* ---------- seção academy (opcional) ---------- */
+
+const withAcademy = (academy) => ({ ...progress.emptyProgress('anasouza'), academy });
+
+test('the academy section is optional and validates lessons and badges', () => {
+  assert.deepEqual(progress.validateProgress(progress.emptyProgress('anasouza')), { ok: true, errors: [] });
+  assert.equal(progress.validateProgress(withAcademy(null)).ok, true);
+  assert.equal(progress.validateProgress(withAcademy({ lidas: ['s1.1', 's6.3'], selos: { p1: '2026-11-25', s6: '2026-12-01' } })).ok, true);
+});
+
+for (const [name, academy] of [
+  ['an unknown field', { lidas: [], selos: {}, nome: 'Ana' }],
+  ['a lesson that is not from the squad journey', { lidas: ['1.1'], selos: {} }],
+  ['a repeated lesson', { lidas: ['s1.1', 's1.1'], selos: {} }],
+  ['an unknown course badge', { lidas: [], selos: { p9: '2026-11-25' } }],
+  ['a badge date in another format', { lidas: [], selos: { p1: '25/11/2026' } }],
+  ['a list instead of an object', []],
+]) {
+  test(`the academy section rejects ${name}`, () => {
+    assert.equal(progress.validateProgress(withAcademy(academy)).ok, false);
+  });
+}
+
+test('the JSON schema describes the academy section', () => {
+  const schema = JSON.parse(readFileSync(path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'progress', 'progress.schema.json'), 'utf8'));
+  assert.ok(schema.properties.academy);
+  const obj = schema.properties.academy.oneOf.find((o) => o.type === 'object');
+  assert.deepEqual(Object.keys(obj.properties), ['lidas', 'selos']);
 });

@@ -24,7 +24,7 @@ test('the vendored contracts are the expected versions', () => {
 test('the vendored contracts match r2s-lab/lib when run inside the r2s-lab repository', (t) => {
   const lab = path.join(root, '..', 'lib');
   if (!existsSync(lab)) return t.skip('r2s-lab não está ao lado deste repositório');
-  for (const name of ['squad', 'assessment']) {
+  for (const name of ['progress', 'squad', 'assessment']) {
     const vendored = readFileSync(path.join(root, 'src', 'vendor', `${name}.cjs`), 'utf8').split('\n').slice(1).join('\n');
     const original = readFileSync(path.join(lab, `${name}.js`), 'utf8').replace("require('./progress.js')", "require('./progress.cjs')");
     assert.equal(vendored, original, `${name}.cjs diverge de r2s-lab/lib/${name}.js`);

@@ -86,6 +86,21 @@
     ? 'Multiplicadores: ' + m.preworkDone + ' de ' + m.invited + ' concluíram o pre-work · ' + m.started + ' iniciaram'
     : 'Nenhum multiplicador na lista.';
 
+  /* ---------- R2S Academy ---------- */
+  var ac = data.academy || { invited: 0, peopleWithBadge: 0, badges: 0, squadReaders: 0, courses: [] };
+  $('#ac-pessoas').textContent = String(ac.peopleWithBadge);
+  $('#ac-selos').textContent = String(ac.badges);
+  $('#ac-leitores').textContent = String(ac.squadReaders);
+  var acBody = $('#ac-cursos tbody');
+  ac.courses.forEach(function (c) {
+    var tr = el('tr');
+    tr.appendChild(el('td', null, c.title));
+    tr.appendChild(el('td', null, c.family === 'squad' ? 'Jornada da squad' : 'Pre-work'));
+    tr.appendChild(el('td', null, String(c.badges)));
+    tr.appendChild(el('td', null, ac.invited ? Math.round((100 * c.badges) / ac.invited) + '%' : '—'));
+    acBody.appendChild(tr);
+  });
+
   /* ---------- squads ---------- */
   var nf2 = new Intl.NumberFormat('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   var brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });

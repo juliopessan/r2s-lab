@@ -240,3 +240,17 @@ test('the GitHub username persists', async () => {
     assert.equal(await page.inputValue('#gh'), 'anasouza');
   });
 });
+
+test('the export carries the academy section only when it has something', async () => {
+  const storeLib = (await import('../lib/store.js')).default;
+  const mem = () => { const m = {}; return { getItem: (k) => (k in m ? m[k] : null), setItem: (k, v) => { m[k] = String(v); }, removeItem: (k) => { delete m[k]; } }; };
+  const s1 = storeLib.createStore(mem());
+  assert.ok(!('academy' in JSON.parse(s1.buildExport('anasouza').json)));
+  const st = s1.load();
+  st.academy = { lidas: ['s2.1'], selos: { s2: '2026-11-25' } };
+  s1.save(st);
+  const out = JSON.parse(s1.buildExport('anasouza').json);
+  assert.deepEqual(out.academy, { lidas: ['s2.1'], selos: { s2: '2026-11-25' } });
+  assert.equal(s1.importProgress(JSON.stringify(out)).ok, true);
+  assert.deepEqual(s1.load().academy, { lidas: ['s2.1'], selos: { s2: '2026-11-25' } });
+});

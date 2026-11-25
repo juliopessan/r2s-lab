@@ -1,5 +1,6 @@
 import progress from './vendor/progress.cjs';
 import { themesFor } from './themes.mjs';
+import { aggregateAcademy } from './academy.mjs';
 
 const { TOTAL_MIN, RATINGS, preworkMinutes } = progress;
 
@@ -99,6 +100,7 @@ export function aggregate({ roster, progressByHandle, missing, errors, unread = 
     multipliers,
     satisfaction,
     feedback,
+    academy: aggregateAcademy(rows),
     dataQuality: { missingFiles: [...(missing || [])], errors: [...(errors || [])], unread: [...unread] },
   };
 }
