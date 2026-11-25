@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sua jornada · R2S Academy</title>
+<link rel="stylesheet" href="../css/academy.css">
+</head>
+<body>
+<header class="top" role="banner">
+ <div class="top-in">
+  <a class="brand" href="index.html"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" class="brand-mark"><path d="M12 2l2.2 6.8L21 9.5l-5.4 4.3 1.9 6.9L12 16.9 6.5 20.7l1.9-6.9L3 9.5l6.8-.7z"/></svg><span><b>R2S</b> Academy</span></a>
+  <nav aria-label="Principal" class="top-nav">
+   <button type="button" id="explorar" class="top-explorar" aria-expanded="false" aria-controls="menu-explorar">Explorar <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></button>
+   <a href="jornada.html">Sua jornada</a>
+  </nav>
+  <div id="menu-explorar" class="menu-explorar" hidden></div>
+  <button type="button" id="tema-toggle" class="icon-btn" aria-label="Alternar entre tema claro e escuro"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
+ </div>
+</header>
+
+<main id="conteudo" class="pagina-jornada">
+ <div id="pagina-jornada">
+  <nav class="migalhas" aria-label="Você está em"><a href="index.html">Academy</a></nav>
+  <h1>Sua jornada</h1>
+  <p id="resumo-jornada" class="lede" role="status"></p>
+  <section aria-labelledby="andamento-titulo">
+   <h2 id="andamento-titulo">Em andamento</h2>
+   <ul id="andamento" class="linhas plain"></ul>
+  </section>
+  <section aria-labelledby="concluidos-titulo">
+   <h2 id="concluidos-titulo">Concluídos</h2>
+   <ul id="concluidos" class="linhas plain"></ul>
+  </section>
+  <section aria-labelledby="salvos-titulo">
+   <h2 id="salvos-titulo">Salvos</h2>
+   <ul id="salvos" class="linhas plain"></ul>
+  </section>
+ </div>
+</main>
+
+<footer class="rodape" id="rodape"></footer>
+
+<script src="../lib/progress.js"></script>
+<script src="../lib/store.js"></script>
+<script src="../lib/badge-art.js"></script>
+<script src="../js/academy-content.js"></script>
+<script src="../js/academy-squad.js"></script>
+<script src="../js/academy.js"></script>
+</body>
+</html>

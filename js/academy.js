@@ -131,6 +131,56 @@
   function cursoPorId(id) { return CURSOS.filter(function (c) { return c.id === id; })[0]; }
   function feitas(c, state) { return licoes(c).filter(function (l) { return feito(c, l.id, state); }); }
   function concluido(c, state) { return feitas(c, state).length === licoes(c).length; }
+
+  /* Estado do aprendiz, sempre derivado do progresso (nunca guardado): nenhum > n / N > Concluído. */
+  function estado(c, state) {
+    var n = feitas(c, state).length;
+    var total = licoes(c).length;
+    return { tipo: n === 0 ? 'nenhum' : n === total ? 'concluido' : 'andamento', n: n, total: total };
+  }
+  function chipEstado(c, state) {
+    var e = estado(c, state);
+    if (e.tipo === 'nenhum') return null;
+    var chip = el('span', 'chip-estado ' + e.tipo);
+    if (e.tipo === 'concluido') { chip.textContent = 'Concluído'; return chip; }
+    chip.appendChild(el('span', null, e.n + ' / ' + e.total));
+    var barra = el('span', 'mini-barra');
+    barra.setAttribute('aria-hidden', 'true');
+    var fill = el('i');
+    fill.style.width = Math.round((100 * e.n) / e.total) + '%';
+    barra.appendChild(fill);
+    chip.appendChild(barra);
+    return chip;
+  }
+  function salvos() { return ui().salvos || {}; }
+  function botaoSalvar(c) {
+    var b = el('button', 'salvar icon-btn');
+    b.type = 'button';
+    var on = salvos()[c.id] === true;
+    b.setAttribute('aria-pressed', on ? 'true' : 'false');
+    b.setAttribute('aria-label', (on ? 'Remover dos salvos: ' : 'Salvar ') + c.titulo);
+    var svg = svgEl('svg', { viewBox: '0 0 24 24', width: '18', height: '18', 'aria-hidden': 'true' });
+    svg.appendChild(svgEl('path', { d: 'M6 3h12v18l-6-4-6 4z' }));
+    b.appendChild(svg);
+    b.addEventListener('click', function () {
+      var atual = salvos();
+      if (atual[c.id]) delete atual[c.id]; else atual[c.id] = true;
+      setUi({ salvos: atual });
+      var agora = atual[c.id] === true;
+      b.setAttribute('aria-pressed', agora ? 'true' : 'false');
+      b.setAttribute('aria-label', (agora ? 'Remover dos salvos: ' : 'Salvar ') + c.titulo);
+    });
+    return b;
+  }
+
+  /* As ferramentas do lab: as outras peças da plataforma, abertas a partir da Academy. */
+  var FERRAMENTAS = [
+    { id: 'landing', titulo: 'O método em 90 segundos', tipo: 'Vídeo', texto: 'A landing do R2S Lab com o teaser narrado: Reskilling too Skilling.', href: '../site/index.html' },
+    { id: 'prework', titulo: 'Pre-work interativo', tipo: 'Ferramenta', texto: 'As 8 horas do pre-work com quizzes, calculadoras e exportação do progresso.', href: '../00-prework/index.html' },
+    { id: 'pesquisa', titulo: 'Pesquisa de satisfação', tipo: 'Formulário', texto: 'NPS, notas, perguntas abertas e consentimento, no mesmo arquivo do progresso.', href: '../05-encerramento/pesquisa.html' },
+    { id: 'certificado', titulo: 'Certificado', tipo: 'Coordenação', texto: 'O certificado de conclusão do lab em A4 paisagem, emitido pela coordenação.', href: '../05-encerramento/certificado.html' },
+    { id: 'painel', titulo: 'Painel da coordenação', tipo: 'Coordenação', texto: 'Treinados, faltantes, satisfação, squads e scorecard. Rode npm run demo na pasta admin.', href: '../admin/README.md' },
+  ];
   function prework(c) { return '../00-prework/index.html#p' + c.parte + 'h'; }
 
   function meta(c) {
@@ -176,30 +226,62 @@
   function alinharTudo() { ART.alinhar(document); }
 
   /* ---------- cabeçalho e rodapé ---------- */
+  function trocarTema() {
+    var next = effectiveTheme() === 'dark' ? 'light' : 'dark';
+    root.dataset.theme = next;
+    lsSet(THEME_KEY, next);
+  }
+  /* Os mesmos eixos no menu Explorar e no rodapé: tema e tipo. */
+  function eixos() {
+    return [
+      { titulo: 'Por tema', links: TEMAS.map(function (t) { return [t.titulo, 'index.html?tema=' + t.id]; }) },
+      { titulo: 'Por tipo', links: [
+        ['Cursos do pre-work', 'index.html#cursos-titulo'], ['Jornada da squad', 'index.html#jornada-titulo'],
+        ['Ferramentas do lab', 'index.html#ferramentas-titulo'], ['Selos', 'index.html#selos-titulo'],
+      ] },
+    ];
+  }
+  function coluna(titulo, links, cls) {
+    var col = el('div', cls);
+    col.appendChild(el('h2', cls + '-titulo', titulo));
+    var ul = el('ul', 'plain');
+    links.forEach(function (l) { var li = el('li'); var a = el('a', null, l[0]); a.href = l[1]; li.appendChild(a); ul.appendChild(li); });
+    col.appendChild(ul);
+    return col;
+  }
   function chrome() {
     var toggle = $('#tema-toggle');
-    if (toggle) {
-      toggle.addEventListener('click', function () {
-        var next = effectiveTheme() === 'dark' ? 'light' : 'dark';
-        root.dataset.theme = next;
-        lsSet(THEME_KEY, next);
+    if (toggle) toggle.addEventListener('click', trocarTema);
+
+    var botao = $('#explorar');
+    var menu = $('#menu-explorar');
+    if (botao && menu) {
+      eixos().forEach(function (e) { menu.appendChild(coluna(e.titulo, e.links, 'menu-col')); });
+      var fechar = function () { botao.setAttribute('aria-expanded', 'false'); menu.hidden = true; };
+      botao.addEventListener('click', function () {
+        var aberto = botao.getAttribute('aria-expanded') === 'true';
+        botao.setAttribute('aria-expanded', aberto ? 'false' : 'true');
+        menu.hidden = aberto;
+        if (!aberto) { var primeiro = $('a', menu); if (primeiro) primeiro.focus(); }
       });
+      document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && !menu.hidden) { fechar(); botao.focus(); } });
+      document.addEventListener('click', function (ev) { if (!menu.hidden && !menu.contains(ev.target) && ev.target !== botao && !botao.contains(ev.target)) fechar(); });
     }
+
     var rodape = $('#rodape');
     if (!rodape) return;
     var inner = el('div', 'rodape-in');
-    function coluna(titulo, links) {
-      var col = el('div', 'rodape-col');
-      col.appendChild(el('h2', 'rodape-titulo', titulo));
-      var ul = el('ul', 'plain');
-      links.forEach(function (l) { var li = el('li'); var a = el('a', null, l[0]); a.href = l[1]; li.appendChild(a); ul.appendChild(li); });
-      col.appendChild(ul);
-      return col;
-    }
-    inner.appendChild(coluna('Pre-work', CURSOS.filter(function (c) { return c.fonte !== 'squad'; }).map(function (c) { return [c.titulo, 'curso.html?c=' + c.id]; })));
-    inner.appendChild(coluna('Jornada da squad', CURSOS.filter(function (c) { return c.fonte === 'squad'; }).map(function (c) { return [c.titulo, 'curso.html?c=' + c.id]; })));
-    inner.appendChild(coluna('Temas', TEMAS.map(function (t) { return [t.titulo, 'index.html#temas-titulo']; })));
-    inner.appendChild(coluna('R2S Lab', [['Pre-work', '../00-prework/index.html'], ['Pesquisa de satisfação', '../05-encerramento/pesquisa.html']]));
+    eixos().forEach(function (e) { inner.appendChild(coluna(e.titulo, e.links, 'rodape-col')); });
+    inner.appendChild(coluna('Ferramentas do lab', FERRAMENTAS.map(function (f) { return [f.titulo, f.href]; }), 'rodape-col'));
+    var pref = el('div', 'rodape-col');
+    pref.appendChild(el('h2', 'rodape-col-titulo', 'Preferências'));
+    var tb = el('button', 'rodape-tema', 'Alternar tema claro e escuro');
+    tb.type = 'button';
+    tb.id = 'tema-toggle-rodape';
+    tb.addEventListener('click', trocarTema);
+    pref.appendChild(tb);
+    pref.appendChild(el('p', null, 'Idioma: português (Brasil)'));
+    inner.appendChild(pref);
     var base = el('div', 'rodape-base');
     base.appendChild(el('p', null, 'R2S Lab · Avanade Brazil Engineering HUB'));
     base.appendChild(el('p', null, 'Seu progresso fica neste navegador.'));
@@ -252,6 +334,8 @@
         var capa = el('span', 'curso-capa');
         capa.style.background = MATERIA[c.id].fundo;
         capa.appendChild(badge(c, concluido(c, state), 104));
+        var chip = chipEstado(c, state);
+        if (chip) capa.appendChild(chip);
         a.appendChild(capa);
         var corpo = el('span', 'curso-corpo');
         corpo.appendChild(el('b', 'curso-titulo', c.titulo));
@@ -259,8 +343,10 @@
         corpo.appendChild(el('span', 'curso-resumo', c.resumo));
         var n = feitas(c, state).length;
         corpo.appendChild(el('span', 'curso-progresso', n ? n + ' de ' + licoes(c).length + ' lições' : 'Não iniciado'));
+        corpo.appendChild(el('span', 'curso-selo', 'Selo de conclusão'));
         a.appendChild(corpo);
         li.appendChild(a);
+        li.appendChild(botaoSalvar(c));
         (c.fonte === 'squad' ? listaSquad : lista).appendChild(li);
       });
       $('#sem-resultado').hidden = visiveis.length > 0;
@@ -269,7 +355,28 @@
       alinharTudo();
     }
     $('#busca').addEventListener('input', function (e) { termo = e.target.value; render(false); });
+    var temaUrl = param('tema');
+    if (TEMAS.some(function (t) { return t.id === temaUrl; })) {
+      filtroTema = temaUrl;
+      Array.prototype.forEach.call(temas.children, function (item, j) { item.firstChild.setAttribute('aria-pressed', TEMAS[j].id === filtroTema ? 'true' : 'false'); });
+    }
     render(true);
+
+    var ferr = $('#ferramentas');
+    FERRAMENTAS.forEach(function (f) {
+      var li = el('li', 'ferramenta');
+      var a = el('a');
+      a.href = f.href;
+      var capa = el('span', 'ferramenta-capa');
+      capa.appendChild(el('span', 'ferramenta-tipo', f.tipo));
+      a.appendChild(capa);
+      var corpo = el('span', 'curso-corpo');
+      corpo.appendChild(el('b', 'curso-titulo', f.titulo));
+      corpo.appendChild(el('span', 'curso-resumo', f.texto));
+      a.appendChild(corpo);
+      li.appendChild(a);
+      ferr.appendChild(li);
+    });
 
     var ganhos = CURSOS.filter(function (c) { return concluido(c, state); }).length;
     $('#selos-resumo').textContent = ganhos
@@ -308,6 +415,9 @@
     pills.push('Selo de conclusão');
     pilulas($('#meta'), pills);
     $('#faixa-arte').appendChild(badge(c, completo, 168));
+    var chipCurso = chipEstado(c, state);
+    if (chipCurso) $('#meta').appendChild(chipCurso);
+    $('.acoes').appendChild(botaoSalvar(c));
 
     var pendente = lic.filter(function (l) { return feitasIds.indexOf(l.id) === -1; })[0];
     var cta = $('#cta');
@@ -465,6 +575,7 @@
     var dados = conteudo(l.id);
 
     document.title = l.title + ' · R2S Academy';
+    setUi({ ultima: { c: c.id, l: l.id, em: Date.now() } });
     migalhas($('#migalhas'), [
       { texto: 'Academy', href: 'index.html' },
       { texto: 'Cursos', href: 'index.html#cursos-titulo' },
@@ -656,6 +767,53 @@
     alinharTudo();
   }
 
+  /* ---------- sua jornada ---------- */
+  function jornada() {
+    var state = store.load();
+    var ultima = ui().ultima || {};
+    var marcados = salvos();
+    var andamento = CURSOS.filter(function (c) { return estado(c, state).tipo === 'andamento'; });
+    var prontos = CURSOS.filter(function (c) { return estado(c, state).tipo === 'concluido'; });
+    var guardados = CURSOS.filter(function (c) { return marcados[c.id] === true; });
+    andamento.sort(function (x, y) { return (y.id === ultima.c) - (x.id === ultima.c); });
+
+    function linha(c, comBotao) {
+      var li = el('li', 'linha');
+      var a = el('a', 'linha-link');
+      a.href = 'curso.html?c=' + c.id;
+      a.appendChild(badge(c, concluido(c, state), 64));
+      var t = el('span', 'linha-texto');
+      t.appendChild(el('b', 'linha-titulo', c.titulo));
+      t.appendChild(el('span', 'curso-meta', meta(c)));
+      a.appendChild(t);
+      li.appendChild(a);
+      var chip = chipEstado(c, state);
+      if (chip) li.appendChild(chip);
+      if (comBotao) {
+        var pendente = licoes(c).filter(function (l) { return !feito(c, l.id, state); })[0] || licoes(c)[0];
+        var cont = el('a', 'btn', 'Continuar');
+        cont.id = 'continuar';
+        cont.href = 'licao.html?c=' + c.id + '&l=' + (c.id === ultima.c && !feito(c, ultima.l, state) ? ultima.l : pendente.id);
+        li.appendChild(cont);
+      } else if (estado(c, state).tipo === 'concluido') {
+        var ver = el('a', 'btn-sec', 'Ver selo');
+        ver.href = 'selo.html?c=' + c.id;
+        li.appendChild(ver);
+      }
+      return li;
+    }
+    function secao(idLista, itens, vazio, comBotao) {
+      var ul = $(idLista);
+      if (!itens.length) { var p = el('p', 'muted vazio', vazio); ul.parentNode.insertBefore(p, ul); ul.hidden = true; return; }
+      itens.forEach(function (c, i) { ul.appendChild(linha(c, comBotao && i === 0)); });
+    }
+    secao('#andamento', andamento, 'Nenhum curso em andamento. Escolha um no catálogo para começar.', true);
+    secao('#concluidos', prontos, 'Você ainda não concluiu nenhum curso.', false);
+    secao('#salvos', guardados, 'Nada salvo ainda. Use o marcador nos cards para guardar um curso aqui.', false);
+    $('#resumo-jornada').textContent = prontos.length + ' de ' + CURSOS.length + ' cursos concluídos · ' + andamento.length + ' em andamento';
+    alinharTudo();
+  }
+
   /* ---------- página do selo ---------- */
   function seloPagina() {
     var c = cursoPorId(param('c'));
@@ -710,4 +868,5 @@
   else if ($('#curso')) curso();
   else if ($('#licao')) licao();
   else if ($('#selo-pagina')) seloPagina();
+  else if ($('#pagina-jornada')) jornada();
 })();

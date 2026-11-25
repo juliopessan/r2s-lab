@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import browser from './helpers/browser.cjs';
@@ -365,19 +365,23 @@ test('a long course title wraps into two lines on the badge', async () => {
   });
 });
 
-test('every course has its own colour and icon', async () => {
+test('every course has its own icon, and the colour encodes the family', async () => {
   const seen = new Set();
+  const fills = {};
   for (const c of ['p1', 'p2', 'p3', 'p4', 'p5', 's1', 's2', 's3', 's4', 's5', 's6']) {
     await withPage({}, async (page, url) => {
       await page.goto(url + BADGE(c), { waitUntil: 'load' });
       const sig = await page.evaluate(() => {
         const svg = document.querySelector('#selo-svg');
-        return svg.querySelector('rect').getAttribute('fill') + '|' + [...svg.querySelectorAll('.selo-icone path')].map((p) => p.getAttribute('d')).join('|');
+        return { fill: svg.querySelector('rect').getAttribute('fill'), icon: [...svg.querySelectorAll('.selo-icone path')].map((p) => p.getAttribute('d')).join('|') };
       });
-      seen.add(sig);
+      seen.add(sig.icon);
+      fills[c] = sig.fill;
     });
   }
   assert.equal(seen.size, 11);
+  assert.deepEqual(['p1', 'p2', 'p3', 'p4', 'p5'].map((c) => fills[c]), Array(5).fill('#FF5800'), 'the pre-work family is Avanade Glow');
+  assert.deepEqual(['s1', 's2', 's3', 's4', 's5', 's6'].map((c) => fills[c]), ['#FFD700', '#FFB414', '#FF5800', '#B43C14', '#C80000', '#890078'], 'the squad journey runs Solar to Aurora');
 });
 
 test('a locked badge says what is missing and hides the name field', async () => {
@@ -545,9 +549,107 @@ test('the standalone SVG badges exist for every course and match the generator',
   }
 });
 
+/* ---------- padrões da skill academy-platform-design ---------- */
+
+test('cards carry a status chip derived from progress, never stored', async () => {
+  await withPage({}, async (page, url) => {
+    await seed(page, { '1.1': true, '1.2': true, '5.1': true, '5.2': true });
+    await page.goto(url + HOME, { waitUntil: 'load' });
+    assert.equal(await text(page, '#cursos li.curso:nth-child(1) .chip-estado'), '2 / 3');
+    assert.equal(await page.locator('#cursos li.curso:nth-child(2) .chip-estado').count(), 0, 'not started has no chip');
+    assert.equal(await text(page, '#cursos li.curso:nth-child(5) .chip-estado'), 'Concluído');
+    assert.equal(await page.locator('#cursos li.curso .curso-selo').count(), 5);
+    const stored = await page.evaluate(() => JSON.stringify(Object.fromEntries(Object.entries(localStorage))));
+    assert.ok(!stored.includes('Concluído') && !stored.includes('2 / 3'), 'the chip is computed, not saved');
+  });
+});
+
+test('a course can be saved from its card and shows up in the journey', async () => {
+  await withPage({}, async (page, url) => {
+    await page.goto(url + HOME, { waitUntil: 'load' });
+    const btn = page.locator('#cursos-squad li.curso:nth-child(4) .salvar');
+    assert.equal(await btn.getAttribute('aria-label'), 'Salvar Design e o G2');
+    await btn.click();
+    assert.equal(await btn.getAttribute('aria-pressed'), 'true');
+    await page.reload({ waitUntil: 'load' });
+    assert.equal(await page.locator('#cursos-squad li.curso:nth-child(4) .salvar').getAttribute('aria-pressed'), 'true');
+    await page.goto(url + 'academy/jornada.html', { waitUntil: 'load' });
+    assert.deepEqual(await rows(page, '#salvos .linha-titulo'), ['Design e o G2']);
+  });
+});
+
+test('the Explore menu and the footer expose the same axes', async () => {
+  await withPage({}, async (page, url) => {
+    await page.goto(url + HOME, { waitUntil: 'load' });
+    assert.equal(await page.locator('#menu-explorar').isVisible(), false);
+    await page.click('#explorar');
+    assert.equal(await page.getAttribute('#explorar', 'aria-expanded'), 'true');
+    const menu = (await page.locator('#menu-explorar .menu-col-titulo').allTextContents()).map((t) => t.trim());
+    assert.deepEqual(menu, ['Por tema', 'Por tipo']);
+    const footer = await rows(page, '#rodape .rodape-col-titulo');
+    assert.deepEqual(footer.slice(0, 2), menu);
+    assert.deepEqual(await rows(page, '#menu-explorar .menu-col:first-child a'), await rows(page, '#rodape .rodape-col:first-child a'));
+    await page.keyboard.press('Escape');
+    assert.equal(await page.locator('#menu-explorar').isVisible(), false);
+  });
+});
+
+test('a theme link from the menu filters the catalog', async () => {
+  await withPage({}, async (page, url) => {
+    await page.goto(url + HOME + '?tema=lab', { waitUntil: 'load' });
+    assert.equal(await page.locator('#cursos-squad li.curso').count(), 6);
+    assert.equal(await page.locator('#fluencia').isVisible(), false);
+    assert.equal(await page.getAttribute('#temas li.tema:nth-child(4) button', 'aria-pressed'), 'true');
+  });
+});
+
+test('the home brings the rest of the platform in as lab tools', async () => {
+  await withPage({}, async (page, url) => {
+    await page.goto(url + HOME, { waitUntil: 'load' });
+    assert.deepEqual(await rows(page, '#ferramentas .curso-titulo'), ['O método em 90 segundos', 'Pre-work interativo', 'Pesquisa de satisfação', 'Certificado', 'Painel da coordenação']);
+    const hrefs = await page.locator('#ferramentas a').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+    assert.deepEqual(hrefs, ['../site/index.html', '../00-prework/index.html', '../05-encerramento/pesquisa.html', '../05-encerramento/certificado.html', '../admin/README.md']);
+    for (const h of hrefs) assert.ok(existsSync(path.join(root, 'academy', h)), h);
+  });
+});
+
+test('the journey dashboard has Continue on the latest course and lists finished ones', async () => {
+  await withPage({}, async (page, url) => {
+    await seed(page, { '1.1': true, '2.1': true, '5.1': true, '5.2': true });
+    await page.goto(url + LESSON('p2', '2.1'), { waitUntil: 'load' });
+    await page.goto(url + 'academy/jornada.html', { waitUntil: 'load' });
+    assert.equal(await page.title(), 'Sua jornada · R2S Academy');
+    assert.deepEqual(await rows(page, '#andamento .linha-titulo'), ['Do pedido ao problema', 'GenAI na prática'], 'the latest course comes first');
+    assert.equal(await page.locator('#continuar').count(), 1);
+    assert.match(await page.getAttribute('#continuar', 'href'), /c=p2&l=2\.2$/);
+    assert.deepEqual(await rows(page, '#concluidos .linha-titulo'), ['Exercício final']);
+    assert.match(await page.getAttribute('#concluidos .btn-sec', 'href'), /selo\.html\?c=p5$/);
+    assert.match(await text(page, '#resumo-jornada'), /^1 de 11 cursos concluídos · 2 em andamento$/);
+    assert.match(await text(page, '.pagina-jornada'), /Nada salvo ainda/);
+  });
+});
+
+test('the Avanade re-skin: Segoe UI, light headings and an orange primary button with AA contrast', async () => {
+  await withPage({}, async (page, url) => {
+    await page.emulateMedia({ colorScheme: 'light' });
+    await page.goto(url + COURSE('p1'), { waitUntil: 'load' });
+    const m = await page.evaluate(() => ({
+      font: getComputedStyle(document.body).fontFamily, h1: getComputedStyle(document.querySelector('h1')).fontWeight,
+      btn: getComputedStyle(document.querySelector('#cta')).backgroundColor, btnFg: getComputedStyle(document.querySelector('#cta')).color,
+    }));
+    assert.match(m.font, /^"?Segoe UI/);
+    assert.equal(m.h1, '300');
+    assert.equal(m.btn, 'rgb(220, 70, 0)');
+    assert.equal(m.btnFg, 'rgb(255, 255, 255)');
+    const css = readFileSync(path.join(root, 'css', 'academy.css'), 'utf8');
+    assert.match(css, /--ava-orange:#FF5800/);
+    assert.ok(!/Iowan|Palatino|Georgia/.test(css), 'no serif display font left');
+  });
+});
+
 /* ---------- qualidade ---------- */
 
-const PAGES = [HOME, COURSE('p1'), LESSON('p1', '1.3'), LESSON('p4', '4.2'), BADGE('p5'), BADGE('p4'), COURSE('s4'), LESSON('s1', 's1.1'), LESSON('s1', 's1.2')];
+const PAGES = [HOME, COURSE('p1'), LESSON('p1', '1.3'), LESSON('p4', '4.2'), BADGE('p5'), BADGE('p4'), COURSE('s4'), LESSON('s1', 's1.1'), LESSON('s1', 's1.2'), 'academy/jornada.html'];
 
 test('no page loads anything external, scrolls sideways at 360 px or throws', async () => {
   for (const p of PAGES) {
@@ -561,7 +663,7 @@ test('no page loads anything external, scrolls sideways at 360 px or throws', as
       assert.deepEqual(page.errors || [], [], p);
     });
   }
-  for (const f of ['academy/index.html', 'academy/curso.html', 'academy/licao.html', 'academy/selo.html', 'js/academy.js', 'css/academy.css']) {
+  for (const f of ['academy/index.html', 'academy/curso.html', 'academy/licao.html', 'academy/selo.html', 'academy/jornada.html', 'js/academy.js', 'css/academy.css']) {
     const t = readFileSync(path.join(root, f), 'utf8');
     assert.ok(!t.includes('Requirement-to-Solution'), f);
     assert.ok(!/innerHTML\s*=/.test(t), `${f} writes HTML from strings`);
