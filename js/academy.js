@@ -204,14 +204,30 @@
     return b;
   }
 
-  /* As ferramentas do lab: as outras peças da plataforma, abertas a partir da Academy. */
-  var FERRAMENTAS = [
-    { id: 'landing', titulo: 'O método em 90 segundos', tipo: 'Vídeo', texto: 'A landing do R2S Lab com o teaser narrado: Reskilling too Skilling.', href: '../site/index.html' },
-    { id: 'prework', titulo: 'Pre-work interativo', tipo: 'Ferramenta', texto: 'As 8 horas do pre-work com quizzes, calculadoras e exportação do progresso.', href: '../00-prework/index.html' },
-    { id: 'pesquisa', titulo: 'Pesquisa de satisfação', tipo: 'Formulário', texto: 'NPS, notas, perguntas abertas e consentimento, no mesmo arquivo do progresso.', href: '../05-encerramento/pesquisa.html' },
-    { id: 'certificado', titulo: 'Certificado', tipo: 'Coordenação', texto: 'O certificado de conclusão do lab em A4 paisagem, emitido pela coordenação.', href: '../05-encerramento/certificado.html' },
-    { id: 'painel', titulo: 'Painel da coordenação', tipo: 'Coordenação', texto: 'Treinados, faltantes, satisfação, squads e scorecard. Rode npm run demo na pasta admin.', href: '../admin/README.md' },
+  /* O caminho do lab, na ordem do fluxo: pre-work, jornada da squad, pesquisa, certificado e painel.
+   * O estado de cada passo é derivado do progresso, como os chips dos cursos. */
+  var CAMINHO = [
+    { id: 'prework', titulo: 'Pre-work', texto: 'Oito horas em cinco partes, com quizzes, calculadoras e exportação do progresso. São os cinco primeiros cursos do catálogo.', href: '../00-prework/index.html' },
+    { id: 'squad', titulo: 'Jornada da squad', texto: 'Seis cursos, um por etapa do Lab Loop, do case brief à decisão do negócio no G4.', href: 'index.html#jornada-titulo' },
+    { id: 'pesquisa', titulo: 'Pesquisa de satisfação', texto: 'NPS, notas, perguntas abertas e consentimento, no mesmo arquivo do progresso.', href: '../05-encerramento/pesquisa.html' },
+    { id: 'certificado', titulo: 'Certificado', texto: 'Emitido pela coordenação, em A4 paisagem, com o nível Foundation, Practitioner ou Lead.', href: '../05-encerramento/certificado.html' },
+    { id: 'painel', titulo: 'Painel da coordenação', texto: 'Treinados e faltantes, satisfação, feedbacks, squads, certificação, scorecard e a Academy. Ele lê o arquivo que você registra em Sua jornada.', href: '../admin/README.md' },
   ];
+  function estadoPasso(id, state) {
+    if (id === 'prework') {
+      var min = P.preworkMinutes(state);
+      if (min >= P.TOTAL_MIN) return { texto: 'Concluído', feito: true };
+      return { texto: min ? duracao(min) + ' de 8 h' : 'Não iniciado', feito: false };
+    }
+    if (id === 'squad') {
+      var squad = CURSOS.filter(function (c) { return c.fonte === 'squad'; });
+      var n = squad.filter(function (c) { return concluido(c, state); }).length;
+      return { texto: n === squad.length ? 'Concluído' : n + ' de ' + squad.length + ' selos', feito: n === squad.length };
+    }
+    if (id === 'pesquisa') return state.survey ? { texto: 'Respondida', feito: true } : { texto: 'Pendente', feito: false };
+    if (id === 'certificado') return { texto: 'Emitido pela coordenação', feito: false };
+    return { texto: 'Para a coordenação', feito: false };
+  }
   function prework(c) { return '../00-prework/index.html#p' + c.parte + 'h'; }
 
   function meta(c) {
@@ -268,7 +284,7 @@
       { titulo: 'Por tema', links: TEMAS.map(function (t) { return [t.titulo, 'index.html?tema=' + t.id]; }) },
       { titulo: 'Por tipo', links: [
         ['Cursos do pre-work', 'index.html#cursos-titulo'], ['Jornada da squad', 'index.html#jornada-titulo'],
-        ['Ferramentas do lab', 'index.html#ferramentas-titulo'], ['Selos', 'index.html#selos-titulo'],
+        ['O caminho do lab', 'index.html#caminho-titulo'], ['Selos', 'index.html#selos-titulo'],
       ] },
     ];
   }
@@ -303,7 +319,7 @@
     if (!rodape) return;
     var inner = el('div', 'rodape-in');
     eixos().forEach(function (e) { inner.appendChild(coluna(e.titulo, e.links, 'rodape-col')); });
-    inner.appendChild(coluna('Ferramentas do lab', FERRAMENTAS.map(function (f) { return [f.titulo, f.href]; }), 'rodape-col'));
+    inner.appendChild(coluna('O caminho do lab', CAMINHO.map(function (f, i) { return [(i + 1) + '. ' + f.titulo, f.href]; }), 'rodape-col'));
     var pref = el('div', 'rodape-col');
     pref.appendChild(el('h2', 'rodape-col-titulo', 'Preferências'));
     var tb = el('button', 'rodape-tema', 'Alternar tema claro e escuro');
@@ -393,20 +409,20 @@
     }
     render(true);
 
-    var ferr = $('#ferramentas');
-    FERRAMENTAS.forEach(function (f) {
-      var li = el('li', 'ferramenta');
+    var caminho = $('#caminho');
+    CAMINHO.forEach(function (f, i) {
+      var e = estadoPasso(f.id, state);
+      var li = el('li', 'passo' + (e.feito ? ' feito' : ''));
       var a = el('a');
       a.href = f.href;
-      var capa = el('span', 'ferramenta-capa');
-      capa.appendChild(el('span', 'ferramenta-tipo', f.tipo));
-      a.appendChild(capa);
-      var corpo = el('span', 'curso-corpo');
-      corpo.appendChild(el('b', 'curso-titulo', f.titulo));
-      corpo.appendChild(el('span', 'curso-resumo', f.texto));
+      a.appendChild(el('span', 'passo-num', String(i + 1)));
+      var corpo = el('span', 'passo-corpo');
+      corpo.appendChild(el('b', 'passo-titulo', f.titulo));
+      corpo.appendChild(el('span', 'passo-texto', f.texto));
       a.appendChild(corpo);
+      a.appendChild(el('span', 'passo-estado', e.texto));
       li.appendChild(a);
-      ferr.appendChild(li);
+      caminho.appendChild(li);
     });
 
     var ganhos = CURSOS.filter(function (c) { return concluido(c, state); }).length;

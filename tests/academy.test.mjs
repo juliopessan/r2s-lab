@@ -606,13 +606,31 @@ test('a theme link from the menu filters the catalog', async () => {
   });
 });
 
-test('the home brings the rest of the platform in as lab tools', async () => {
+test('the home shows the lab path in order, with each step state derived from progress', async () => {
   await withPage({}, async (page, url) => {
+    const blocks = {};
+    for (const id of ['1.1', '1.2', '1.3', '2.1', '2.2', '2.3', '3.1', '3.2', '3.3', '4.1', '4.2', '5.1', '5.2']) blocks[id] = true;
+    await seed(page, blocks);
     await page.goto(url + HOME, { waitUntil: 'load' });
-    assert.deepEqual(await rows(page, '#ferramentas .curso-titulo'), ['O método em 90 segundos', 'Pre-work interativo', 'Pesquisa de satisfação', 'Certificado', 'Painel da coordenação']);
-    const hrefs = await page.locator('#ferramentas a').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
-    assert.deepEqual(hrefs, ['../site/index.html', '../00-prework/index.html', '../05-encerramento/pesquisa.html', '../05-encerramento/certificado.html', '../admin/README.md']);
-    for (const h of hrefs) assert.ok(existsSync(path.join(root, 'academy', h)), h);
+    assert.deepEqual(await rows(page, '#caminho .passo-titulo'), ['Pre-work', 'Jornada da squad', 'Pesquisa de satisfação', 'Certificado', 'Painel da coordenação']);
+    assert.deepEqual(await rows(page, '#caminho .passo-num'), ['1', '2', '3', '4', '5']);
+    assert.deepEqual(await rows(page, '#caminho .passo-estado'), ['Concluído', '0 de 6 selos', 'Pendente', 'Emitido pela coordenação', 'Para a coordenação']);
+    const hrefs = await page.locator('#caminho a').evaluateAll((as) => as.map((a) => a.getAttribute('href')));
+    assert.deepEqual(hrefs, ['../00-prework/index.html', 'index.html#jornada-titulo', '../05-encerramento/pesquisa.html', '../05-encerramento/certificado.html', '../admin/README.md']);
+    for (const h of hrefs) if (!h.startsWith('index.html')) assert.ok(existsSync(path.join(root, 'academy', h)), h);
+    assert.ok(await page.evaluate(() => {
+      const c = document.querySelector('#caminho-titulo');
+      return c.compareDocumentPosition(document.querySelector('#temas-titulo')) & Node.DOCUMENT_POSITION_FOLLOWING;
+    }), 'the path comes before the catalog');
+    assert.match(await page.getAttribute('.hero-links a', 'href'), /\.\.\/site\/index\.html$/);
+  });
+});
+
+test('a half-done pre-work shows the hours on the path', async () => {
+  await withPage({}, async (page, url) => {
+    await seed(page, { '1.1': true, '1.2': true });
+    await page.goto(url + HOME, { waitUntil: 'load' });
+    assert.equal(await text(page, '#caminho li:nth-child(1) .passo-estado'), '1 h 45 de 8 h');
   });
 });
 

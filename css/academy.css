@@ -367,3 +367,17 @@ html{overflow-x:clip}
 .campo input{font:inherit;font-weight:400;color:var(--fg);background:var(--surface);border:1px solid var(--field);border-radius:8px;padding:9px 12px;min-width:0;width:100%}
 #export-msg{margin:10px 0 0;font-size:.95rem}
 #export-msg:empty{display:none}
+
+/* o caminho do lab */
+.hero-links{margin:6px 0 0;font-size:.95rem}
+.caminho{display:grid;gap:10px;counter-reset:none}
+.passo a{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:6px 16px;align-items:center;padding:16px 18px;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--brand);border-radius:14px;color:inherit;text-decoration:none}
+.passo a:hover{border-color:var(--field);border-left-color:var(--brand)}
+.passo-num{display:grid;place-items:center;width:36px;height:36px;border-radius:999px;background:var(--cta-bg);color:var(--cta-fg);font-weight:700;font-variant-numeric:tabular-nums}
+.passo.feito .passo-num{background:var(--ok)}
+.passo-corpo{display:grid;gap:2px;min-width:0}
+.passo-titulo{font-weight:600;font-size:1.05rem}
+.passo-texto{color:var(--muted);font-size:.93rem}
+.passo-estado{font-size:.85rem;font-weight:700;color:var(--brand-text);text-align:right}
+.passo.feito .passo-estado{color:var(--ok)}
+@media (max-width:560px){.passo a{grid-template-columns:auto minmax(0,1fr)}.passo-estado{grid-column:2;text-align:left}}
