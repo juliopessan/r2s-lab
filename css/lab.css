@@ -113,7 +113,7 @@ pre.prompt{white-space:pre-wrap;word-break:break-word;font-family:var(--mono);fo
 .final{margin-top:18px;background:var(--band-bg);color:var(--band-fg);border-top:6px solid var(--brand);border-radius:2px;padding:28px 26px}
 .final h3{font-weight:300;font-size:clamp(24px,4vw,34px);margin-bottom:10px}
 .final p{max-width:56ch}
-.final .btn{background:var(--ava-orange);color:var(--ava-black)}
+.final .btn{background:var(--cor-orange);color:var(--cor-black)}
 .final .btn:hover{background:#FF7A33}
 .final .btn.sec{background:transparent;color:var(--band-fg);border-color:var(--band-fg)}
 .final .btn.sec:hover{background:var(--band-fg);color:var(--band-bg)}

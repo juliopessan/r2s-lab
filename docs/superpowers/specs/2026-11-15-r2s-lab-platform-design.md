@@ -1,13 +1,13 @@
 # Plataforma R2S Lab — desenho (v1, para aprovação)
 
-Data: 2026-11-15 · Autor: Julio Pessan · Avanade Brazil Engineering HUB (BEH)
+Data: 2026-11-15 · Autor: Julio Pessan
 Status: **aguardando aprovação**. Nada foi construído.
 
 ---
 
 ## 1. Intenção e porquê
 
-A BEH vai treinar cerca de **100 pessoas do time de dados no FY27** com a metodologia R2S Lab. Hoje existem peças soltas: um teaser de 90 s, dois artifacts (pre-work e encerramento) e a metodologia escrita. Falta a plataforma que as junta e responde, sem planilha manual, ao que a coordenação precisa saber:
+A prática de Data & AI vai treinar cerca de **100 pessoas do time de dados no FY27** com a metodologia R2S Lab. Hoje existem peças soltas: um teaser de 90 s, dois artifacts (pre-work e encerramento) e a metodologia escrita. Falta a plataforma que as junta e responde, sem planilha manual, ao que a coordenação precisa saber:
 
 - quantas pessoas foram treinadas e quantas faltam;
 - qual o grau de satisfação;
@@ -143,7 +143,7 @@ Site estático (HTML/CSS/JS, sem framework necessário), tema escuro do teaser. 
 2. **R · 2 · S:** a narrativa da marca (§2).
 3. **Os beats do teaser, um por seção:** *Menos curso. Mais lab.* · 7 etapas, 5 gates, 12 semanas · *Prove o valor* · *Escolha o mais barato que funciona* · *Meça* · *Proteja* · *A cada gate, um novo papel* (os 5 papéis da squad) · *Demo day. O negócio decide.*
 4. **Como começar:** clonar, abrir no VS Code, abrir o README.
-5. **Rodapé:** lockup Avanade Brazil Engineering HUB.
+5. **Rodapé:** lockup prática de Data & AI.
 
 ## 8. Fases e ordem
 
@@ -162,14 +162,14 @@ Esta versão detalha as fases 1 e 2. Cada fase seguinte ganha desenho próprio a
 2. "Treinado" = nível de certificação (Foundation, Practitioner, Lead), e não "terminou o pre-work".
 3. Pesquisa identificada para a coordenação; citações públicas só com consentimento.
 4. Um repo privado por pessoa e um por squad, para isolar o progresso individual.
-5. Landing e páginas do repo no visual escuro do teaser; lockup Avanade só no rodapé.
+5. Landing e páginas do repo no visual escuro do teaser; lockup R2S só no rodapé.
 6. Pre-work e encerramento reaproveitados quase inteiros dos artifacts existentes, com o botão de exportação.
 7. Pasta e repo chamados `r2s-lab` (nome da marca; não há comando nem CLI).
 
 ## 10. Perguntas abertas (só você responde)
 
 1. **Em qual organização do GitHub** os repos vão morar, e a org permite criar repos a partir de template e rodar Actions?
-2. **Onde publicar o painel** com acesso restrito (GitHub Pages privado, Vercel com proteção ou outro padrão da Avanade)?
+2. **Onde publicar o painel** com acesso restrito (GitHub Pages privado, Vercel com proteção ou outro padrão interno)?
 3. **A leitura de R2S:** manter "Requirement-to-Solution" como subtítulo do método (minha proposta) ou aposentar?
 4. **Meta de 100 por nível:** confirmar que 100 = Foundation até o fim do FY27 (assumi ago/2027), com Practitioner e Lead seguindo o plano de coortes (~30 no FY27).
 5. **Diagnóstico oficial da semana 0:** como é pontuado (rubrica do coach, teste)? A metodologia não define, e a autoavaliação do pre-work é só preliminar.

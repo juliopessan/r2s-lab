@@ -322,7 +322,7 @@
     pref.appendChild(el('p', null, 'Idioma: português (Brasil)'));
     inner.appendChild(pref);
     var base = el('div', 'rodape-base');
-    base.appendChild(el('p', null, 'R2S Lab · Avanade Brazil Engineering HUB'));
+    base.appendChild(el('p', null, 'R2S Lab'));
     base.appendChild(el('p', null, 'Seu progresso fica neste navegador.'));
     rodape.appendChild(inner);
     rodape.appendChild(base);

@@ -382,7 +382,7 @@ test('every course has its own icon, and the colour encodes the family', async (
     });
   }
   assert.equal(seen.size, 11);
-  assert.deepEqual(['p1', 'p2', 'p3', 'p4', 'p5'].map((c) => fills[c]), Array(5).fill('#FF5800'), 'the pre-work family is Avanade Glow');
+  assert.deepEqual(['p1', 'p2', 'p3', 'p4', 'p5'].map((c) => fills[c]), Array(5).fill('#FF5800'), 'the pre-work family is Glow');
   assert.deepEqual(['s1', 's2', 's3', 's4', 's5', 's6'].map((c) => fills[c]), ['#FFD700', '#FFB414', '#FF5800', '#B43C14', '#C80000', '#890078'], 'the squad journey runs Solar to Aurora');
 });
 
@@ -652,7 +652,7 @@ test('the journey dashboard has Continue on the latest course and lists finished
   });
 });
 
-test('the Avanade re-skin: Segoe UI, light headings and an orange primary button with AA contrast', async () => {
+test('the brand re-skin: Segoe UI, light headings and an orange primary button with AA contrast', async () => {
   await withPage({}, async (page, url) => {
     await page.emulateMedia({ colorScheme: 'light' });
     await page.goto(url + COURSE('p1'), { waitUntil: 'load' });
@@ -665,7 +665,7 @@ test('the Avanade re-skin: Segoe UI, light headings and an orange primary button
     assert.equal(m.btn, 'rgb(180, 60, 20)');
     assert.equal(m.btnFg, 'rgb(255, 255, 255)');
     const theme = readFileSync(path.join(root, 'css', 'theme.css'), 'utf8');
-    assert.match(theme, /--ava-orange:#FF5800/);
+    assert.match(theme, /--cor-orange:#FF5800/);
     const css = readFileSync(path.join(root, 'css', 'academy.css'), 'utf8');
     assert.ok(!/--bg:|--fg:|--cta-bg:/.test(css), 'academy.css does not redefine the shared theme');
     assert.ok(!/Iowan|Palatino|Georgia/.test(css), 'no serif display font left');

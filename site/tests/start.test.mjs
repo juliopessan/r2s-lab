@@ -4,8 +4,8 @@ import browser from './helpers/browser.cjs';
 
 const { withPage } = browser;
 
-const WITH_ORG = "window.__R2S_ORG__ = 'avanade-exemplo';";
-const TEMPLATE_URL = 'https://github.com/avanade-exemplo/r2s-lab';
+const WITH_ORG = "window.__R2S_ORG__ = 'org-exemplo';";
+const TEMPLATE_URL = 'https://github.com/org-exemplo/r2s-lab';
 
 test('without an organization shows the coming-soon notice', async () => {
   await withPage({ init: "window.__R2S_ORG__ = '';" }, async (page, url) => {
@@ -65,13 +65,13 @@ test('an invalid organization name is ignored', async () => {
   });
 });
 
-test('footer holds the Avanade lockup and nothing above it does', async () => {
+test('footer holds the R2S lockup and no company name appears anywhere', async () => {
   await withPage({}, async (page, url) => {
     await page.goto(url, { waitUntil: 'load' });
     const footer = await page.locator('footer').innerText();
-    assert.ok(footer.includes('AVANADE'));
-    assert.ok(footer.includes('Brazil Engineering HUB'));
-    assert.ok(!(await page.locator('main').innerText()).includes('AVANADE'));
+    assert.ok(footer.includes('R2S LAB'));
+    assert.ok(footer.includes('Prática de Data & AI'));
+    assert.doesNotMatch(await page.locator('body').innerText(), /avanade|brazil engineering/i);
   });
 });
 

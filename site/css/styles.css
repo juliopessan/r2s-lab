@@ -1,6 +1,6 @@
 /* R2S Lab — landing. Cores e tema vêm de ../css/theme.css (o mesmo da Academy); aqui só layout e tipografia.
  * Layout: cabeçalho fino e fixo; hero em duas colunas (texto e teaser); seções em coluna única de leitura;
- * a chamada final é uma faixa escura nos dois temas. Escala Avanade: H1 em Bold (display), H2 em Light. */
+ * a chamada final é uma faixa escura nos dois temas. Escala tipográfica: H1 em Bold (display), H2 em Light. */
 
 * { box-sizing: border-box; }
 html { background: var(--bg); }
@@ -143,16 +143,16 @@ main {
 .levar li { display: grid; gap: 0.4rem; padding: 1.5rem; background: var(--soft); border-radius: 14px; }
 .levar .num { font-size: 2.6rem; font-weight: 300; line-height: 1; color: var(--brand-text); font-variant-numeric: tabular-nums; }
 
-/* chamada final: faixa escura nos dois temas, com a barra do gradiente Avanade */
+/* chamada final: faixa escura nos dois temas, com a barra do gradiente */
 .final {
   margin-inline: calc(50% - 50vw); padding-inline: max(16px, env(safe-area-inset-left, 0px));
   background: var(--band-bg); color: var(--band-fg); position: relative;
 }
-.final::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 6px; background: var(--ava-gradient-master); }
+.final::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 6px; background: var(--cor-gradient-master); }
 .final-in { max-width: 76rem; margin: 0 auto; padding-block: 4.5rem; }
 .final h2 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 300; margin-bottom: 1rem; }
 .final p { color: var(--band-muted); font-size: 1.1rem; max-width: 40rem; }
-.final .cta { background: var(--ava-orange); color: var(--ava-black); }
+.final .cta { background: var(--cor-orange); color: var(--cor-black); }
 .final .cta:hover { background: #FF7A33; }
 
 /* registrar o progresso */
