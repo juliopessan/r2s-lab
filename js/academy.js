@@ -269,6 +269,14 @@
     wrap.appendChild(el('span', 'badge-brilho'));
     return wrap;
   }
+  /** Ficha no formato da página de selos da Claude Academy: polígono pastel com ícone e nome do curso. */
+  function fichaEl(c, opcoes) {
+    opcoes = opcoes || {};
+    var wrap = el('span', 'badge ficha-badge t-' + c.id + (opcoes.ganho ? ' ganho' : '') + (opcoes.bloqueado ? ' bloqueada' : ''));
+    wrap.style.setProperty('--tam', (opcoes.tamanho || 180) + 'px');
+    wrap.appendChild(ART.ficha(document, c, { bloqueado: opcoes.bloqueado === true }));
+    return wrap;
+  }
   function seloCompleto(c, nome, dataIso) { return ART.completo(document, c, nome, dataIso); }
   function alinharTudo() { ART.alinhar(document); }
 
@@ -379,8 +387,7 @@
         var a = el('a');
         a.href = 'curso.html?c=' + c.id;
         var capa = el('span', 'curso-capa');
-        capa.style.background = MATERIA[c.id].fundo;
-        capa.appendChild(badge(c, concluido(c, state), 104));
+        capa.appendChild(fichaEl(c, { ganho: concluido(c, state), tamanho: 176 }));
         var chip = chipEstado(c, state);
         if (chip) capa.appendChild(chip);
         a.appendChild(capa);
@@ -433,11 +440,17 @@
     CURSOS.forEach(function (c) {
       var ok = concluido(c, state);
       var li = el('li', 'selo' + (ok ? ' ganho' : ''));
-      li.appendChild(badge(c, ok, 56));
-      var a = el('a', 'selo-titulo', c.titulo);
+      var a = el('a', 'selo-link');
       a.href = ok ? 'selo.html?c=' + c.id : 'curso.html?c=' + c.id;
+      a.appendChild(fichaEl(c, { ganho: ok, bloqueado: !ok, tamanho: 200 }));
+      a.appendChild(el('span', 'selo-titulo sr', c.titulo));
       li.appendChild(a);
-      li.appendChild(el('span', 'selo-estado', ok ? 'Concluído' : 'Bloqueado'));
+      var falta = licoes(c).length - feitas(c, state).length;
+      var datasSelos = academia(state).selos;
+      li.appendChild(el('p', 'selo-legenda', ok
+        ? 'Emitido em ' + dataLonga(datasSelos[c.id] || hoje())
+        : (falta === 1 ? 'Falta 1 lição' : 'Faltam ' + falta + ' lições')));
+      li.appendChild(el('span', 'selo-estado sr', ok ? 'Concluído' : 'Bloqueado'));
       selos.appendChild(li);
     });
     alinharTudo();
@@ -461,7 +474,7 @@
     if (c.quizzes.length) pills.push(plural(c.quizzes.length, 'quiz', 'quizzes'));
     pills.push('Selo de conclusão');
     pilulas($('#meta'), pills);
-    $('#faixa-arte').appendChild(badge(c, completo, 168));
+    $('#faixa-arte').appendChild(fichaEl(c, { ganho: completo, tamanho: 230 }));
     var chipCurso = chipEstado(c, state);
     if (chipCurso) $('#meta').appendChild(chipCurso);
     $('.acoes').appendChild(botaoSalvar(c));

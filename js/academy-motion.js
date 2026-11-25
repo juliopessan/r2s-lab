@@ -36,6 +36,7 @@
     var caps = root.querySelectorAll('.curso-capa:not([data-m])');
     for (var i = 0; i < caps.length; i++) {
       caps[i].setAttribute('data-m', '1');
+      if (caps[i].querySelector('.ficha-badge')) continue; // a ficha já é a placa
       caps[i].insertBefore(blobSvg(++blobN), caps[i].firstChild);
     }
   }

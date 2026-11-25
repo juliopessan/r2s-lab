@@ -358,3 +358,16 @@ html{overflow-x:clip}
 .passo.feito .passo-estado{color:var(--ok)}
 @media (max-width:560px){.passo a{grid-template-columns:auto minmax(0,1fr)}.passo-estado{grid-column:2;text-align:left}}
 .top-nav{align-items:center}
+
+/* fichas no formato da página de selos da Claude Academy */
+.ficha-badge{border-radius:0;overflow:visible}
+.ficha-badge svg{display:block;width:100%;height:100%;overflow:visible}
+.ficha-badge .badge-brilho{display:none}
+.curso-capa{display:grid;place-items:center;height:212px;background:var(--soft)}
+.selos{grid-template-columns:repeat(auto-fill,minmax(min(100%,13.5rem),1fr));gap:28px 20px}
+.selos li.selo{display:grid;justify-items:center;gap:10px;padding:0;background:none;border:0;border-radius:0}
+.selo-link{display:block;text-decoration:none;border-radius:50%}
+.selo-legenda{margin:0;font-size:.92rem;color:var(--muted);text-align:center}
+.selo.ganho .selo-legenda{color:var(--fg)}
+.faixa-arte .ficha-badge{--tam:230px}
+@media (max-width:720px){.faixa-arte .ficha-badge{--tam:150px !important}}
