@@ -1,11 +1,11 @@
-/* R2S Academy — modelo da Claude Academy (estrutura, espaçamento, raios e estados) com o re-skin Avanade
- * (skill academy-platform-design, seção 6). Tokens em duas camadas: primitivos --ava-* e, depois, papéis;
- * os componentes só usam papéis. Um acento só: Avanade Orange. Faixas de cor = família de conteúdo. */
+/* R2S Academy — modelo da Claude Academy (estrutura, espaçamento, raios e estados) com o re-skin da marca
+ * (skill academy-platform-design, seção 6). Tokens em duas camadas: primitivos --cor-* e, depois, papéis;
+ * os componentes só usam papéis. Um acento só: o laranja da marca. Faixas de cor = família de conteúdo. */
 /* Tema (cores, claro e escuro, botão de tema): css/theme.css, carregado antes. Aqui só as faixas por família. */
 :root{
-  --fam-pre-bg:#FFE9DC;--fam-pre-ink:var(--ava-grey-80);
-  --s1-bg:#FFF6CC;--s1-ink:var(--ava-grey-80);--s2-bg:#FFEDC7;--s2-ink:var(--ava-grey-80);--s3-bg:#FFE0CC;--s3-ink:var(--ava-grey-80);
-  --s4-bg:#F3D9CF;--s4-ink:var(--ava-grey-80);--s5-bg:#F6D1D1;--s5-ink:var(--ava-grey-80);--s6-bg:#EED2EA;--s6-ink:var(--ava-grey-80);
+  --fam-pre-bg:#FFE9DC;--fam-pre-ink:var(--cor-grey-80);
+  --s1-bg:#FFF6CC;--s1-ink:var(--cor-grey-80);--s2-bg:#FFEDC7;--s2-ink:var(--cor-grey-80);--s3-bg:#FFE0CC;--s3-ink:var(--cor-grey-80);
+  --s4-bg:#F3D9CF;--s4-ink:var(--cor-grey-80);--s5-bg:#F6D1D1;--s5-ink:var(--cor-grey-80);--s6-bg:#EED2EA;--s6-ink:var(--cor-grey-80);
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --fam-pre-bg:#3A1D0D;--fam-pre-ink:#FFE9DC;
@@ -303,10 +303,10 @@ html{overflow-x:clip}
 /* chip de estado derivado, marcador e linha do selo */
 .curso{position:relative}
 .curso-capa{position:relative}
-.chip-estado{position:absolute;top:12px;left:12px;display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:700;color:var(--ava-grey-80);background:var(--ava-white);border-radius:999px;padding:3px 10px;font-variant-numeric:tabular-nums}
-.chip-estado.concluido{color:var(--ava-white);background:#007A3D}
-.mini-barra{display:inline-block;width:36px;height:4px;border-radius:4px;background:var(--ava-grey-20);overflow:hidden}
-.mini-barra i{display:block;height:100%;background:var(--ava-dark-orange)}
+.chip-estado{position:absolute;top:12px;left:12px;display:inline-flex;align-items:center;gap:8px;font-size:.78rem;font-weight:700;color:var(--cor-grey-80);background:var(--cor-white);border-radius:999px;padding:3px 10px;font-variant-numeric:tabular-nums}
+.chip-estado.concluido{color:var(--cor-white);background:#007A3D}
+.mini-barra{display:inline-block;width:36px;height:4px;border-radius:4px;background:var(--cor-grey-20);overflow:hidden}
+.mini-barra i{display:block;height:100%;background:var(--cor-dark-orange)}
 .pilulas .chip-estado,.linha .chip-estado{position:static}
 .salvar{position:absolute;top:10px;right:10px;z-index:2}
 .salvar svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round}
@@ -315,11 +315,11 @@ html{overflow-x:clip}
 .acoes .salvar{position:static}
 .curso-selo{font-size:.82rem;color:var(--muted);border-top:1px solid var(--line);padding-top:8px;margin-top:2px}
 
-/* ferramentas do lab: faixa no gradiente mestre Avanade */
+/* ferramentas do lab: faixa no gradiente mestre */
 .ferramenta a{display:grid;grid-template-rows:auto 1fr;height:100%;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden;color:inherit;text-decoration:none}
 .ferramenta a:hover{border-color:var(--field)}
-.ferramenta-capa{display:flex;align-items:flex-end;height:96px;padding:12px 16px;background:var(--ava-gradient-master)}
-.ferramenta-tipo{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ava-white)}
+.ferramenta-capa{display:flex;align-items:flex-end;height:96px;padding:12px 16px;background:var(--cor-gradient-master)}
+.ferramenta-tipo{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--cor-white)}
 
 /* sua jornada */
 .pagina-jornada{padding-top:40px}
@@ -330,7 +330,7 @@ html{overflow-x:clip}
 .linha-texto{display:grid;gap:2px;min-width:0}
 .linha-titulo{font-weight:600;overflow-wrap:anywhere}
 .linha .chip-estado{background:var(--soft);color:var(--fg)}
-.linha .chip-estado.concluido{background:#007A3D;color:var(--ava-white)}
+.linha .chip-estado.concluido{background:#007A3D;color:var(--cor-white)}
 .vazio{margin:0}
 
 /* rodapé: preferências */

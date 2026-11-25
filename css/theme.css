@@ -1,42 +1,42 @@
 /* R2S Lab — tema único da plataforma (landing e Academy). Um padrão só, em todas as páginas (landing, Academy, pre-work, pesquisa, certificado; o painel tem cópia):
  *   1. sem escolha, segue o sistema (prefers-color-scheme);
  *   2. o botão de tema (js/tema.js) troca o tema que está na tela e grava a escolha (localStorage "r2s-academy-theme") e ela vale em todas as páginas;
- *   3. as mesmas cores nos dois lados. Tokens em duas camadas: primitivos Avanade e, depois, papéis.
+ *   3. as mesmas cores nos dois lados. Tokens em duas camadas: primitivos da marca e, depois, papéis.
  * Contraste conferido nos testes: texto em AA nos dois temas; o botão principal é Flame no claro
  * (branco sobre #B43C14 dá 6,1:1) e Orange no escuro (preto sobre #FF5800). */
 :root{
-  /* primitivos Avanade */
-  --ava-orange:#FF5800;--ava-dark-orange:#DC4600;--ava-black:#000000;--ava-white:#FFFFFF;
-  --ava-grey-80:#333333;--ava-grey-70:#4c4c4c;--ava-grey-60:#666666;--ava-grey-50:#7f7f7f;
-  --ava-grey-40:#999999;--ava-grey-30:#b3b3b3;--ava-grey-20:#cccccc;--ava-grey-10:#e5e5e5;
-  --ava-solar:#FFD700;--ava-luminous:#FFB414;--ava-glow:#FF5800;--ava-flame:#B43C14;--ava-thermal:#C80000;--ava-aurora:#890078;
-  --ava-success:#00A650;
-  --ava-font:'Segoe UI','Segoe UI Variable',system-ui,-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
-  --ava-gradient-master:linear-gradient(135deg,#FF5800 0%,#890078 100%);
+  /* primitivos da marca */
+  --cor-orange:#FF5800;--cor-dark-orange:#DC4600;--cor-black:#000000;--cor-white:#FFFFFF;
+  --cor-grey-80:#333333;--cor-grey-70:#4c4c4c;--cor-grey-60:#666666;--cor-grey-50:#7f7f7f;
+  --cor-grey-40:#999999;--cor-grey-30:#b3b3b3;--cor-grey-20:#cccccc;--cor-grey-10:#e5e5e5;
+  --cor-solar:#FFD700;--cor-luminous:#FFB414;--cor-glow:#FF5800;--cor-flame:#B43C14;--cor-thermal:#C80000;--cor-aurora:#890078;
+  --cor-success:#00A650;
+  --cor-font:'Segoe UI','Segoe UI Variable',system-ui,-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;
+  --cor-gradient-master:linear-gradient(135deg,#FF5800 0%,#890078 100%);
 
   /* papéis: claro */
-  --bg:var(--ava-white);--surface:var(--ava-white);--soft:#F4F4F4;--fg:var(--ava-grey-80);--muted:var(--ava-grey-60);
-  --line:var(--ava-grey-10);--field:var(--ava-grey-50);
-  --brand:var(--ava-orange);--brand-hover:var(--ava-dark-orange);--brand-ink:var(--ava-white);--brand-text:var(--ava-flame);
-  --cta-bg:var(--ava-flame);--cta-fg:var(--ava-white);--cta-hover:#8F2F10;
-  --ok:#007A3D;--foot-bg:var(--ava-grey-80);--foot-fg:var(--ava-white);--foot-muted:var(--ava-grey-20);
-  --band-bg:var(--ava-grey-80);--band-fg:var(--ava-white);--band-muted:var(--ava-grey-20);
-  --serif:var(--ava-font);--sans:var(--ava-font);
+  --bg:var(--cor-white);--surface:var(--cor-white);--soft:#F4F4F4;--fg:var(--cor-grey-80);--muted:var(--cor-grey-60);
+  --line:var(--cor-grey-10);--field:var(--cor-grey-50);
+  --brand:var(--cor-orange);--brand-hover:var(--cor-dark-orange);--brand-ink:var(--cor-white);--brand-text:var(--cor-flame);
+  --cta-bg:var(--cor-flame);--cta-fg:var(--cor-white);--cta-hover:#8F2F10;
+  --ok:#007A3D;--foot-bg:var(--cor-grey-80);--foot-fg:var(--cor-white);--foot-muted:var(--cor-grey-20);
+  --band-bg:var(--cor-grey-80);--band-fg:var(--cor-white);--band-muted:var(--cor-grey-20);
+  --serif:var(--cor-font);--sans:var(--cor-font);
   --shadow-sm:0 1px 3px rgba(0,0,0,.08);--shadow-md:0 4px 12px rgba(0,0,0,.10);--shadow-lg:0 18px 40px -18px rgba(0,0,0,.35);
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:var(--ava-black);--surface:#1A1A1A;--soft:#262626;--fg:var(--ava-white);--muted:var(--ava-grey-30);
-  --line:#333333;--field:var(--ava-grey-50);--brand-ink:var(--ava-black);--brand-text:#FF7A33;
-  --cta-bg:var(--ava-orange);--cta-fg:var(--ava-black);--cta-hover:#FF7A33;--ok:#3DD68C;--foot-bg:#0B0B0B;
-  --band-bg:#141414;--band-fg:var(--ava-white);--band-muted:var(--ava-grey-30);
+  --bg:var(--cor-black);--surface:#1A1A1A;--soft:#262626;--fg:var(--cor-white);--muted:var(--cor-grey-30);
+  --line:#333333;--field:var(--cor-grey-50);--brand-ink:var(--cor-black);--brand-text:#FF7A33;
+  --cta-bg:var(--cor-orange);--cta-fg:var(--cor-black);--cta-hover:#FF7A33;--ok:#3DD68C;--foot-bg:#0B0B0B;
+  --band-bg:#141414;--band-fg:var(--cor-white);--band-muted:var(--cor-grey-30);
   --shadow-lg:0 18px 40px -18px rgba(0,0,0,.8);
   color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:var(--ava-black);--surface:#1A1A1A;--soft:#262626;--fg:var(--ava-white);--muted:var(--ava-grey-30);
-  --line:#333333;--field:var(--ava-grey-50);--brand-ink:var(--ava-black);--brand-text:#FF7A33;
-  --cta-bg:var(--ava-orange);--cta-fg:var(--ava-black);--cta-hover:#FF7A33;--ok:#3DD68C;--foot-bg:#0B0B0B;
-  --band-bg:#141414;--band-fg:var(--ava-white);--band-muted:var(--ava-grey-30);
+  --bg:var(--cor-black);--surface:#1A1A1A;--soft:#262626;--fg:var(--cor-white);--muted:var(--cor-grey-30);
+  --line:#333333;--field:var(--cor-grey-50);--brand-ink:var(--cor-black);--brand-text:#FF7A33;
+  --cta-bg:var(--cor-orange);--cta-fg:var(--cor-black);--cta-hover:#FF7A33;--ok:#3DD68C;--foot-bg:#0B0B0B;
+  --band-bg:#141414;--band-fg:var(--cor-white);--band-muted:var(--cor-grey-30);
   --shadow-lg:0 18px 40px -18px rgba(0,0,0,.8);
   color-scheme:dark}
 
@@ -47,12 +47,12 @@
 .tema-btn::before{content:"";position:absolute;top:2px;left:2px;width:28px;height:28px;border-radius:50%;background:var(--brand)}
 .tema-btn svg{position:relative;z-index:1;width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .tema-btn .lua path{fill:currentColor;stroke:none}
-.tema-btn .sol{order:-1;color:var(--ava-black)}
+.tema-btn .sol{order:-1;color:var(--cor-black)}
 @media (prefers-color-scheme:dark){
   :root:not([data-theme="light"]) .tema-btn::before{transform:translateX(30px)}
   :root:not([data-theme="light"]) .tema-btn .sol{color:var(--muted)}
-  :root:not([data-theme="light"]) .tema-btn .lua{color:var(--ava-black)}}
+  :root:not([data-theme="light"]) .tema-btn .lua{color:var(--cor-black)}}
 :root[data-theme="dark"] .tema-btn::before{transform:translateX(30px)}
 :root[data-theme="dark"] .tema-btn .sol{color:var(--muted)}
-:root[data-theme="dark"] .tema-btn .lua{color:var(--ava-black)}
+:root[data-theme="dark"] .tema-btn .lua{color:var(--cor-black)}
 @media (prefers-reduced-motion:no-preference){.tema-btn::before{transition:transform .2s ease}}

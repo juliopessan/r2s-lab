@@ -17,7 +17,7 @@
 - **Não usar "Requirement-to-Solution"** em nenhum texto público (landing, README) até a pergunta aberta nº 3 do spec ser respondida.
 - Visual do teaser: fundo escuro, laranja único, frases curtas. Tokens fixos: `--bg:#0E1116`, `--card:#151A21`, `--fg:#F2F4F7`, `--muted:#A8B0BC`, `--brand:#FF5800`.
 - Acessibilidade: legendas em português no vídeo (narrado); contraste AA (≥ 4.5:1 em texto); sem animação obrigatória (`prefers-reduced-motion`).
-- Landing: "Site estático (HTML/CSS/JS, sem framework necessário)", lockup `AVANADE | Brazil Engineering HUB` **só no rodapé**.
+- Landing: "Site estático (HTML/CSS/JS, sem framework necessário)", lockup `R2S LAB | Prática de Data & AI` **só no rodapé**.
 - Vídeo: mp4 de 90 s, 1920×1080, narrado, 5.580.671 bytes (fonte em `docs/source-assets/R2S_Lab_teaser_90s_narrado_16x9.mp4`).
 - Sem dado de cliente. **A lista do RH (dado pessoal) nunca entra em `r2s-lab-site` nem em `r2s-lab`**; vive só em `r2s-lab-admin`, privado.
 - A organização do GitHub é desconhecida: nenhuma URL com organização inventada ou placeholder pode aparecer na página.
@@ -283,14 +283,14 @@
 
 **Interfaces:**
 - Consumes: `GITHUB_ORG` de `js/config.js`; `window.__R2S_ORG__` (se definido, tem precedência; serve aos testes).
-- Produces: `<section id="comecar">` com `#clone-status` (aviso) e, quando há organização, `code#clone-cmd` com `git clone https://github.com/<org>/r2s-lab.git` e `button#copy-cmd`. `<footer>` com o lockup `AVANADE` · `Brazil Engineering HUB`.
+- Produces: `<section id="comecar">` com `#clone-status` (aviso) e, quando há organização, `code#clone-cmd` com `git clone https://github.com/<org>/r2s-lab.git` e `button#copy-cmd`. `<footer>` com o lockup `R2S LAB` · `Prática de Data & AI`.
 
 - [ ] **Step 1: Write the failing tests:**
   - `without an organization shows the coming-soon notice`: `#clone-status` contém `Em breve: a coordenação vai divulgar o endereço do repositório.`; **não existe** `#clone-cmd`; o HTML da página não contém `<ORG>` nem `github.com//`.
-  - `with an organization renders the real command`: com `init: "window.__R2S_ORG__='avanade-exemplo'"` → `#clone-cmd` com texto exato `git clone https://github.com/avanade-exemplo/r2s-lab.git`.
+  - `with an organization renders the real command`: com `init: "window.__R2S_ORG__='org-exemplo'"` → `#clone-cmd` com texto exato `git clone https://github.com/org-exemplo/r2s-lab.git`.
   - `copy button copies the command`: concede a permissão `clipboard-write`, clica `#copy-cmd`, lê a área de transferência e confere o comando; `#copy-msg` mostra `Copiado.`
   - `copy falls back when the clipboard is unavailable`: com `init` que apaga `navigator.clipboard`, o clique mostra `Não consegui copiar automaticamente. Selecione o texto e copie com Ctrl+C (ou Cmd+C).`
-  - `footer holds the Avanade lockup and nothing above it does`: `footer` contém `AVANADE` e `Brazil Engineering HUB`; o texto `AVANADE` não aparece fora do `footer`.
+  - `footer holds the R2S lockup and no company name`: `footer` contém `R2S LAB` e `Prática de Data & AI`; nenhum nome de empresa aparece na página.
   - `lists the three steps`: `ol.steps` com 3 itens: clonar, abrir no VS Code, abrir o README.
 - [ ] **Step 2: Run to verify it fails** — `node --test tests/start.test.mjs` → FAIL.
 - [ ] **Step 3: Implement** `renderStart(org: string): void` em `js/main.js` (monta ou remove `#clone-cmd` e o botão conforme `org`), chamado no carregamento do módulo; o HTML estático já traz o aviso "Em breve" para o caso sem JavaScript.

@@ -4,7 +4,7 @@
 
 > “Dá pra resolver isso com IA?” Em 12 semanas, a sua squad responde com número, custo e uma decisão do negócio.
 
-Para a prática de Data & AI do Brazil Engineering HUB.
+Para a prática de Data & AI.
 
 <video src="https://raw.githubusercontent.com/juliopessan/r2s-lab/main/docs/source-assets/R2S_Lab_teaser_90s_narrado_16x9.mp4" poster="docs/readme/teaser-play.jpg" controls playsinline width="100%"><a href="https://github.com/juliopessan/r2s-lab/blob/main/site/assets/teaser.mp4"><img src="docs/readme/teaser-play.jpg" alt="Teaser do R2S Lab: o método em 90 segundos, com narração. Clique para assistir com som." width="100%"></a></video>
 
