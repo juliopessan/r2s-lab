@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>R2S Academy</title>
+<meta name="description" content="Cursos gratuitos do R2S Lab: IA aplicada a negócio, do pedido ao problema até a decisão.">
+<link rel="stylesheet" href="../css/academy.css">
+</head>
+<body>
+<header class="top" role="banner">
+ <nav class="top-in" aria-label="Principal">
+  <a class="brand" href="index.html"><b>R2S</b> Academy</a>
+  <a href="index.html#cursos-titulo">Explorar</a>
+  <a href="index.html#selos-titulo">Seus selos</a>
+ </nav>
+</header>
+
+<main id="conteudo">
+ <section class="hero" aria-labelledby="titulo">
+  <p class="kick">R2S Lab · Reskilling too Skilling</p>
+  <h1 id="titulo">O que você quer aprender?</h1>
+  <p class="lede">Cursos gratuitos de IA aplicada a negócio, do time de dados da Avanade Brazil Engineering HUB.</p>
+  <label class="busca" for="busca"><span class="sr">Buscar cursos</span>
+   <input id="busca" type="search" placeholder="Busque por um tema, uma lição ou uma pergunta" autocomplete="off">
+  </label>
+ </section>
+
+ <section aria-labelledby="temas-titulo">
+  <h2 id="temas-titulo">Mergulhe em um tema</h2>
+  <ul id="temas" class="temas plain"></ul>
+ </section>
+
+ <section aria-labelledby="cursos-titulo">
+  <h2 id="cursos-titulo">Desenvolva fluência em IA aplicada a negócio</h2>
+  <p class="muted">Os cinco cursos formam o pre-work de um dia do R2S Lab. Faça na ordem ou escolha o que precisa.</p>
+  <ul id="cursos" class="cursos plain"></ul>
+  <p id="sem-resultado" class="muted" role="status" hidden>Nenhum curso encontrado.</p>
+ </section>
+
+ <section aria-labelledby="selos-titulo">
+  <h2 id="selos-titulo">Seus selos</h2>
+  <div id="selos"></div>
+ </section>
+</main>
+
+<footer class="foot">
+ <div>
+  <h3>Para quem</h3>
+  <p class="muted">Participantes do R2S Lab, multiplicadores e coaches.</p>
+ </div>
+ <div>
+  <h3>Onde fica o seu progresso</h3>
+  <p class="muted">Neste navegador. Para registrar, exporte o arquivo no pre-work e faça o commit no seu repositório.</p>
+ </div>
+ <p class="muted copy">R2S Lab · Avanade Brazil Engineering HUB</p>
+</footer>
+
+<script src="../lib/progress.js"></script>
+<script src="../lib/store.js"></script>
+<script src="../js/academy.js"></script>
+</body>
+</html>

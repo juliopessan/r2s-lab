@@ -50,6 +50,7 @@ A estrutura abaixo é a prevista; cada pasta chega na sua fase.
 
 ```
 r2s-lab/
+├─ academy/              catálogo de cursos (R2S Academy), sobre o pre-work: academy/index.html
 ├─ 00-prework/           pre-work de 8 horas, em 5 partes
 ├─ 05-encerramento/      pesquisa de satisfação e certificado
 ├─ templates/            A brief · B ADR · C pitch · D Social Impact Statement · E hearing

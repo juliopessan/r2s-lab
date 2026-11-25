@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Curso · R2S Academy</title>
+<link rel="stylesheet" href="../css/academy.css">
+</head>
+<body>
+<header class="top" role="banner">
+ <nav class="top-in" aria-label="Principal">
+  <a class="brand" href="index.html"><b>R2S</b> Academy</a>
+  <a href="index.html#cursos-titulo">Explorar</a>
+  <a href="index.html#selos-titulo">Seus selos</a>
+ </nav>
+</header>
+
+<main id="conteudo">
+ <p id="nao-encontrado" class="aviso" hidden>Curso não encontrado. <a href="index.html">Volte ao catálogo</a>.</p>
+
+ <article id="curso" hidden>
+  <p class="kick"><a href="index.html">Catálogo</a> · <span id="tema"></span></p>
+  <h1 id="titulo"></h1>
+  <p id="meta" class="meta"></p>
+  <p id="resumo" class="lede"></p>
+  <div class="acoes">
+   <a id="cta" class="btn" href="#">Começar</a>
+   <p id="progresso" class="muted" role="status"></p>
+  </div>
+  <div id="selo" class="selo" hidden></div>
+
+  <section aria-labelledby="aprender-titulo">
+   <h2 id="aprender-titulo">O que você vai aprender</h2>
+   <ul id="aprender" class="aprender"></ul>
+  </section>
+
+  <section aria-labelledby="licoes-titulo">
+   <h2 id="licoes-titulo">Lições</h2>
+   <ol id="licoes" class="licoes plain"></ol>
+  </section>
+ </article>
+</main>
+
+<footer class="foot"><p class="muted copy">R2S Lab · Avanade Brazil Engineering HUB</p></footer>
+
+<script src="../lib/progress.js"></script>
+<script src="../lib/store.js"></script>
+<script src="../js/academy.js"></script>
+</body>
+</html>

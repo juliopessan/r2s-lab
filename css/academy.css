@@ -1,0 +1,80 @@
+/* R2S Academy. Mesmas cores do R2S Lab: fundo escuro, um laranja só; papel claro com a preferência do sistema. */
+:root{--bg:#0E1116;--card:#151A21;--soft:#1C222B;--fg:#F2F4F7;--muted:#A8B0BC;--line:#2A313B;--field:#667084;--brand:#FF5800;--brand-ink:#0E1116;--brand-text:#FF7A33;--ok:#3DD68C;--font:'Segoe UI','Segoe UI Variable',system-ui,-apple-system,BlinkMacSystemFont,'Helvetica Neue',Arial,sans-serif;color-scheme:dark}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#FFFFFF;--card:#F5F6F8;--soft:#ECEEF2;--fg:#14181F;--muted:#4A515C;--line:#D5D9E0;--field:#6B7482;--brand-text:#B33C00;--ok:#0E7A47;color-scheme:light}}
+:root[data-theme="light"]{--bg:#FFFFFF;--card:#F5F6F8;--soft:#ECEEF2;--fg:#14181F;--muted:#4A515C;--line:#D5D9E0;--field:#6B7482;--brand-text:#B33C00;--ok:#0E7A47;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--font);font-size:16px;line-height:1.6;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:var(--brand-text)}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+h1,h2,h3{margin:0;text-wrap:balance}
+h1{font-weight:300;font-size:clamp(2rem,6vw,3.2rem);line-height:1.15}
+h2{font-weight:300;font-size:clamp(1.4rem,3.5vw,1.9rem);margin-bottom:14px}
+p{margin:0 0 12px;max-width:66ch}
+.muted{color:var(--muted)}
+.plain{list-style:none;margin:0;padding:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.kick{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand-text);margin:0 0 12px}
+.kick a{color:inherit}
+.lede{font-size:1.15rem;color:var(--muted)}
+
+.top{border-bottom:1px solid var(--line);margin-inline:calc(-1 * max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px))}
+.top-in{max-width:72rem;margin:0 auto;display:flex;flex-wrap:wrap;gap:6px 22px;align-items:center;padding:12px 0}
+.top-in a{text-decoration:none;color:var(--fg)}
+.top-in a:hover{color:var(--brand-text)}
+.brand{font-size:1.05rem;margin-right:auto}
+.brand b{color:var(--brand-text)}
+
+main,.foot{max-width:72rem;margin:0 auto}
+main{padding-bottom:40px}
+section{padding-top:44px}
+.hero{padding-top:56px;padding-bottom:8px}
+.busca{display:block;margin-top:22px;max-width:40rem}
+#busca{font:inherit;width:100%;color:var(--fg);background:var(--card);border:1px solid var(--field);border-radius:2px;padding:14px 16px}
+
+.temas,.cursos,.selos{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr))}
+.tema button{font:inherit;text-align:left;width:100%;height:100%;color:var(--fg);background:var(--card);border:1px solid var(--line);border-top:4px solid var(--field);border-radius:2px;padding:16px 18px;display:grid;gap:6px;align-content:start;cursor:pointer}
+.tema button[aria-pressed="true"]{border-color:var(--brand);border-top-color:var(--brand);background:var(--soft)}
+.tema-titulo{font-size:1.1rem;overflow-wrap:anywhere}
+.tema-texto{color:var(--muted);font-size:.95rem}
+.tema-n{font-size:.85rem;font-weight:600;color:var(--brand-text)}
+
+.curso a{display:grid;gap:8px;align-content:start;height:100%;padding:18px;background:var(--card);border:1px solid var(--line);border-radius:2px;color:inherit;text-decoration:none;min-width:0}
+.curso a:hover{border-color:var(--brand)}
+.curso-num{display:grid;place-items:center;width:48px;height:48px;background:var(--brand);color:var(--brand-ink);font-size:1.5rem;font-weight:700;border-radius:2px}
+.curso-titulo{font-size:1.15rem;font-weight:600;overflow-wrap:anywhere}
+.curso-meta{font-size:.85rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.curso-resumo{font-size:.95rem}
+.curso-progresso{font-size:.85rem;font-weight:600;color:var(--brand-text);margin-top:auto}
+
+.selo,.selos li{display:flex;align-items:center;gap:12px;padding:12px 16px;background:var(--card);border:1px solid var(--line);border-radius:2px}
+.selo-svg{flex:none}
+.selo-anel{fill:none;stroke:var(--brand);stroke-width:3}
+.selo-check{fill:none;stroke:var(--brand-text);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round}
+.selo-titulo{font-weight:600;overflow-wrap:anywhere}
+.selo-estado{margin-left:auto;font-size:.85rem;font-weight:700;color:var(--ok)}
+
+.meta{color:var(--muted);font-variant-numeric:tabular-nums}
+.acoes{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;margin:18px 0}
+.acoes p{margin:0}
+.btn{display:inline-block;font:inherit;font-weight:600;background:var(--brand);color:var(--brand-ink);border-radius:2px;padding:12px 24px;text-decoration:none}
+.btn:hover{background:#FF7A33}
+.aviso{margin-top:40px;padding:14px 18px;border:1px solid var(--field);border-left:4px solid var(--brand);border-radius:2px;background:var(--card)}
+.aprender{margin:0;padding-left:20px;max-width:66ch}
+.licoes{display:grid;gap:8px}
+.licao{display:grid;grid-template-columns:3rem minmax(0,1fr) auto auto;gap:4px 14px;align-items:baseline;padding:12px 16px;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--field);border-radius:2px}
+.licao.feita{border-left-color:var(--ok)}
+.licao-id{color:var(--muted);font-variant-numeric:tabular-nums}
+.licao-titulo{overflow-wrap:anywhere}
+.licao-min{color:var(--muted);font-size:.9rem;font-variant-numeric:tabular-nums}
+.licao-estado{font-size:.85rem;font-weight:600}
+.licao.feita .licao-estado{color:var(--ok)}
+@media (max-width:520px){.licao{grid-template-columns:2.4rem minmax(0,1fr)}.licao-min,.licao-estado{grid-column:2}}
+
+.foot{margin-top:24px;padding:24px 0 40px;border-top:1px solid var(--line);display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr))}
+.foot h3{font-size:1rem;margin-bottom:6px}
+.foot .copy{grid-column:1/-1;margin:0;font-size:.9rem}
+
+@media (prefers-reduced-motion:no-preference){.curso a,.tema button{transition:border-color .15s ease,transform .15s ease}.curso a:hover,.tema button:hover{transform:translateY(-2px)}}
+[hidden]{display:none !important}
+#curso{padding-top:48px}
+h1+.meta,h1+.lede{margin-top:12px}
