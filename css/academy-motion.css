@@ -79,7 +79,7 @@
   #tema-toggle svg{transition:transform .45s var(--m-ease)}
   #tema-toggle:hover svg{transform:rotate(-18deg)}
   #tema-toggle:active svg{transform:rotate(-40deg) scale(.9)}
-  html.m-tema *,html.m-tema *::before,html.m-tema *::after{transition:background-color .35s ease,color .35s ease,border-color .35s ease,fill .35s ease,stroke .35s ease!important}
+  html.m-tema *,html.m-tema *::before,html.m-tema *::after{transition:background-color .35s ease,color .35s ease,border-color .35s ease,fill .35s ease,stroke .35s ease,transform .2s ease!important}
 
   .brand-mark{transition:transform .6s var(--m-ease)}
   .brand:hover .brand-mark{transform:rotate(72deg)}

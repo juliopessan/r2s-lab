@@ -49,19 +49,5 @@ export function enableReveal() {
   document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 }
 
-/** Tema claro ou escuro pelo botão; a escolha vale também na Academy (mesma chave). */
-export function enableThemeToggle() {
-  const button = document.querySelector('#tema-toggle');
-  if (!button) return;
-  button.addEventListener('click', () => {
-    const root = document.documentElement;
-    const current = root.dataset.theme || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
-    const next = current === 'dark' ? 'light' : 'dark';
-    root.dataset.theme = next;
-    try { localStorage.setItem('r2s-academy-theme', next); } catch (e) { /* segue sem lembrar */ }
-  });
-}
-
-enableThemeToggle();
 enableReveal();
 renderStart(typeof window.__R2S_ORG__ === 'string' ? window.__R2S_ORG__ : GITHUB_ORG);
