@@ -97,11 +97,15 @@ test('the search filters the cards and ignores accents and case', async () => {
 test('the theme cards filter the catalog', async () => {
   await withPage({}, async (page, url) => {
     await page.goto(url + HOME, { waitUntil: 'load' });
-    assert.deepEqual(await rows(page, '#temas li.tema .tema-titulo'), ['Fundamentos', 'Valor e decisão', 'Case brief']);
+    assert.deepEqual(await rows(page, '#temas li.tema .tema-titulo'), ['Fundamentos', 'Valor e decisão', 'Case brief', 'Lab Loop da squad']);
     await page.click('#temas li.tema:nth-child(2) button');
     assert.deepEqual(await rows(page, '#cursos li.curso .curso-titulo'), ['Valor e custo', 'Responsabilidade e decisão']);
+    assert.equal(await page.locator('#jornada').isVisible(), false, 'the squad section hides when none of its courses match');
     await page.click('#temas li.tema:nth-child(2) button');
     assert.equal(await page.locator('#cursos li.curso').count(), 5, 'a second click clears the filter');
+    await page.click('#temas li.tema:nth-child(4) button');
+    assert.equal(await page.locator('#cursos-squad li.curso').count(), 6);
+    assert.equal(await page.locator('#fluencia').isVisible(), false);
   });
 });
 
@@ -118,14 +122,14 @@ test('a card shows progress and links to the course', async () => {
 test('the badge collection shows earned and locked badges', async () => {
   await withPage({}, async (page, url) => {
     await page.goto(url + HOME, { waitUntil: 'load' });
-    assert.equal(await text(page, '#selos-resumo'), '0 de 5 selos. Conclua um curso para ganhar o primeiro.');
-    assert.equal(await page.locator('#selos li.selo').count(), 5);
+    assert.equal(await text(page, '#selos-resumo'), '0 de 11 selos. Conclua um curso para ganhar o primeiro.');
+    assert.equal(await page.locator('#selos li.selo').count(), 11);
     assert.equal(await page.locator('#selos li.selo.ganho').count(), 0);
   });
   await withPage({}, async (page, url) => {
     await seed(page, { '5.1': true, '5.2': true });
     await page.goto(url + HOME, { waitUntil: 'load' });
-    assert.equal(await text(page, '#selos-resumo'), '1 de 5 selos.');
+    assert.equal(await text(page, '#selos-resumo'), '1 de 11 selos.');
     assert.deepEqual(await rows(page, '#selos li.selo.ganho'), ['Exercício final Concluído']);
     assert.match(await text(page, '#selos li.selo:not(.ganho) >> nth=0'), /Bloqueado/);
   });
@@ -363,7 +367,7 @@ test('a long course title wraps into two lines on the badge', async () => {
 
 test('every course has its own colour and icon', async () => {
   const seen = new Set();
-  for (const c of ['p1', 'p2', 'p3', 'p4', 'p5']) {
+  for (const c of ['p1', 'p2', 'p3', 'p4', 'p5', 's1', 's2', 's3', 's4', 's5', 's6']) {
     await withPage({}, async (page, url) => {
       await page.goto(url + BADGE(c), { waitUntil: 'load' });
       const sig = await page.evaluate(() => {
@@ -373,7 +377,7 @@ test('every course has its own colour and icon', async () => {
       seen.add(sig);
     });
   }
-  assert.equal(seen.size, 5);
+  assert.equal(seen.size, 11);
 });
 
 test('a locked badge says what is missing and hides the name field', async () => {
@@ -410,9 +414,140 @@ test('the badge prints alone on an A4 landscape page', () => {
   assert.match(css, /@media print[^{]*\{[\s\S]*\.noprint[^}]*display:\s*none/);
 });
 
+/* ---------- jornada da squad ---------- */
+
+test('the dossier templates are read from squad/ with the same field counts the checker uses', async () => {
+  const { readTemplates } = await import('../tools/build-academy.mjs');
+  const squadLib = (await import('../lib/squad.js')).default;
+  const t = readTemplates();
+  for (const [k, n] of Object.entries(squadLib.TEMPLATE_FIELDS)) {
+    const count = t[k].sections.reduce((a, s) => a + s.fields.filter((f) => !f.optional).length, 0);
+    assert.equal(count, n, k);
+  }
+  assert.equal(t.B.sections.find((s) => s.heading === 'Opção 3').fields[0].optional, true);
+});
+
+test('the home lists six squad courses after the pre-work', async () => {
+  await withPage({}, async (page, url) => {
+    await page.goto(url + HOME, { waitUntil: 'load' });
+    assert.equal(await text(page, '#jornada-titulo'), 'A jornada da squad');
+    assert.deepEqual(await rows(page, '#cursos-squad li.curso .curso-titulo'), [
+      'Intake e o G0', 'Discover: ouvir antes de resolver', 'Frame Value e o G1', 'Design e o G2', 'Build, Evaluate e o G3', 'Pitch, decisão e o G4',
+    ]);
+    assert.deepEqual(await rows(page, '#cursos-squad li.curso .curso-meta'), [
+      'Curso · 3 lições · 45 min', 'Curso · 2 lições · 35 min', 'Curso · 2 lições · 35 min',
+      'Curso · 3 lições · 1 h', 'Curso · 2 lições · 40 min', 'Curso · 3 lições · 55 min',
+    ]);
+    await page.fill('#busca', 'golden set');
+    assert.deepEqual(await rows(page, '#cursos-squad li.curso .curso-titulo'), ['Build, Evaluate e o G3']);
+    assert.equal(await page.locator('#cursos li.curso').count(), 0);
+  });
+});
+
+test('a squad course page has the same structure as the pre-work courses', async () => {
+  await withPage({}, async (page, url) => {
+    await page.goto(url + COURSE('s1'), { waitUntil: 'load' });
+    assert.equal(await text(page, 'h1'), 'Intake e o G0');
+    assert.deepEqual(await rows(page, '#meta .pilula'), ['3 lições', '45 min', 'Selo de conclusão']);
+    assert.deepEqual(await rows(page, '#licoes li.licao .licao-titulo'), ['O Lab Loop em uma página', 'O case brief', 'O G0: o caso entra']);
+    assert.match(await page.getAttribute('#cta', 'href'), /licao\.html\?c=s1&l=s1\.1$/);
+    assert.equal(await page.locator('.faixa.t-s1').count(), 1);
+  });
+});
+
+test('the Lab Loop lesson shows the seven stages and the five gates', async () => {
+  await withPage({}, async (page, url) => {
+    await page.goto(url + LESSON('s1', 's1.1'), { waitUntil: 'load' });
+    assert.deepEqual(await rows(page, '#conteudo-licao .etapas li .etapa-nome'), ['Intake', 'Discover', 'Frame Value', 'Design', 'Build', 'Evaluate', 'Pitch & Hand off']);
+    assert.deepEqual(await rows(page, '#conteudo-licao .etapas .etapa-gate'), ['G0', 'G1', 'G2', 'G3', 'G4']);
+    assert.equal(await page.locator('#conteudo-licao table tr').count(), 5);
+  });
+});
+
+test('a lesson shows the dossier template fields straight from squad/', async () => {
+  await withPage({}, async (page, url) => {
+    await page.goto(url + LESSON('s1', 's1.2'), { waitUntil: 'load' });
+    assert.match(await text(page, '#conteudo-licao .modelo-cabeca'), /^MODELO A · CASE BRIEF/i);
+    assert.equal(await page.locator('#conteudo-licao .modelo-campos li').count(), 14);
+    assert.match(await page.getAttribute('#conteudo-licao .pratica a', 'href'), /\.\.\/squad\/A-case-brief\.md$/);
+    await page.goto(url + LESSON('s3', 's3.1'), { waitUntil: 'load' });
+    assert.deepEqual(await rows(page, '#conteudo-licao .modelo-secao'), ['Métrica e baseline', 'Hipótese de valor']);
+  });
+});
+
+test('squad lessons are tracked in this browser only and never touch the exported progress', async () => {
+  await withPage({}, async (page, url) => {
+    await page.goto(url + LESSON('s2', 's2.1'), { waitUntil: 'load' });
+    await page.click('#concluir');
+    await page.goto(url + LESSON('s2', 's2.2'), { waitUntil: 'load' });
+    await page.click('#concluir');
+    assert.match(await text(page, '#conquista'), /Você ganhou o selo Discover: ouvir antes de resolver/);
+    assert.deepEqual(await savedBlocks(page), {});
+    await page.goto(url + COURSE('s2'), { waitUntil: 'load' });
+    assert.equal(await text(page, '#cta'), 'Revisar');
+    await page.goto(url + HOME, { waitUntil: 'load' });
+    assert.deepEqual(await rows(page, '#selos li.selo.ganho .selo-titulo'), ['Discover: ouvir antes de resolver']);
+  });
+});
+
+/* ---------- alinhamento dos selos ---------- */
+
+test('on every badge the icon is centred, the title is centred and fits, and the arc sits inside the polygon', async () => {
+  for (const c of ['p1', 'p2', 'p3', 'p4', 'p5', 's1', 's2', 's3', 's4', 's5', 's6']) {
+    await withPage({}, async (page, url) => {
+      await page.goto(url + BADGE(c), { waitUntil: 'load' });
+      const m = await page.evaluate(() => {
+        const svg = document.querySelector('#selo-svg');
+        const g = svg.querySelector('.selo-icone');
+        const ib = g.getBBox();
+        const t = svg.querySelector('#selo-curso').getBBox();
+        const poly = svg.querySelector('.selo-poligono');
+        const tp = svg.querySelector('.selo-arco');
+        const n = tp.getNumberOfChars();
+        const ends = [tp.getStartPositionOfChar(0), tp.getEndPositionOfChar(n - 1)];
+        const inside = ends.every((p) => { const pt = svg.createSVGPoint(); pt.x = p.x; pt.y = p.y; return poly.isPointInFill(pt); });
+        const tPts = [[t.x, t.y + t.height / 2], [t.x + t.width, t.y + t.height / 2]].every(([x, y]) => { const pt = svg.createSVGPoint(); pt.x = x; pt.y = y; return poly.isPointInFill(pt); });
+        return { icx: ib.x + ib.width / 2, icy: ib.y + ib.height / 2, side: Math.max(ib.width, ib.height), tcx: t.x + t.width / 2, tw: t.width, inside, tPts };
+      });
+      assert.ok(Math.abs(m.icx) < 1 && Math.abs(m.icy) < 1, `${c}: icon centre ${m.icx},${m.icy}`);
+      assert.ok(Math.abs(m.side - 118) < 1, `${c}: icon size ${m.side}`);
+      assert.ok(Math.abs(m.tcx - 550) < 1, `${c}: title centre ${m.tcx}`);
+      assert.ok(m.tw <= 501, `${c}: title width ${m.tw}`);
+      assert.ok(m.inside, `${c}: the arc leaves the polygon`);
+      assert.ok(m.tPts, `${c}: the title leaves the polygon`);
+    });
+  }
+});
+
+test('a long name shrinks to fit the badge', async () => {
+  await withPage({}, async (page, url) => {
+    await seed(page, { '5.1': true, '5.2': true });
+    await page.goto(url + BADGE('p5'), { waitUntil: 'load' });
+    await page.fill('#nome-selo', 'Maria Aparecida de Albuquerque Cavalcanti Figueiredo');
+    const w = await page.evaluate(() => document.querySelector('#selo-nome').getBBox().width);
+    assert.ok(w <= 521, `name width ${w}`);
+  });
+});
+
+test('the standalone SVG badges exist for every course and match the generator', async () => {
+  const { gerar } = await import('../tools/build-badges.mjs');
+  const { mkdtempSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
+  const dir = mkdtempSync(path.join(tmpdir(), 'r2s-selos-'));
+  const ids = await gerar(dir);
+  assert.deepEqual(ids, ['p1', 'p2', 'p3', 'p4', 'p5', 's1', 's2', 's3', 's4', 's5', 's6']);
+  for (const id of ids) {
+    const committed = readFileSync(path.join(root, 'academy', 'selos', id + '.svg'), 'utf8');
+    assert.equal(committed, readFileSync(path.join(dir, id + '.svg'), 'utf8'), `academy/selos/${id}.svg is out of date: run node tools/build-badges.mjs`);
+    assert.match(committed, /viewBox="0 0 1100 750"/);
+    assert.match(committed, /SELO DE CONCLUSÃO DE CURSO/);
+    assert.ok(!/Concedido a/.test(committed), 'the standalone file carries no name');
+  }
+});
+
 /* ---------- qualidade ---------- */
 
-const PAGES = [HOME, COURSE('p1'), LESSON('p1', '1.3'), LESSON('p4', '4.2'), BADGE('p5'), BADGE('p4')];
+const PAGES = [HOME, COURSE('p1'), LESSON('p1', '1.3'), LESSON('p4', '4.2'), BADGE('p5'), BADGE('p4'), COURSE('s4'), LESSON('s1', 's1.1'), LESSON('s1', 's1.2')];
 
 test('no page loads anything external, scrolls sideways at 360 px or throws', async () => {
   for (const p of PAGES) {

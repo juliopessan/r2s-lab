@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Gera js/academy-content.js a partir de 00-prework/index.html (fonte única do conteúdo das lições).
+// Gera js/academy-content.js a partir de 00-prework/index.html e dos modelos squad/A–E (fontes únicas do conteúdo).
 // Uso: node tools/build-academy.mjs [--check]   (--check só confere se o arquivo está em dia)
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
@@ -101,6 +101,39 @@ export function extract(html) {
   return { parts, lessons };
 }
 
+/** Campos dos modelos do dossiê (squad/A–E): título, introdução e campos por seção. */
+export function extractTemplates(texts) {
+  const out = {};
+  for (const [key, text] of Object.entries(texts)) {
+    const lines = text.split('\n');
+    const head = /^#\s+[A-E]\.\s+(.*?)\s*(?:\((.*)\))?\s*$/.exec(lines[0]);
+    const doc = { title: head[1], when: head[2] || '', intro: '', sections: [] };
+    let current = { heading: 'Identificação', fields: [] };
+    for (const raw of lines.slice(1)) {
+      const line = raw.trim();
+      if (!line) continue;
+      if (line.startsWith('## ')) {
+        if (current.fields.length) doc.sections.push(current);
+        current = { heading: line.slice(3).trim(), fields: [] };
+        continue;
+      }
+      const field = /^(?:\d+\.\s+)?(.*?):?\s*\[(preencher|opcional)\]$/.exec(line);
+      if (field) current.fields.push({ label: field[1].replace(/:$/, '').trim(), optional: field[2] === 'opcional' });
+      else if (!doc.intro && !line.startsWith('|') && !doc.sections.length && !current.fields.length) doc.intro = line;
+    }
+    if (current.fields.length) doc.sections.push(current);
+    out[key] = doc;
+  }
+  return out;
+}
+
+const TEMPLATE_FILES = { A: 'A-case-brief.md', B: 'B-adr.md', C: 'C-pitch.md', D: 'D-sis.md', E: 'E-hearing.md' };
+export function readTemplates(root = ROOT) {
+  const texts = {};
+  for (const [k, f] of Object.entries(TEMPLATE_FILES)) texts[k] = readFileSync(path.join(root, 'squad', f), 'utf8');
+  return extractTemplates(texts);
+}
+
 export function render(content) {
   return '/* Gerado por tools/build-academy.mjs a partir de 00-prework/index.html. Não edite aqui. */\n'
     + 'window.R2S_ACADEMY = ' + JSON.stringify(content, null, 1) + ';\n';
@@ -110,7 +143,7 @@ export const OUT = path.join(ROOT, 'js', 'academy-content.js');
 export const SOURCE = path.join(ROOT, '00-prework', 'index.html');
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  const next = render(extract(readFileSync(SOURCE, 'utf8')));
+  const next = render({ ...extract(readFileSync(SOURCE, 'utf8')), templates: readTemplates() });
   if (process.argv.includes('--check')) {
     const same = existsSync(OUT) && readFileSync(OUT, 'utf8') === next;
     console.log(same ? 'academy-content.js está em dia.' : 'academy-content.js está desatualizado: rode node tools/build-academy.mjs');

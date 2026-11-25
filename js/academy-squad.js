@@ -1,0 +1,273 @@
+/* R2S Academy — cursos da jornada da squad (Lab Loop).
+ * O texto segue as regras que o código já aplica: lib/squad.js (gates), lib/assessment.js (níveis),
+ * squad/README.md (fluxo) e os modelos squad/A–E, cujos campos vêm de js/academy-content.js.
+ * Corpo das lições: { type: 'p' | 'table' | 'template' | 'steps', ... }, no mesmo formato do pre-work. */
+window.R2S_ACADEMY_SQUAD = {
+  courses: [
+    {
+      id: 's1', titulo: 'Intake e o G0',
+      resumo: 'Como o caso entra no lab: o Lab Loop em uma página, o case brief com o patrocinador e o que o G0 confere.',
+      objetivo: 'Ao final você sabe como a squad trabalha durante as 12 semanas, escreve o case brief com o patrocinador e leva o caso ao G0 sem campo pendente.',
+      aprender: ['Explicar as 7 etapas e os 5 gates do Lab Loop', 'Preencher o case brief com o patrocinador', 'Saber o que o G0 confere e quem aprova'],
+      publico: 'Toda a squad, na primeira semana, junto com o patrocinador do caso.',
+      antes: ['Os cinco cursos do pre-work', 'Um patrocinador com 2 horas a cada 2 semanas'],
+      lessons: ['s1.1', 's1.2', 's1.3'],
+    },
+    {
+      id: 's2', titulo: 'Discover: ouvir antes de resolver',
+      resumo: 'A audiência de partes interessadas e os cinco papéis da squad, que giram a cada gate.',
+      objetivo: 'Ao final você conduz a audiência de 45 minutos, registra as preocupações que seguem em aberto e sabe qual papel cada pessoa exerce em cada gate.',
+      aprender: ['Conduzir a audiência com os cinco assentos', 'Levar as preocupações em aberto para o ADR e o SIS', 'Distribuir os cinco papéis e registrar o rodízio'],
+      publico: 'A squad inteira, na semana 2.',
+      antes: ['Intake e o G0'],
+      lessons: ['s2.1', 's2.2'],
+    },
+    {
+      id: 's3', titulo: 'Frame Value e o G1',
+      resumo: 'Métrica, baseline e hipótese de valor, e a regra que decide o G1: valor anual maior que 3× o custo anual de run.',
+      objetivo: 'Ao final você defende o valor do caso com número e premissa e sabe se ele passa na regra do G1 antes de levar ao patrocinador.',
+      aprender: ['Escrever métrica, baseline e meta que o patrocinador assina', 'Aplicar a regra do G1 com valor e custo anuais', 'Registrar a aprovação do patrocinador e os papéis do gate'],
+      publico: 'Product Lead e Data Lead à frente, com a squad toda.',
+      antes: ['Discover: ouvir antes de resolver', 'O curso Valor e custo, do pre-work'],
+      lessons: ['s3.1', 's3.2'],
+    },
+    {
+      id: 's4', titulo: 'Design e o G2',
+      resumo: 'O ADR que compara opções e escolhe a mais barata que funciona, o Social Impact Statement do design e o G2 por pull request.',
+      objetivo: 'Ao final você escreve um ADR com pelo menos duas opções, preenche a revisão de design do SIS e abre o pull request que o coach aprova no G2.',
+      aprender: ['Comparar opções por custo, qualidade e risco', 'Nomear quem responde pelas decisões do algoritmo', 'Abrir o PR do G2 e passar no verificador'],
+      publico: 'AI Engineer e Eval & Risk Lead à frente, com a squad toda.',
+      antes: ['Frame Value e o G1'],
+      lessons: ['s4.1', 's4.2', 's4.3'],
+    },
+    {
+      id: 's5', titulo: 'Build, Evaluate e o G3',
+      resumo: 'O golden set escrito antes do primeiro prompt, a revisão de pré-lançamento e o custo por transação medido.',
+      objetivo: 'Ao final você tem um golden set de pelo menos 50 casos, mede a solução contra o limiar do ADR e chega ao G3 com a revisão de pré-lançamento feita.',
+      aprender: ['Escrever o golden set antes de construir', 'Medir taxas de erro por subgrupo e o pior caso', 'Registrar o custo por transação no G3'],
+      publico: 'Eval & Risk Lead e AI Engineer à frente, com a squad toda.',
+      antes: ['Design e o G2'],
+      lessons: ['s5.1', 's5.2'],
+    },
+    {
+      id: 's6', titulo: 'Pitch, decisão e o G4',
+      resumo: 'O pitch de 10 minutos, o placar do painel executivo, a decisão do negócio e o que vem depois: revisão de 90 dias e certificação.',
+      objetivo: 'Ao final você apresenta o caso em 10 minutos, sai com uma decisão registrada no G4 e sabe como a squad e cada pessoa são avaliadas.',
+      aprender: ['Montar o roteiro de 10 minutos que termina em um pedido', 'Registrar a decisão e o ativo publicado no G4', 'Entender a revisão de 90 dias e os níveis de certificação'],
+      publico: 'Storyteller e Product Lead à frente, com a squad toda.',
+      antes: ['Build, Evaluate e o G3', 'O curso Responsabilidade e decisão, do pre-work'],
+      lessons: ['s6.1', 's6.2', 's6.3'],
+    },
+  ],
+
+  lessons: {
+    's1.1': {
+      title: 'O Lab Loop em uma página', min: 15,
+      body: [
+        { type: 'p', text: 'Menos curso, mais lab. A squad pega um problema real do negócio e o leva até uma solução e uma decisão. São 7 etapas, 5 gates e 12 semanas, com squads de 5 pessoas e 6 horas protegidas por semana.' },
+        { type: 'steps', items: [
+          { label: 'Intake', gate: 'G0' }, { label: 'Discover', gate: '' }, { label: 'Frame Value', gate: 'G1' },
+          { label: 'Design', gate: 'G2' }, { label: 'Build', gate: '' }, { label: 'Evaluate', gate: 'G3' }, { label: 'Pitch & Hand off', gate: 'G4' },
+        ] },
+        { type: 'p', text: 'O avanço depende de evidência, não do calendário. Um gate só passa depois do anterior, e só G0, G1 e G2 podem encerrar o caso. Encerrar cedo é um resultado legítimo: poupa a squad de construir algo que não vale o que custa.' },
+        { type: 'p', text: 'Tudo vive no repositório da squad, r2s-lab-squad-<nome>. O dossiê são cinco documentos (A a E), o estado dos gates fica em gates.json e cada gate anda por pull request.' },
+        { type: 'table', rows: [
+          ['G0', 'O caso entra: case brief completo. Aprova o patrocinador.'],
+          ['G1', 'O valor vale o custo: valor anual maior que 3× o custo anual de run. Assina o patrocinador.'],
+          ['G2', 'O design está decidido: ADR com duas opções e SIS de design. Aprova o coach.'],
+          ['G3', 'A solução foi medida: golden set de 50 casos, SIS de pré-lançamento e custo por transação. Aprova o coach.'],
+          ['G4', 'O negócio decidiu: escalar, iterar ou encerrar, com o roteiro do pitch completo e pelo menos um ativo publicado. Decide o patrocinador.'],
+        ] },
+      ],
+      exercise: { label: 'Fazer · 5 min', text: 'Abra o squad/README.md do repositório da squad e localize os cinco documentos do dossiê, o gates.json e o comando do verificador.' },
+      arquivo: { titulo: 'squad/README.md', href: '../squad/README.md' },
+      refs: [],
+    },
+    's1.2': {
+      title: 'O case brief', min: 20,
+      body: [
+        { type: 'p', text: 'O case brief abre o caso como uma pequena narrativa: uma pessoa, uma decisão e um prazo. Quem preenche é o patrocinador, em uma página, com a squad ao lado. Se faltar um número, escreva como você o mediria.' },
+        { type: 'template', doc: 'A' },
+        { type: 'p', text: 'O compromisso do patrocinador faz parte do brief: 2 horas a cada 2 semanas, a assinatura do G1 e a decisão no G4. Sem esse compromisso, o caso não entra.' },
+      ],
+      exercise: { label: 'Fazer · 30 min', text: 'Preencha o squad/A-case-brief.md com o patrocinador. Troque cada [preencher] pelo texto real e rode node tools/check-squad.mjs para ver quantos campos faltam.' },
+      arquivo: { titulo: 'squad/A-case-brief.md', href: '../squad/A-case-brief.md' },
+      refs: [],
+    },
+    's1.3': {
+      title: 'O G0: o caso entra', min: 10,
+      body: [
+        { type: 'p', text: 'Nenhum caso entra sem patrocinador, métrica e baseline. O G0 confere exatamente isso: o case brief sem nenhum campo pendente.' },
+        { type: 'p', text: 'Quem aprova o G0 é o patrocinador. A squad registra no gates.json o status passed, o número de tentativas, quem aprovou (approvedBy) e a data (approvedAt, no formato AAAA-MM-DD).' },
+        { type: 'table', rows: [
+          ['Pode encerrar?', 'Sim. G0, G1 e G2 podem terminar como killed; depois de um gate encerrado, os seguintes ficam pendentes.'],
+          ['O verificador barra', 'G0 aprovado com o case brief ainda com campos [preencher].'],
+          ['Tentativas', 'Cada nova submissão do gate conta uma tentativa. A meta do lab é passar 70% dos gates na primeira.'],
+        ] },
+      ],
+      exercise: { label: 'Fazer · 10 min', text: 'Com o brief completo, atualize o G0 no squad/gates.json (status, attempts, approvedBy e approvedAt) e abra o pull request.' },
+      arquivo: { titulo: 'squad/gates.json', href: '../squad/gates.json' },
+      refs: [],
+    },
+    's2.1': {
+      title: 'A audiência de partes interessadas', min: 20,
+      body: [
+        { type: 'p', text: 'Vozes em conflito são ouvidas antes de qualquer solução. Na semana 2, em 45 minutos, cinco assentos argumentam a sua preocupação e a squad responde a cada uma.' },
+        { type: 'template', doc: 'E' },
+        { type: 'p', text: 'O que não tiver resposta não some: vira entrada no registro de trade-offs do ADR e no Social Impact Statement.' },
+      ],
+      exercise: { label: 'Fazer · 45 min', text: 'Marque a audiência, distribua os assentos e registre cada preocupação e cada resposta no squad/E-hearing.md.' },
+      arquivo: { titulo: 'squad/E-hearing.md', href: '../squad/E-hearing.md' },
+      refs: [],
+    },
+    's2.2': {
+      title: 'Os cinco papéis e o rodízio', min: 15,
+      body: [
+        { type: 'p', text: 'A cada gate, um novo papel. Cada pessoa da squad tem um papel principal, e os papéis giram entre o G1, o G2 e o G3 para que todos passem por mais de uma função.' },
+        { type: 'table', rows: [
+          ['Product Lead', 'O problema, o patrocinador e o valor.'],
+          ['Data Lead', 'As fontes, o acesso e a qualidade dos dados.'],
+          ['AI Engineer', 'A solução: da regra ao agente, a mais barata que funciona.'],
+          ['Eval & Risk Lead', 'O golden set, as métricas de qualidade e os riscos.'],
+          ['Storyteller', 'A narrativa do caso e o pitch do demo day.'],
+        ] },
+        { type: 'p', text: 'No gates.json, a squad registra em roles quem exerceu cada papel no G1, no G2 e no G3. Cada um desses três gates só passa com os cinco papéis atribuídos.' },
+      ],
+      exercise: { label: 'Fazer · 10 min', text: 'Combine o rodízio dos três gates e registre os papéis do G1 em roles, no squad/gates.json.' },
+      arquivo: { titulo: 'squad/gates.json', href: '../squad/gates.json' },
+      refs: [],
+    },
+    's3.1': {
+      title: 'Métrica, baseline e hipótese de valor', min: 20,
+      body: [
+        { type: 'p', text: 'O valor do caso é uma promessa com número e premissa. A métrica diz o que muda, o baseline diz quanto é hoje e como foi medido, e a meta diz quanto precisa mudar para valer a pena.' },
+        { type: 'template', doc: 'A', sections: ['Métrica e baseline', 'Hipótese de valor'] },
+        { type: 'p', text: 'O tipo de valor muda a conversa: receita (mais vendas no prazo), custo (horas que voltam para trabalho de maior valor) ou risco (incidentes evitados). Escolha um e diga a premissa que leva ao número anual.' },
+      ],
+      exercise: { label: 'Fazer · 20 min', text: 'Revise com o patrocinador as seções de métrica, baseline e hipótese de valor do case brief. Se o baseline não foi medido, escreva como medir em uma semana.' },
+      arquivo: { titulo: 'squad/A-case-brief.md', href: '../squad/A-case-brief.md' },
+      refs: [],
+    },
+    's3.2': {
+      title: 'A regra do G1', min: 15,
+      body: [
+        { type: 'p', text: 'O G1 decide se o caso vale o que custa. A regra é uma só: o valor anual precisa ser maior que 3× o custo anual de run. Igual não basta.' },
+        { type: 'table', rows: [
+          ['Valor 360.000, run 60.000', 'Passa: 360.000 é maior que 180.000.'],
+          ['Valor 120.000, run 40.000', 'Não passa: 120.000 é igual a 3× 40.000, e a regra pede maior.'],
+          ['Valor 120.001, run 40.000', 'Passa, por pouco. Vale rever a premissa antes de assinar.'],
+        ] },
+        { type: 'p', text: 'Quem assina o G1 é o patrocinador. No gates.json, o G1 aprovado leva annualValue e annualRunCost, além de quem aprovou, a data e os cinco papéis em roles.G1.' },
+      ],
+      exercise: { label: 'Fazer · 15 min', text: 'Calcule o custo anual de run com a calculadora do pre-work, confira a regra e registre annualValue e annualRunCost no G1 do squad/gates.json.' },
+      arquivo: { titulo: 'squad/gates.json', href: '../squad/gates.json' },
+      refs: [],
+    },
+    's4.1': {
+      title: 'O ADR: a mais barata que funciona', min: 25,
+      body: [
+        { type: 'p', text: 'O Architecture Decision Record registra a escolha da solução. Ele compara pelo menos duas opções e justifica por que a mais barata que funciona venceu: regra ou SQL antes de ML, ML antes de LLM, uma chamada de LLM antes de um agente.' },
+        { type: 'template', doc: 'B' },
+        { type: 'p', text: 'As consequências amarram o resto do lab: o custo por transação de run entra no pitch, e o limiar de qualidade é a régua do G3.' },
+      ],
+      exercise: { label: 'Fazer · 45 min', text: 'Escreva o squad/B-adr.md com pelo menos duas opções completas. A opção 3 é opcional.' },
+      arquivo: { titulo: 'squad/B-adr.md', href: '../squad/B-adr.md' },
+      refs: [],
+    },
+    's4.2': {
+      title: 'O Social Impact Statement do design', min: 20,
+      body: [
+        { type: 'p', text: 'O SIS tem cinco princípios: responsabilidade, explicabilidade, acurácia, auditabilidade e equidade. Uma pessoa nomeada responde por qualquer decisão tomada ou informada pelo algoritmo; "o algoritmo fez" nunca é resposta aceitável.' },
+        { type: 'template', doc: 'D', sections: ['Revisão no G2 (design)'] },
+        { type: 'p', text: 'O SIS é preenchido em três momentos: no G2, no G3 e na revisão de 90 dias. No G2, o verificador exige a seção de design completa.' },
+      ],
+      exercise: { label: 'Fazer · 20 min', text: 'Preencha a revisão de design no squad/D-sis.md, com o nome e o papel de quem responde.' },
+      arquivo: { titulo: 'squad/D-sis.md', href: '../squad/D-sis.md' },
+      refs: [],
+    },
+    's4.3': {
+      title: 'O G2 por pull request', min: 15,
+      body: [
+        { type: 'p', text: 'O G2 é aprovado pelo coach, por pull request. O PR atualiza o gates.json; o coach revisa o dossiê e registra approvedBy com o próprio usuário do GitHub.' },
+        { type: 'table', rows: [
+          ['O verificador barra', 'G2 aprovado com o ADR pendente, com menos de duas opções preenchidas ou com a revisão de design do SIS incompleta.'],
+          ['Coach', 'O G2 e o G3 exigem o coach cadastrado em coach e aprovando em approvedBy.'],
+          ['Proteção', 'A main do repositório protegida, o squad-check obrigatório no PR e o coach como dono (CODEOWNERS) de gates.json e assessment.json.'],
+        ] },
+        { type: 'p', text: 'Antes de abrir o PR, rode o verificador. Pendência não é erro, só aparece no relatório; gate aprovado com documento incompleto é erro e trava o PR.' },
+      ],
+      exercise: { label: 'Fazer · 10 min', text: 'Rode node tools/check-squad.mjs, corrija o que aparecer como erro e abra o pull request do G2 para o coach.' },
+      arquivo: { titulo: 'tools/check-squad.mjs', href: '../tools/check-squad.mjs' },
+      refs: [],
+    },
+    's5.1': {
+      title: 'O golden set antes do primeiro prompt', min: 20,
+      body: [
+        { type: 'p', text: 'O golden set é o conjunto de casos que diz se a solução funciona. Ele é escrito antes do primeiro prompt, para que a squad não ajuste a régua ao resultado.' },
+        { type: 'table', rows: [
+          ['Formato', 'squad/golden-set.csv com as colunas id, entrada, saida_esperada e observacao.'],
+          ['Tamanho', 'Pelo menos 50 casos para o G3. O verificador conta as linhas, sem o cabeçalho.'],
+          ['Régua', 'O limiar de qualidade definido no ADR. O teaser mostra o golden set chegando a 90%.'],
+        ] },
+        { type: 'p', text: 'Inclua casos difíceis e casos dos grupos que o SIS apontou como afetados. Um golden set só com casos fáceis mede pouco.' },
+      ],
+      exercise: { label: 'Fazer · 60 min', text: 'Escreva os primeiros casos no squad/golden-set.csv, com a saída esperada de cada um, antes de construir a solução.' },
+      arquivo: { titulo: 'squad/golden-set.csv', href: '../squad/golden-set.csv' },
+      refs: [],
+    },
+    's5.2': {
+      title: 'A revisão do G3', min: 20,
+      body: [
+        { type: 'p', text: 'O G3 confere que a solução foi medida antes do lançamento. O coach aprova, e o verificador exige o golden set com 50 casos e a revisão de pré-lançamento do SIS completa.' },
+        { type: 'template', doc: 'D', sections: ['Revisão no G3 (pré-lançamento)'] },
+        { type: 'p', text: 'O G3 aprovado também registra o custo por transação medido (costPerTransaction, no gates.json). É o número que o negócio vai ouvir no pitch.' },
+      ],
+      exercise: { label: 'Fazer · 30 min', text: 'Rode a solução contra o golden set, preencha a revisão do G3 no squad/D-sis.md e registre o custo por transação no G3.' },
+      arquivo: { titulo: 'squad/D-sis.md', href: '../squad/D-sis.md' },
+      refs: [],
+    },
+    's6.1': {
+      title: 'O pitch de 10 minutos', min: 20,
+      body: [
+        { type: 'p', text: 'O demo day termina com um pedido que o negócio consegue decidir. O roteiro tem seis partes e 10 minutos, com a demo ao vivo no centro.' },
+        { type: 'template', doc: 'C' },
+        { type: 'p', text: 'O pedido tem sempre uma de três formas: escalar, iterar ou encerrar. O que não vale é terminar sem pedir nada.' },
+      ],
+      exercise: { label: 'Fazer · 45 min', text: 'Escreva o roteiro no squad/C-pitch.md e ensaie com o cronômetro. A demo é em um cenário real.' },
+      arquivo: { titulo: 'squad/C-pitch.md', href: '../squad/C-pitch.md' },
+      refs: [],
+    },
+    's6.2': {
+      title: 'O placar e a decisão do G4', min: 15,
+      body: [
+        { type: 'p', text: 'O painel executivo dá notas de 1 a 4 em quatro critérios. A squad não edita o placar.' },
+        { type: 'table', rows: [
+          ['Clareza', 'Do problema e do valor.'],
+          ['Credibilidade', 'Da solução e das evidências.'],
+          ['Risco e custo', 'Entendidos e controlados.'],
+          ['Pedido', 'A qualidade do pedido e do próximo passo.'],
+        ] },
+        { type: 'p', text: 'O patrocinador decide no G4: escalar, iterar ou encerrar. O G4 aprovado exige o roteiro do pitch completo, a decisão registrada e pelo menos um ativo publicado em assets, para que o que a squad aprendeu sirva à próxima turma.' },
+      ],
+      exercise: { label: 'Fazer · 10 min', text: 'Depois do demo day, registre a decisão e os ativos no G4 do squad/gates.json e abra o pull request.' },
+      arquivo: { titulo: 'squad/gates.json', href: '../squad/gates.json' },
+      refs: [],
+    },
+    's6.3': {
+      title: 'Depois do G4: 90 dias e certificação', min: 20,
+      body: [
+        { type: 'p', text: 'Uma solução no ar continua sendo responsabilidade de alguém. Noventa dias depois do G4, a squad fecha o SIS com a revisão de pós-lançamento.' },
+        { type: 'template', doc: 'D', sections: ['Revisão de 90 dias (pós-lançamento)'] },
+        { type: 'p', text: 'A avaliação fica em squad/assessment.json, preenchida pela coordenação e pelo coach. A nota da squad pesa enquadramento 25%, design 20%, engenharia 20%, avaliação 15%, custo 10% e comunicação 10%, de 1 a 4. A nota final de cada pessoa é 60% a da squad e 40% a individual.' },
+        { type: 'table', rows: [
+          ['Foundation', 'Lab Zero concluído e prova de conhecimento com pelo menos 70%.'],
+          ['Practitioner', 'Nota final de pelo menos 3,0 e nenhuma dimensão da squad abaixo de 2.'],
+          ['Lead', 'Practitioner, mais ter feito o coaching da turma seguinte e ter um ativo reutilizado.'],
+        ] },
+      ],
+      exercise: { label: 'Fazer · 30 min', text: 'Agende a revisão de 90 dias e preencha a última seção do squad/D-sis.md quando ela acontecer.' },
+      arquivo: { titulo: 'squad/D-sis.md', href: '../squad/D-sis.md' },
+      refs: [],
+    },
+  },
+};

@@ -467,5 +467,362 @@ window.R2S_ACADEMY = {
    "quizzes": [],
    "tool": true
   }
+ },
+ "templates": {
+  "A": {
+   "title": "Case brief",
+   "when": "o patrocinador preenche, uma página",
+   "intro": "O brief abre o caso como uma pequena narrativa: uma pessoa, uma decisão e um prazo. Troque cada campo pendente pelo texto real; se faltar um número, escreva como você o mediria.",
+   "sections": [
+    {
+     "heading": "Identificação",
+     "fields": [
+      {
+       "label": "Caso",
+       "optional": false
+      },
+      {
+       "label": "Patrocinador (nome ou papel)",
+       "optional": false
+      },
+      {
+       "label": "Data",
+       "optional": false
+      }
+     ]
+    },
+    {
+     "heading": "O requisito, nas palavras do patrocinador",
+     "fields": [
+      {
+       "label": "O que dói hoje, para quem e com que frequência",
+       "optional": false
+      }
+     ]
+    },
+    {
+     "heading": "Métrica e baseline",
+     "fields": [
+      {
+       "label": "Métrica",
+       "optional": false
+      },
+      {
+       "label": "Baseline hoje (número e como foi medido)",
+       "optional": false
+      },
+      {
+       "label": "Meta que tornaria isso válido",
+       "optional": false
+      }
+     ]
+    },
+    {
+     "heading": "Hipótese de valor",
+     "fields": [
+      {
+       "label": "Tipo (receita, custo ou risco)",
+       "optional": false
+      },
+      {
+       "label": "Valor anual aproximado e a premissa",
+       "optional": false
+      }
+     ]
+    },
+    {
+     "heading": "Dados",
+     "fields": [
+      {
+       "label": "Fontes",
+       "optional": false
+      },
+      {
+       "label": "Acesso em 5 dias úteis? (sim, não ou sintético)",
+       "optional": false
+      },
+      {
+       "label": "Dados sensíveis?",
+       "optional": false
+      }
+     ]
+    },
+    {
+     "heading": "Restrições",
+     "fields": [
+      {
+       "label": "Sistemas, regulação e ferramentas dos usuários",
+       "optional": false
+      }
+     ]
+    },
+    {
+     "heading": "Compromisso do patrocinador",
+     "fields": [
+      {
+       "label": "Assinatura (nome e data)",
+       "optional": false
+      }
+     ]
+    }
+   ]
+  },
+  "B": {
+   "title": "Architecture Decision Record",
+   "when": "a squad preenche no G2",
+   "intro": "A decisão compara pelo menos duas opções e justifica por que a mais barata que funciona venceu. A opção 3 é opcional.",
+   "sections": [
+    {
+     "heading": "Identificação",
+     "fields": [
+      {
+       "label": "Título",
+       "optional": false
+      },
+      {
+       "label": "Status (proposta ou aprovada)",
+       "optional": false
+      }
+     ]
+    },
+    {
+     "heading": "Contexto",
+     "fields": [
+      {
+       "label": "O problema, os dados e as restrições que pesam na escolha",
+       "optional": false
+      }
+     ]
+    },
+    {
+     "heading": "Opção 1",
+     "fields": [
+      {
+       "label": "Custo, qualidade esperada e risco",
+       "optional": false
+      }
+     ]
+    },
+    {
+     "heading": "Opção 2",
+     "fields": [
+      {
+       "label": "Custo, qualidade esperada e risco",
+       "optional": false
+      }
+     ]
+    },
+    {
+     "heading": "Opção 3",
+     "fields": [
+      {
+       "label": "Custo, qualidade esperada e risco",
+       "optional": true
+      }
+     ]
+    },
+    {
+     "heading": "Decisão",
+     "fields": [
+      {
+       "label": "A opção escolhida e o motivo",
+       "optional": false
+      }
+     ]
+    },
+    {
+     "heading": "Consequências",
+     "fields": [
+      {
+       "label": "Custo por transação de run",
+       "optional": false
+      },
+      {
+       "label": "Limiar de qualidade para o G3",
+       "optional": false
+      },
+      {
+       "label": "Riscos de IA responsável e mitigações",
+       "optional": false
+      }
+     ]
+    }
+   ]
+  },
+  "C": {
+   "title": "Pitch do demo day (10 minutos) e placar do painel executivo",
+   "when": "",
+   "intro": "O pitch termina com um pedido que o negócio consegue decidir: escalar, iterar ou encerrar.",
+   "sections": [
+    {
+     "heading": "Roteiro",
+     "fields": [
+      {
+       "label": "O problema e o custo de hoje (1 min)",
+       "optional": false
+      },
+      {
+       "label": "A métrica e o valor assinado no G1 (1 min)",
+       "optional": false
+      },
+      {
+       "label": "As opções consideradas e por que esta (1 min)",
+       "optional": false
+      },
+      {
+       "label": "Demo ao vivo em um cenário real (3 min)",
+       "optional": false
+      },
+      {
+       "label": "Avaliação, riscos e custo por transação (2 min)",
+       "optional": false
+      },
+      {
+       "label": "O pedido: escalar, iterar ou encerrar, e o que é preciso (2 min)",
+       "optional": false
+      }
+     ]
+    }
+   ]
+  },
+  "D": {
+   "title": "Social Impact Statement",
+   "when": "a squad preenche no G2, no G3 e na revisão de 90 dias",
+   "intro": "Cinco princípios: responsabilidade, explicabilidade, acurácia, auditabilidade e equidade. Uma pessoa nomeada responde por qualquer decisão tomada ou informada pelo algoritmo; \"o algoritmo fez\" nunca é resposta aceitável.",
+   "sections": [
+    {
+     "heading": "Revisão no G2 (design)",
+     "fields": [
+      {
+       "label": "Responsável nomeado (nome e papel)",
+       "optional": false
+      },
+      {
+       "label": "Partes afetadas e grupos que podem ser favorecidos ou prejudicados",
+       "optional": false
+      },
+      {
+       "label": "Plano de explicabilidade, em palavras simples",
+       "optional": false
+      }
+     ]
+    },
+    {
+     "heading": "Revisão no G3 (pré-lançamento)",
+     "fields": [
+      {
+       "label": "Taxas de erro por subgrupo relevante (falso positivo e falso negativo)",
+       "optional": false
+      },
+      {
+       "label": "Checagem manual de uma amostra aleatória dos dados",
+       "optional": false
+      },
+      {
+       "label": "Pior caso realista e quem ele atinge",
+       "optional": false
+      }
+     ]
+    },
+    {
+     "heading": "Revisão de 90 dias (pós-lançamento)",
+     "fields": [
+      {
+       "label": "Canal de recurso testado",
+       "optional": false
+      },
+      {
+       "label": "Resultados do monitoramento",
+       "optional": false
+      },
+      {
+       "label": "Plano de desativação",
+       "optional": false
+      }
+     ]
+    }
+   ]
+  },
+  "E": {
+   "title": "Cartão da audiência de partes interessadas",
+   "when": "etapa Discover, semana 2, 45 minutos",
+   "intro": "Vozes em conflito são ouvidas antes de qualquer solução. Cada assento argumenta a sua preocupação e a squad responde.",
+   "sections": [
+    {
+     "heading": "Patrocinador do negócio (velocidade e valor)",
+     "fields": [
+      {
+       "label": "Principal preocupação",
+       "optional": false
+      },
+      {
+       "label": "Resposta da squad",
+       "optional": false
+      }
+     ]
+    },
+    {
+     "heading": "Usuário final (carga de trabalho e confiança)",
+     "fields": [
+      {
+       "label": "Principal preocupação",
+       "optional": false
+      },
+      {
+       "label": "Resposta da squad",
+       "optional": false
+      }
+     ]
+    },
+    {
+     "heading": "Parte afetada (quem arca com o erro)",
+     "fields": [
+      {
+       "label": "Principal preocupação",
+       "optional": false
+      },
+      {
+       "label": "Resposta da squad",
+       "optional": false
+      }
+     ]
+    },
+    {
+     "heading": "Compliance e risco (lei, política e proteção de dados)",
+     "fields": [
+      {
+       "label": "Principal preocupação",
+       "optional": false
+      },
+      {
+       "label": "Resposta da squad",
+       "optional": false
+      }
+     ]
+    },
+    {
+     "heading": "Operações de TI (custo de run e suporte)",
+     "fields": [
+      {
+       "label": "Principal preocupação",
+       "optional": false
+      },
+      {
+       "label": "Resposta da squad",
+       "optional": false
+      }
+     ]
+    },
+    {
+     "heading": "Preocupações que seguem em aberto",
+     "fields": [
+      {
+       "label": "Viram entradas no registro de trade-offs do ADR e no Social Impact Statement",
+       "optional": false
+      }
+     ]
+    }
+   ]
+  }
  }
 };
