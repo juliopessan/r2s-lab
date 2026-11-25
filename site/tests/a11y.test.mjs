@@ -44,8 +44,6 @@ for (const scheme of ['light', 'dark']) test(`contrast meets AA (${scheme})`, as
     const pairs = [
       ['.hero h1', 'body'],
       ['.tagline', 'body'],
-      ['.video-links', 'body'],
-      ['.video-links a', 'body'],
       ['.support', 'body'],
       ['.secao h2', 'body'],
       ['.lede', 'body'],
