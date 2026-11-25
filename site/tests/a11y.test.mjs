@@ -56,10 +56,6 @@ for (const scheme of ['light', 'dark']) test(`contrast meets AA (${scheme})`, as
       ['.final p', '.final'],
       ['.final .cta', '.final .cta'],
       ['.topo-nav a', '.topo'],
-      ['#marca .rs li:nth-child(2) .letter', '#marca .rs li'],
-      ['#marca .rs li:nth-child(1) .letter', '#marca .rs li'],
-      ['.word', '#marca .rs li'],
-      ['.meaning', '#marca .rs li'],
       ['.roles li', '.roles li'],
       ['.foot-note', 'body'],
       ['.kicker', 'body'],
@@ -89,7 +85,7 @@ test('reduced motion shows everything without animation', async () => {
     await page.goto(url, { waitUntil: 'load' });
     const parts = await page.locator('.reveal').evaluateAll((els) =>
       els.map((e) => { const s = getComputedStyle(e); return [s.opacity, s.animationName, s.transitionDuration]; }));
-    assert.ok(parts.length >= 6);
+    assert.ok(parts.length >= 5);
     for (const [opacity, animationName, transitionDuration] of parts) {
       assert.equal(opacity, '1');
       assert.equal(animationName, 'none');

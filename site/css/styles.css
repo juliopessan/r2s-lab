@@ -89,14 +89,6 @@ main {
 .numeros .n { font-size: 2.4rem; font-weight: 300; line-height: 1; color: var(--brand-text); font-variant-numeric: tabular-nums; }
 .numeros .l { font-size: 0.9rem; color: var(--muted); }
 
-/* R · 2 · S */
-.rs { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; margin: 0; padding: 0; list-style: none; }
-.rs li { display: grid; gap: 0.35rem; padding: 1.5rem; background: var(--soft); border-radius: 14px; }
-.letter { font-size: 3.5rem; font-weight: 700; line-height: 1; color: var(--fg); }
-.rs li:nth-child(2) .letter { color: var(--brand-text); }
-.word { font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.9rem; }
-.meaning { color: var(--muted); }
-
 /* etapas e gates */
 .etapas { margin: 2rem 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); gap: 0.5rem; counter-reset: etapa; }
 .etapas li {
