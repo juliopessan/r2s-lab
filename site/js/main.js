@@ -27,8 +27,10 @@ export function renderStart(org) {
     { className: 'support template-hint' },
     'No GitHub, use o botão "Use this template", escolha "Private" e dê ao repositório o nome r2s-lab- seguido do seu usuário do GitHub.',
   );
+  const guia = el('p', { className: 'support template-guia' });
+  guia.append('Passo a passo completo, com os comandos: ', el('a', { href: `https://github.com/${org}/r2s-lab#comece-aqui` }, 'instalação no README'), '.');
   const block = el('div', { className: 'template' });
-  block.append(link, hint);
+  block.append(link, hint, guia);
   status.replaceWith(block);
 }
 

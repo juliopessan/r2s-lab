@@ -99,3 +99,20 @@ test('documents the squad flow and the certificate', () => {
   }
   assert.ok(!readme.includes('chegam depois'));
 });
+
+test('the install guide is a step-by-step with the template link, the clone and the progress commands', () => {
+  const guia = readme.slice(readme.indexOf('## Comece aqui'), readme.indexOf('## R2S Academy'));
+  const passos = [...guia.matchAll(/^### (.+)$/gm)].map((m) => m[1]);
+  assert.deepEqual(passos, [
+    'O que você precisa',
+    '1. Crie o seu repositório privado a partir do template',
+    '2. Clone o seu repositório e abra no VS Code',
+    '3. Abra a Academy e faça o pre-work',
+    '4. Registre o seu progresso',
+    '5. No fim da turma',
+    'Se algo der errado',
+  ]);
+  for (const needle of ['https://github.com/juliopessan/r2s-lab', 'Use this template', 'Private', 'git clone', 'git add progress/', 'git commit', 'git push', 'Importar']) {
+    assert.ok(guia.includes(needle), `missing ${needle}`);
+  }
+});

@@ -44,6 +44,7 @@ test('with an organization links to the template and explains the private repo',
     const hint = await page.locator('#comecar .template-hint').innerText();
     assert.match(hint, /Use this template/);
     assert.match(hint, /Private/);
+    assert.equal(await page.locator('#comecar .template-guia a').getAttribute('href'), TEMPLATE_URL + '#comece-aqui', 'links the step-by-step in the README');
   });
 });
 

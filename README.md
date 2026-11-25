@@ -40,18 +40,75 @@ day, dez minutos para pedir uma decisão ao negócio: **escalar**, **iterar** ou
 
 ## Comece aqui
 
-1. Crie o seu repositório **privado** a partir deste template. No GitHub, clique em *Use this template* → *Create a new repository*, escolha **Private** e use o nome `r2s-lab-<seu-usuario>`. O endereço do template é divulgado pela coordenação.
-2. Clone o **seu** repositório (e não este template) na sua máquina.
+Instalação passo a passo para registrar o seu progresso. Leva uns 10 minutos, e você só faz uma vez.
+
+### O que você precisa
+
+- Uma conta no GitHub.
+- O [Git](https://git-scm.com/downloads) instalado (no terminal, `git --version` responde com um número).
+- O [VS Code](https://code.visualstudio.com/) e um navegador atualizado (Edge, Chrome ou Firefox).
+
+Não precisa instalar Node nem nenhuma dependência: as páginas abrem direto do disco.
+
+### 1. Crie o seu repositório privado a partir do template
+
+1. Abra o template do laboratório: [github.com/juliopessan/r2s-lab](https://github.com/juliopessan/r2s-lab).
+2. Clique no botão verde **Use this template** → **Create a new repository**.
+3. Em *Repository name*, use `r2s-lab-<seu-usuario>` (por exemplo, `r2s-lab-mariasilva`).
+4. Escolha **Private** e clique em **Create repository**.
+
+O seu repositório é **privado**: só você e a coordenação do lab têm acesso. Nunca faça o trabalho direto no template.
+
+### 2. Clone o seu repositório e abra no VS Code
+
+Na página do **seu** repositório, clique em **Code** e copie o endereço HTTPS. Depois, no terminal:
+
+```bash
+git clone https://github.com/<seu-usuario>/r2s-lab-<seu-usuario>.git
+```
+
+```bash
+code r2s-lab-<seu-usuario>
+```
+
+Se o comando `code` não existir, abra o VS Code e use *File* → *Open Folder* na pasta clonada.
+
+### 3. Abra a Academy e faça o pre-work
+
+1. Abra `academy/index.html` no navegador (duplo clique no arquivo, ou a extensão *Live Server* do VS Code). A entrada pela landing também funciona: `site/index.html`.
+2. A Academy mostra o caminho do lab nesta ordem: **pre-work → jornada da squad → pesquisa → certificado → painel**.
+3. Faça o pre-work: cinco cursos na Academy, ou a página única `00-prework/index.html`. Ele leva um dia útil, e o seu andamento fica salvo no navegador.
+
+### 4. Registre o seu progresso
+
+1. Em *Sua jornada* (ou no fim do pre-work), clique em **Exportar progresso**. O navegador baixa `<seu-usuario>.json`.
+2. Mova o arquivo para a pasta `progress/` do seu repositório.
+3. Faça o commit e o push:
 
    ```bash
-   git clone <endereço do seu repositório privado>
+   git add progress/<seu-usuario>.json
    ```
 
-3. Abra a pasta no VS Code.
-4. Entre pela landing (`site/index.html`) ou direto pela R2S Academy (`academy/index.html`). A Academy mostra o caminho do lab nesta ordem: **pre-work → jornada da squad → pesquisa → certificado → painel**.
-5. Faça o pre-work: cinco cursos na Academy, ou a página única `00-prework/index.html`. Ele leva um dia útil, e o seu andamento fica salvo no navegador.
-6. Quando quiser registrar o andamento, clique em **Exportar progresso** (em *Sua jornada*), coloque o arquivo gerado em `progress/`, faça o commit e o push no seu repositório privado. Detalhes em `progress/README.md`.
-7. No fim da turma, responda a pesquisa em `05-encerramento/pesquisa.html` e exporte de novo.
+   ```bash
+   git commit -m "progresso do pre-work"
+   ```
+
+   ```bash
+   git push
+   ```
+
+Repita sempre que quiser atualizar o registro. Para continuar em outro computador ou navegador, abra a
+página e use **Importar** com o arquivo que está em `progress/`. Detalhes em `progress/README.md`.
+
+### 5. No fim da turma
+
+Responda a pesquisa em `05-encerramento/pesquisa.html` e exporte de novo (passo 4).
+
+### Se algo der errado
+
+- **Não aparece o botão *Use this template*:** o repositório ainda não foi marcado como template. Avise a coordenação.
+- **O push foi recusado:** confira com `git remote -v` se você clonou o **seu** repositório, e não o template.
+- **O progresso sumiu do navegador:** use **Importar** com o arquivo de `progress/`.
 
 Nada do que você faz aqui é enviado a ninguém até você fazer o push: o seu progresso é privado e só a
 coordenação o consolida no painel.
