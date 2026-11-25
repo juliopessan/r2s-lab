@@ -353,6 +353,43 @@ export function montarHub(box, animar, observar) {
   return cena;
 }
 
+/* Marca do rodapé: o ponto laranja salta de letra em letra (R, 2, S), cada letra cede um pouco quando ele
+ * pousa, e ele assenta como ponto final. Toca ao aparecer e ao passar o mouse ou focar. */
+export function montarMarca(marca, animar, observar) {
+  if (!marca || marca.dataset.mo) return null;
+  marca.dataset.mo = '1';
+  if (!animar) { marca.dataset.estado = 'final'; return null; }
+  const ls = [...marca.querySelectorAll('.mr-l')], ponto = marca.querySelector('.mr-ponto');
+  const HOP = 0.3, T0 = 0.15;
+  const cena = {
+    dur: T0 + 4 * HOP + 0.8,
+    seek(t) {
+      const fs = parseFloat(getComputedStyle(marca).fontSize) || 36;
+      const base = ponto.offsetLeft, topo = ponto.offsetTop;
+      const alvo = ls.map((l) => [l.offsetLeft + l.offsetWidth / 2 - ponto.offsetWidth / 2 - base, l.offsetTop - topo - ponto.offsetHeight - 0.04 * fs]);
+      alvo.push([0, 0]);
+      const k = Math.floor((t - T0) / HOP);
+      let x = alvo[0][0], y = alvo[0][1] - 0.9 * fs * (1 - spring(t, 0.5, 12));
+      if (t >= T0 && k < 3) {
+        const u = (t - T0 - k * HOP) / HOP, a = alvo[k], b = alvo[k + 1];
+        x = lerp(a[0], b[0], u);
+        y = lerp(a[1], b[1], u) - 0.55 * fs * Math.sin(Math.PI * u);
+      } else if (k >= 3) {
+        x = 0; y = 0;
+      }
+      ponto.style.transform = `translate(${x.toFixed(2)}px, ${y.toFixed(2)}px)`;
+      ls.forEach((l, i) => {
+        const pouso = i === 0 ? 0.1 : T0 + (i - 1) * HOP + HOP; // quando o ponto chega nesta letra
+        const d = impulso(t - pouso, 0.35, 22);
+        l.style.transform = `scale(${(1 + 0.08 * d).toFixed(4)}, ${(1 - 0.12 * d).toFixed(4)})`;
+      });
+    },
+  };
+  tocador(marca, cena, animar, observar);
+  marca.addEventListener('focus', () => { if (marca.dataset.estado === 'final') marca.dispatchEvent(new Event('mouseenter')); });
+  return cena;
+}
+
 export const CENAS = { valor: cenaValor, barato: cenaBarato, medir: cenaMedir, proteger: cenaProteger };
 
 /** Monta a cena no card; com movimento, toca ao entrar na tela e de novo ao passar o mouse. */
@@ -415,5 +452,6 @@ export function enableMotion(doc = document) {
   montarEtapas(doc.querySelector('#como .etapas'), animar, observar);
   montarHub(doc.querySelector('[data-hub]'), animar, observar);
   montarKin(doc.querySelector('#final .kin'), animar, observar);
+  montarMarca(doc.querySelector('.marca-r2s'), animar, observar);
   doc.querySelectorAll('.numeros .n, .levar .num').forEach((el) => contar(el, animar, observar));
 }

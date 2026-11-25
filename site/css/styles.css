@@ -193,8 +193,12 @@ main {
   padding: 2rem max(16px, env(safe-area-inset-left, 0px));
   text-align: center; border-top: 1px solid var(--line);
 }
-.lockup { margin: 0 0 0.25rem; letter-spacing: 0.02em; }
-.lockup strong { font-size: 1.1rem; }
+/* marca animada: R2S com o ponto laranja (js/motion.js faz o ponto saltar pelas letras) */
+.marca-r2s { display: inline-flex; align-items: baseline; margin: 0 0 0.5rem; color: var(--fg); text-decoration: none; font-size: 2.25rem; font-weight: 700; line-height: 1; letter-spacing: -0.03em; }
+.marca-r2s .mr-l { display: inline-block; transform-origin: 50% 100%; }
+.marca-r2s .mr-l:nth-child(2) { color: var(--brand-text); }
+.marca-r2s .mr-ponto { display: inline-block; width: 0.22em; height: 0.22em; margin-left: 0.06em; border-radius: 50%; background: var(--brand); }
+.marca-r2s:focus-visible { outline-offset: 6px; border-radius: 6px; }
 .foot-note { margin: 0; color: var(--muted); font-size: 0.9rem; }
 
 /* movimento: só quando o sistema permite */

@@ -69,7 +69,8 @@ test('footer holds the R2S lockup and no company name appears anywhere', async (
   await withPage({}, async (page, url) => {
     await page.goto(url, { waitUntil: 'load' });
     const footer = await page.locator('footer').innerText();
-    assert.ok(footer.includes('R2S LAB'));
+    assert.equal(await page.locator('footer .marca-r2s').getAttribute('aria-label'), 'R2S Lab: voltar ao topo');
+    assert.equal(footer.match(/Reskilling too Skilling/g).length, 1, 'one line, no duplicate name');
     assert.ok(footer.includes('Prática de Data & AI'));
     assert.doesNotMatch(await page.locator('body').innerText(), /avanade|brazil engineering/i);
   });
