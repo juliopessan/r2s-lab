@@ -4,24 +4,24 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>R2S Academy</title>
-<meta name="description" content="Cursos gratuitos do R2S Lab: IA aplicada a negócio, do pedido ao problema até a decisão.">
 <link rel="stylesheet" href="../css/academy.css">
 </head>
 <body>
 <header class="top" role="banner">
- <nav class="top-in" aria-label="Principal">
-  <a class="brand" href="index.html"><b>R2S</b> Academy</a>
-  <a href="index.html#cursos-titulo">Explorar</a>
-  <a href="index.html#selos-titulo">Seus selos</a>
- </nav>
+ <div class="top-in">
+  <a class="brand" href="index.html"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" class="brand-mark"><path d="M12 2l2.2 6.8L21 9.5l-5.4 4.3 1.9 6.9L12 16.9 6.5 20.7l1.9-6.9L3 9.5l6.8-.7z"/></svg><span><b>R2S</b> Academy</span></a>
+  <nav aria-label="Principal" class="top-nav"><a href="index.html#cursos-titulo">Explorar</a><a href="index.html#selos-titulo">Selos</a></nav>
+  <button type="button" id="tema-toggle" class="icon-btn" aria-label="Alternar entre tema claro e escuro"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
+ </div>
 </header>
 
-<main id="conteudo">
+<main id="conteudo" class="pagina-home">
  <section class="hero" aria-labelledby="titulo">
-  <p class="kick">R2S Lab · Reskilling too Skilling</p>
-  <h1 id="titulo">O que você quer aprender?</h1>
-  <p class="lede">Cursos gratuitos de IA aplicada a negócio, do time de dados da Avanade Brazil Engineering HUB.</p>
-  <label class="busca" for="busca"><span class="sr">Buscar cursos</span>
+  <p class="kick rise">R2S Lab · Reskilling too Skilling</p>
+  <h1 id="titulo" class="rise" style="--d:60ms">O que você quer aprender?</h1>
+  <p class="lede rise" style="--d:120ms">Cursos gratuitos de IA aplicada a negócio, do time de dados da Avanade Brazil Engineering HUB.</p>
+  <label class="busca rise" style="--d:180ms" for="busca"><span class="sr">Buscar cursos</span>
+   <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M10.5 4a6.5 6.5 0 1 1 0 13a6.5 6.5 0 0 1 0-13zM15.5 15.5L20 20"/></svg>
    <input id="busca" type="search" placeholder="Busque por um tema, uma lição ou uma pergunta" autocomplete="off">
   </label>
  </section>
@@ -40,24 +40,16 @@
 
  <section aria-labelledby="selos-titulo">
   <h2 id="selos-titulo">Seus selos</h2>
-  <div id="selos"></div>
+  <p id="selos-resumo" class="muted"></p>
+  <ul id="selos" class="selos plain"></ul>
  </section>
 </main>
 
-<footer class="foot">
- <div>
-  <h3>Para quem</h3>
-  <p class="muted">Participantes do R2S Lab, multiplicadores e coaches.</p>
- </div>
- <div>
-  <h3>Onde fica o seu progresso</h3>
-  <p class="muted">Neste navegador. Para registrar, exporte o arquivo no pre-work e faça o commit no seu repositório.</p>
- </div>
- <p class="muted copy">R2S Lab · Avanade Brazil Engineering HUB</p>
-</footer>
+<footer class="rodape" id="rodape"></footer>
 
 <script src="../lib/progress.js"></script>
 <script src="../lib/store.js"></script>
+<script src="../js/academy-content.js"></script>
 <script src="../js/academy.js"></script>
 </body>
 </html>

@@ -8,43 +8,62 @@
 </head>
 <body>
 <header class="top" role="banner">
- <nav class="top-in" aria-label="Principal">
-  <a class="brand" href="index.html"><b>R2S</b> Academy</a>
-  <a href="index.html#cursos-titulo">Explorar</a>
-  <a href="index.html#selos-titulo">Seus selos</a>
- </nav>
+ <div class="top-in">
+  <a class="brand" href="index.html"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" class="brand-mark"><path d="M12 2l2.2 6.8L21 9.5l-5.4 4.3 1.9 6.9L12 16.9 6.5 20.7l1.9-6.9L3 9.5l6.8-.7z"/></svg><span><b>R2S</b> Academy</span></a>
+  <nav aria-label="Principal" class="top-nav"><a href="index.html#cursos-titulo">Explorar</a><a href="index.html#selos-titulo">Selos</a></nav>
+  <button type="button" id="tema-toggle" class="icon-btn" aria-label="Alternar entre tema claro e escuro"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
+ </div>
 </header>
 
-<main id="conteudo">
+<main id="conteudo" class="pagina-curso">
  <p id="nao-encontrado" class="aviso" hidden>Curso não encontrado. <a href="index.html">Volte ao catálogo</a>.</p>
-
- <article id="curso" hidden>
-  <p class="kick"><a href="index.html">Catálogo</a> · <span id="tema"></span></p>
-  <h1 id="titulo"></h1>
-  <p id="meta" class="meta"></p>
-  <p id="resumo" class="lede"></p>
-  <div class="acoes">
-   <a id="cta" class="btn" href="#">Começar</a>
-   <p id="progresso" class="muted" role="status"></p>
+ <div id="curso" hidden>
+  <div class="faixa">
+   <div class="faixa-in">
+    <div class="faixa-texto">
+     <nav id="migalhas" class="migalhas rise" aria-label="Você está em"></nav>
+     <h1 id="titulo" class="rise" style="--d:40ms"></h1>
+     <p id="resumo" class="lede rise" style="--d:80ms"></p>
+     <div id="meta" class="pilulas rise" style="--d:120ms"></div>
+     <div class="acoes rise" style="--d:160ms">
+      <a id="cta" class="btn" href="#"></a>
+      <p id="progresso" role="status"></p>
+     </div>
+     <div class="barra" aria-hidden="true"><i id="barra"></i></div>
+    </div>
+    <div class="faixa-arte" id="faixa-arte"></div>
+   </div>
   </div>
-  <div id="selo" class="selo" hidden></div>
 
-  <section aria-labelledby="aprender-titulo">
-   <h2 id="aprender-titulo">O que você vai aprender</h2>
-   <ul id="aprender" class="aprender"></ul>
-  </section>
-
-  <section aria-labelledby="licoes-titulo">
-   <h2 id="licoes-titulo">Lições</h2>
-   <ol id="licoes" class="licoes plain"></ol>
-  </section>
- </article>
+  <div class="corpo">
+   <div class="col">
+    <div id="selo" class="selo-painel" hidden></div>
+    <div class="cartao rise">
+     <h2 class="cartao-titulo">O que você vai aprender</h2>
+     <p class="muted">Ao final deste curso, você vai conseguir</p>
+     <ul id="aprender" class="aprender plain"></ul>
+    </div>
+    <div class="cartao duas rise" style="--d:60ms">
+     <div><h2 class="cartao-titulo">Para quem é</h2><p id="publico" class="muted"></p></div>
+     <div><h2 class="cartao-titulo">Antes de começar</h2><ul id="antes" class="pontos"></ul></div>
+    </div>
+    <p id="intro" class="intro"></p>
+    <h2>Dentro do curso</h2>
+    <ol id="licoes" class="licoes plain"></ol>
+   </div>
+   <nav class="outline" aria-label="Conteúdo do curso">
+    <p class="outline-cabeca">Conteúdo do curso</p>
+    <ol id="outline" class="plain"></ol>
+   </nav>
+  </div>
+ </div>
 </main>
 
-<footer class="foot"><p class="muted copy">R2S Lab · Avanade Brazil Engineering HUB</p></footer>
+<footer class="rodape" id="rodape"></footer>
 
 <script src="../lib/progress.js"></script>
 <script src="../lib/store.js"></script>
+<script src="../js/academy-content.js"></script>
 <script src="../js/academy.js"></script>
 </body>
 </html>

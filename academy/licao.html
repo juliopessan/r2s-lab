@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lição · R2S Academy</title>
+<link rel="stylesheet" href="../css/academy.css">
+</head>
+<body>
+<header class="top" role="banner">
+ <div class="top-in">
+  <a class="brand" href="index.html"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" class="brand-mark"><path d="M12 2l2.2 6.8L21 9.5l-5.4 4.3 1.9 6.9L12 16.9 6.5 20.7l1.9-6.9L3 9.5l6.8-.7z"/></svg><span><b>R2S</b> Academy</span></a>
+  <nav aria-label="Principal" class="top-nav"><a href="index.html#cursos-titulo">Explorar</a><a href="index.html#selos-titulo">Selos</a></nav>
+  <button type="button" id="tema-toggle" class="icon-btn" aria-label="Alternar entre tema claro e escuro"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
+ </div>
+</header>
+
+<main id="conteudo" class="pagina-licao">
+ <p id="nao-encontrado" class="aviso" hidden>Lição não encontrada. <a href="index.html">Volte ao catálogo</a>.</p>
+ <div id="licao" class="licao-grade" hidden>
+  <article class="col">
+   <header class="licao-cabeca">
+    <nav id="migalhas" class="migalhas" aria-label="Você está em"></nav>
+    <h1 id="titulo"></h1>
+    <div id="meta" class="pilulas"></div>
+   </header>
+   <div id="aviso-progresso" class="aviso-progresso">
+    <div><p class="aviso-titulo">Seu progresso fica neste navegador</p><p class="muted">Para registrar no lab, exporte o arquivo no pre-work e faça o commit no seu repositório.</p></div>
+    <button type="button" class="btn-sec">Entendi</button>
+   </div>
+   <div id="conteudo-licao" class="conteudo-licao"></div>
+   <div id="ajudou" class="ajudou">
+    <p>Isso ajudou?</p>
+    <div class="ajudou-botoes">
+     <button type="button" class="icon-btn" data-valor="sim" aria-pressed="false" aria-label="Sim, ajudou"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M7 11v9H4v-9zM7 11l4-7a2 2 0 0 1 3 2l-1 4h6a2 2 0 0 1 2 2l-2 7a2 2 0 0 1-2 1H7"/></svg></button>
+     <button type="button" class="icon-btn" data-valor="nao" aria-pressed="false" aria-label="Não ajudou"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M17 13V4h3v9zM17 13l-4 7a2 2 0 0 1-3-2l1-4H5a2 2 0 0 1-2-2l2-7a2 2 0 0 1 2-1h10"/></svg></button>
+    </div>
+    <span id="ajudou-msg" class="muted" role="status"></span>
+   </div>
+   <div class="concluir-wrap">
+    <button type="button" id="concluir" class="btn" aria-pressed="false">Marcar como concluída</button>
+   </div>
+   <div id="conquista" class="conquista" role="status" hidden></div>
+   <nav class="licao-nav" aria-label="Navegação entre lições" id="licao-nav"></nav>
+  </article>
+  <aside class="lado">
+   <div id="posicao" class="posicao">
+    <button type="button" aria-expanded="false" aria-controls="posicao-lista">
+     <span class="posicao-onde"></span>
+     <span class="posicao-titulo"></span>
+     <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" class="chevron"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <ol id="posicao-lista" class="plain" hidden></ol>
+   </div>
+   <nav id="sumario" class="sumario" aria-label="Nesta lição"><ol class="plain"></ol></nav>
+  </aside>
+ </div>
+</main>
+
+<footer class="rodape" id="rodape"></footer>
+
+<script src="../lib/progress.js"></script>
+<script src="../lib/store.js"></script>
+<script src="../js/academy-content.js"></script>
+<script src="../js/academy.js"></script>
+</body>
+</html>
