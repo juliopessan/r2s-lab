@@ -102,3 +102,18 @@ test('final call: "Menos curso." struck through and a giant "Mais lab." whose pe
     assert.equal((await page.locator('#final-titulo').textContent()).trim(), 'Comece pela Academy.');
   });
 });
+
+test('footer mark: the orange dot hops over R, 2 and S and lands as the period', async () => {
+  await withPage({}, async (page, url) => {
+    await page.goto(url, { waitUntil: 'load' });
+    await page.locator('.site-footer').scrollIntoViewIfNeeded();
+    await page.waitForFunction(() => document.querySelector('.marca-r2s').dataset.estado === 'final', null, { timeout: 6000 });
+    const r = await page.evaluate(() => {
+      const p = document.querySelector('.marca-r2s .mr-ponto').getBoundingClientRect();
+      const s = [...document.querySelectorAll('.marca-r2s .mr-l')].pop().getBoundingClientRect();
+      return { depoisDoS: p.left >= s.right - 1, naLinha: p.bottom <= s.bottom + 2 && p.bottom >= s.bottom - 0.35 * s.height };
+    });
+    assert.deepEqual(r, { depoisDoS: true, naLinha: true });
+    assert.deepEqual(page.errors, []);
+  });
+});
