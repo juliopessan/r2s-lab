@@ -73,3 +73,32 @@ test('the 7 stages: the dot runs across the cards and the page ends exactly like
     assert.deepEqual(page.errors, []);
   });
 });
+
+test('roles hub: the five roles turn around the squad, one step per gate, ending at G4', async () => {
+  for (const reducedMotion of ['reduce', 'no-preference']) {
+    await withPage({ reducedMotion }, async (page, url) => {
+      await page.goto(url, { waitUntil: 'load' });
+      await page.locator('#papeis').scrollIntoViewIfNeeded();
+      await page.waitForFunction(() => document.querySelector('[data-hub]').dataset.estado === 'final', null, { timeout: 9000 });
+      assert.equal(await page.locator('[data-hub] .hub-gate').textContent(), 'G4', reducedMotion);
+      assert.deepEqual(await page.locator('[data-hub] .hub-papel').allTextContents(), ['Product Lead', 'Data Lead', 'AI Engineer', 'Eval & Risk Lead', 'Storyteller']);
+      assert.deepEqual(await page.locator('[data-hub] .hub-papel.on').allTextContents(), ['Data Lead'], 'after four turns you hold a different role');
+      assert.equal(await page.locator('[data-hub] svg').getAttribute('aria-hidden'), 'true');
+      assert.deepEqual(page.errors, []);
+    });
+  }
+});
+
+test('final call: "Menos curso." struck through and a giant "Mais lab." whose period is the orange dot', async () => {
+  await withPage({}, async (page, url) => {
+    await page.goto(url, { waitUntil: 'load' });
+    await page.locator('#final').scrollIntoViewIfNeeded();
+    await page.waitForFunction(() => document.querySelector('#final .kin').dataset.estado === 'final', null, { timeout: 8000 });
+    assert.equal((await page.locator('.kin-menos').textContent()).trim(), 'Menos curso.');
+    assert.equal((await page.locator('.kin-mais').textContent()).trim(), 'Mais lab');
+    assert.equal(await page.locator('.kin-ponto').evaluate((e) => getComputedStyle(e).opacity), '1');
+    assert.equal(await page.locator('.kin-menos').evaluate((e) => e.style.getPropertyValue('--risco')), '1.000');
+    assert.equal(await page.locator('.kin').getAttribute('aria-hidden'), 'true');
+    assert.equal((await page.locator('#final-titulo').textContent()).trim(), 'Comece pela Academy.');
+  });
+});

@@ -138,6 +138,22 @@ main {
 .chips li { padding: 0.45rem 1rem; background: var(--soft); border: 1px solid var(--line); border-radius: 999px; font-weight: 600; }
 .decisions li { border-color: var(--brand); }
 
+/* hub dos papéis (js/motion.js): os papéis giram em volta da squad a cada gate */
+.hub svg { display: block; width: 100%; height: auto; margin: 1.25rem 0 0.5rem; overflow: visible; }
+.hub text { font-family: var(--sans); }
+.hub .hub-elo { fill: none; stroke: var(--line); stroke-width: 1.2; stroke-dasharray: 3 4; }
+.hub .hub-centro { fill: var(--soft); stroke: var(--line); }
+.hub .hub-gate { fill: var(--fg); font-size: 18px; font-weight: 700; }
+.hub .hub-sub { fill: var(--muted); font-size: 10px; }
+.hub .hub-pessoa { fill: var(--field); }
+.hub .hub-pessoa.voce { fill: var(--brand); }
+.hub .hub-papel rect { fill: var(--surface); stroke: var(--line); }
+.hub .hub-papel text { fill: var(--fg); font-size: 13px; font-weight: 600; }
+.hub .hub-papel.on rect { fill: var(--brand); stroke: var(--brand); }
+.hub .hub-papel.on text { fill: #000; }
+.hub .hub-legenda { fill: var(--muted); font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 11px; }
+.roles.com-hub { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap; margin: 0; padding: 0; }
+
 /* o que você leva */
 .levar ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
 .levar li { display: grid; gap: 0.4rem; padding: 1.5rem; background: var(--soft); border-radius: 14px; }
@@ -153,6 +169,16 @@ main {
 .final h2 { font-size: clamp(2rem, 5vw, 3rem); font-weight: 300; margin-bottom: 1rem; }
 .final p { color: var(--band-muted); font-size: 1.1rem; max-width: 40rem; }
 .final .cta { background: var(--cor-orange); color: var(--cor-black); }
+
+/* tipografia cinética da chamada final (js/motion.js anima; este é o quadro final) */
+.kin { margin: 0 0 1rem; line-height: 0.92; }
+.kin-menos { position: relative; display: block; width: max-content; max-width: 100%; margin-bottom: 0.35rem; font-size: clamp(1.3rem, 3vw, 1.9rem); font-weight: 300; color: var(--band-muted); transform-origin: left bottom; }
+.kin-menos::after { content: ""; position: absolute; left: -0.1em; right: -0.1em; top: 54%; height: 3px; background: var(--brand); transform-origin: left center; transform: scaleX(var(--risco, 1)); }
+.kin-mais { display: block; font-size: clamp(3.4rem, 11vw, 8rem); font-weight: 700; letter-spacing: -0.045em; color: var(--band-fg); }
+.kin-ponto { display: inline-block; width: 0.19em; height: 0.19em; margin-left: 0.05em; border-radius: 50%; background: var(--brand); }
+.kin .l { display: inline-block; white-space: pre; }
+.colchete { font-family: ui-monospace, 'Cascadia Mono', Menlo, Consolas, monospace; font-size: 0.85rem !important; letter-spacing: 0.01em; margin-bottom: 1.75rem; }
+.final .colchete { color: var(--band-muted); }
 .final .cta:hover { background: #FF7A33; }
 
 /* registrar o progresso */
