@@ -74,7 +74,6 @@ main {
   display: block; width: 100%; aspect-ratio: 16 / 9; max-width: 100%;
   background: #000; border-radius: 14px; border: 1px solid var(--line); box-shadow: var(--shadow-lg);
 }
-.video-links { margin-top: 0.75rem; font-size: 0.92rem; color: var(--muted); }
 
 /* seções */
 .secao { padding-block: 4rem; border-top: 1px solid var(--line); }
@@ -89,14 +88,6 @@ main {
 .numeros li { display: flex; flex-direction: column; gap: 0.4rem; padding: 1rem 1.1rem; background: var(--soft); border-radius: 12px; }
 .numeros .n { font-size: 2.4rem; font-weight: 300; line-height: 1; color: var(--brand-text); font-variant-numeric: tabular-nums; }
 .numeros .l { font-size: 0.9rem; color: var(--muted); }
-
-/* R · 2 · S */
-.rs { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 1rem; margin: 0; padding: 0; list-style: none; }
-.rs li { display: grid; gap: 0.35rem; padding: 1.5rem; background: var(--soft); border-radius: 14px; }
-.letter { font-size: 3.5rem; font-weight: 700; line-height: 1; color: var(--fg); }
-.rs li:nth-child(2) .letter { color: var(--brand-text); }
-.word { font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; font-size: 0.9rem; }
-.meaning { color: var(--muted); }
 
 /* etapas e gates */
 .etapas { margin: 2rem 0 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr)); gap: 0.5rem; counter-reset: etapa; }
@@ -114,6 +105,24 @@ main {
 .principio { padding: 1.5rem; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--brand); border-radius: 12px; }
 .principio h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; }
 .principio p { margin: 0; color: var(--muted); }
+
+/* sistema do ponto laranja (js/motion.js): cenas nos cards das regras. Uma cor de acento, sem gradiente. */
+.mo { display: block; width: 100%; height: auto; margin: 0 0 1.1rem; overflow: visible; }
+.mo text { font-family: var(--sans); font-size: 12px; fill: var(--muted); }
+.mo .mo-ink { fill: var(--fg); font-weight: 600; }
+.mo .mo-dot { fill: var(--brand); }
+.mo .mo-linha { fill: none; stroke: var(--line); stroke-width: 1.5; }
+.mo .mo-alvo { fill: none; stroke: var(--field); stroke-width: 1.2; stroke-dasharray: 3 4; }
+.mo .mo-curva { fill: none; stroke: var(--fg); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.mo .mo-barra { fill: var(--line); }
+.mo .mo-barra.on { fill: var(--brand); }
+.mo .mo-caso { fill: var(--line); }
+.mo .mo-ok { fill: var(--field); }
+.mo .mo-falha { fill: none; stroke: var(--brand-text); stroke-width: 1.5; }
+.mo .mo-chip rect { fill: var(--cta-bg); }
+.mo .mo-chip text { fill: var(--cta-fg); font-weight: 700; }
+.mo .mo-forma { fill: var(--brand); }
+.mo .mo-forma-txt { fill: #000; font-size: 13px; font-weight: 700; }
 
 /* papéis e decisão */
 .dupla { display: grid; gap: 3rem; grid-template-columns: minmax(0, 1fr); }

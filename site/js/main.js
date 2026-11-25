@@ -1,4 +1,5 @@
 import { GITHUB_ORG } from './config.js';
+import { enableMotion } from './motion.js';
 
 const ORG_PATTERN = /^[A-Za-z0-9][A-Za-z0-9-]{0,38}$/;
 function el(tag, props = {}, text) {
@@ -50,4 +51,5 @@ export function enableReveal() {
 }
 
 enableReveal();
+enableMotion();
 renderStart(typeof window.__R2S_ORG__ === 'string' ? window.__R2S_ORG__ : GITHUB_ORG);

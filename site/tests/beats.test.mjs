@@ -8,7 +8,7 @@ const trimAll = (xs) => xs.map((x) => x.replace(/\s+/g, ' ').trim());
 test('the page follows hook, re-hook, meat and call to action, in this order', async () => {
   await withPage({}, async (page, url) => {
     await page.goto(url, { waitUntil: 'load' });
-    const order = await page.evaluate(() => ['#hero .hook', '#porque', '#marca', '#como', '#principios', '#papeis', '#levar', '#final', '#comecar']
+    const order = await page.evaluate(() => ['#hero .hook', '#porque', '#como', '#principios', '#papeis', '#levar', '#final', '#comecar']
       .map((s) => document.querySelector(s))
       .every((el, i, all) => el && (i === 0 || Boolean(all[i - 1].compareDocumentPosition(el) & Node.DOCUMENT_POSITION_FOLLOWING))));
     assert.ok(order);
@@ -31,6 +31,8 @@ test('the re-hook states the problem and the numbers of the program', async () =
   await withPage({}, async (page, url) => {
     await page.goto(url, { waitUntil: 'load' });
     assert.equal((await page.locator('#porque h2').innerText()).trim(), 'Curso não muda papel. Caso real muda.');
+    await page.locator('#porque .numeros').scrollIntoViewIfNeeded(); // a contagem com mola começa ao entrar na tela
+    await page.waitForFunction(() => document.querySelector('#porque .numeros .n').textContent === '12');
     const nums = trimAll(await page.locator('#porque .numeros li').allInnerTexts());
     assert.deepEqual(nums.map((t) => t.split(' ')[0]), ['12', '7', '5', '5', '6']);
   });

@@ -36,13 +36,12 @@ test('video loads metadata and lasts about 91 seconds', async () => {
   });
 });
 
-test('fallback links exist', async () => {
+test('the teaser has no caption links under it; captions and the no-video fallback stay', async () => {
   await withPage({}, async (page, url) => {
     await page.goto(url, { waitUntil: 'load' });
-    const links = page.locator('#hero .video-links');
-    assert.match(await links.locator('a[href$="assets/teaser.mp4"]').getAttribute('href'), /teaser\.mp4$/);
-    const transcript = links.locator('a[href$="assets/teaser.pt-BR.txt"]');
-    assert.equal((await transcript.textContent()).trim(), 'Ler a transcrição');
+    assert.equal(await page.locator('#hero .video-links, #hero figcaption').count(), 0);
+    assert.equal(await page.locator('#teaser track[kind="captions"]').count(), 1);
+    assert.equal(await page.locator('#teaser a[href$="assets/teaser.mp4"]').count(), 1);
   });
 });
 
