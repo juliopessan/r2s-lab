@@ -117,3 +117,29 @@ test('footer mark: the orange dot hops over R, 2 and S and lands as the period',
     assert.deepEqual(page.errors, []);
   });
 });
+
+test('demo day: the chart draws, the audience arrives and the cursor clicks Escalar', async () => {
+  for (const reducedMotion of ['reduce', 'no-preference']) {
+    await withPage({ reducedMotion }, async (page, url) => {
+      await page.goto(url, { waitUntil: 'load' });
+      await page.locator('#papeis').scrollIntoViewIfNeeded();
+      await page.waitForFunction(() => document.querySelector('[data-demo]').dataset.estado === 'final', null, { timeout: 9000 });
+      assert.deepEqual(await page.locator('[data-demo] .decisions li').allTextContents(), ['Escalar', 'Iterar', 'Encerrar']);
+      assert.deepEqual(await page.locator('[data-demo] .decisions li.on').allTextContents(), ['Escalar']);
+      assert.ok((await page.locator('.demo-curva').getAttribute('d')).length > 200, 'the curve is drawn');
+      assert.equal(await page.locator('.demo-cursor').evaluate((c) => c.style.opacity), reducedMotion === 'reduce' ? '0' : '1');
+      assert.deepEqual(page.errors, []);
+    });
+  }
+});
+
+test('the roles and demo columns line up: titles, texts and scenes start on the same rows', async () => {
+  await withPage({ viewport: { width: 1280, height: 900 }, reducedMotion: 'reduce' }, async (page, url) => {
+    await page.goto(url, { waitUntil: 'load' });
+    const tops = await page.evaluate(() => {
+      const [a, b] = document.querySelectorAll('#papeis .dupla > div');
+      return ['h2', '.lede'].map((s) => Math.round(a.querySelector(s).getBoundingClientRect().top - b.querySelector(s).getBoundingClientRect().top));
+    });
+    assert.deepEqual(tops, [0, 0]);
+  });
+});

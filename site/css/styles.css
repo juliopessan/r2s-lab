@@ -132,11 +132,31 @@ main {
 
 /* papéis e decisão */
 .dupla { display: grid; gap: 3rem; grid-template-columns: minmax(0, 1fr); }
-@media (min-width: 960px) { .dupla { grid-template-columns: 1fr 1fr; } }
+/* duas colunas alinhadas linha a linha (título, texto, cena), cada cena centralizada na sua coluna */
+@media (min-width: 960px) {
+  .dupla { grid-template-columns: 1fr 1fr; grid-template-rows: auto auto 1fr; column-gap: 4rem; row-gap: 0; }
+  .dupla > div { display: grid; grid-row: span 3; grid-template-rows: subgrid; align-items: start; }
+  .dupla .hub, .dupla .demo { align-self: center; }
+}
 .dupla h2 { font-size: clamp(1.6rem, 3.6vw, 2.1rem); }
 .chips { display: flex; flex-wrap: wrap; gap: 0.6rem; margin: 1.25rem 0 0; padding: 0; list-style: none; }
 .chips li { padding: 0.45rem 1rem; background: var(--soft); border: 1px solid var(--line); border-radius: 999px; font-weight: 600; }
 .decisions li { border-color: var(--brand); }
+
+/* demo day (js/motion.js): a tela da demo, a plateia e a decisão, como no teaser */
+.demo { position: relative; width: 100%; max-width: 30rem; margin: 1.25rem auto 0; }
+.demo-tela { display: block; width: 100%; height: auto; overflow: visible; }
+.demo-moldura { fill: none; stroke: var(--fg); stroke-width: 2.5; }
+.demo-rotulo { fill: var(--muted); font: 600 12px var(--sans); letter-spacing: 0.12em; }
+.demo-base { fill: none; stroke: var(--line); stroke-width: 1.5; }
+.demo-curva { fill: none; stroke: var(--fg); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.demo-ponto { fill: var(--brand); }
+.demo-pessoa { fill: none; stroke: var(--fg); stroke-width: 2.5; }
+.demo .decisions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+.demo .decisions li { padding: 0.7rem 0.5rem; text-align: center; font-weight: 700; border-radius: 10px; border: 1px solid var(--line); background: var(--soft); color: var(--fg); }
+.demo .decisions li.on { background: var(--brand); border-color: var(--brand); color: #000; }
+.demo-cursor { position: absolute; left: 0; top: 0; width: 26px; height: 26px; opacity: 0; pointer-events: none; }
+.demo-cursor path { fill: #000; stroke: #fff; stroke-width: 1.4; stroke-linejoin: round; }
 
 /* hub dos papéis (js/motion.js): os papéis giram em volta da squad a cada gate */
 .hub svg { display: block; width: 100%; height: auto; margin: 1.25rem 0 0.5rem; overflow: visible; }

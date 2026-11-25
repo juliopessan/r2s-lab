@@ -9,6 +9,7 @@ const NS = 'http://www.w3.org/2000/svg';
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
 const seg = (t, a, b) => clamp((t - a) / (b - a));
 const lerp = (a, b, p) => a + (b - a) * p;
+const ease = (p) => (p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2);
 
 /** Resposta de mola amortecida a um degrau (0 → 1), em segundos. z < 1 dá o pequeno exagero. */
 export function spring(t, z = 0.42, w = 13) {
@@ -390,6 +391,51 @@ export function montarMarca(marca, animar, observar) {
   return cena;
 }
 
+/* Demo day, como no teaser: a moldura se desenha, a curva de mola é traçada com o ponto laranja, a plateia
+ * entra, os botões sobem e o cursor clica em Escalar, que acende. Sem movimento: o quadro final, sem cursor. */
+export function montarDemo(box, animar, observar) {
+  if (!box || box.dataset.mo) return null;
+  box.dataset.mo = '1';
+  const moldura = box.querySelector('.demo-moldura'), curva = box.querySelector('.demo-curva');
+  const ponto = box.querySelector('.demo-ponto'), pessoas = [...box.querySelectorAll('.demo-pessoa')];
+  const botoes = [...box.querySelectorAll('.decisions li')], cursor = box.querySelector('.demo-cursor');
+  const X0 = 60, X1 = 480, BASE = 172, ALVO = 62;
+  const y = (p) => BASE - (BASE - ALVO) * spring(p * 1.5, 0.38, 9);
+  const PER = 2 * (516 + 200);
+  set(moldura, { 'stroke-dasharray': PER });
+  const cena = {
+    dur: 5,
+    seek(t) {
+      set(moldura, { 'stroke-dashoffset': PER * (1 - ease(seg(t, 0, 0.6))) });
+      const p = seg(t, 0.5, 2.3);
+      let d = `M${X0} ${BASE}`;
+      for (let i = 1; i <= 80; i++) { const q = (p * i) / 80; d += `L${lerp(X0, X1, q).toFixed(1)} ${y(q).toFixed(1)}`; }
+      set(curva, { d });
+      set(ponto, { cx: lerp(X0, X1, p), cy: y(p), r: t < 0.5 ? 0 : 6 });
+      pessoas.forEach((c, i) => {
+        const s = Math.max(0, spring(t - 2.2 - i * 0.12));
+        set(c, { transform: `translate(${c.getAttribute('cx')} ${c.getAttribute('cy')}) scale(${s.toFixed(3)}) translate(${-c.getAttribute('cx')} ${-c.getAttribute('cy')})` });
+      });
+      botoes.forEach((b, i) => {
+        const s = spring(t - 2.6 - i * 0.1);
+        b.style.opacity = String(clamp(s * 1.5));
+        b.style.transform = `translateY(${(14 * (1 - s)).toFixed(2)}px)${b === botoes[0] && t > 3.85 && t < 4.05 ? ' scale(.95)' : ''}`;
+      });
+      botoes[0].classList.toggle('on', t >= 3.95);
+      const alvo = botoes[0];
+      const ax = alvo.offsetLeft + alvo.offsetWidth * 0.55, ay = alvo.offsetTop + alvo.offsetHeight * 0.55;
+      const sx = box.clientWidth - 10, sy = box.clientHeight + 10;
+      const m = ease(seg(t, 3.0, 3.8));
+      const cx = lerp(sx, ax, m), cy = lerp(sy, ay, m) - 40 * Math.sin(Math.PI * m) * 0.4;
+      const press = t > 3.85 && t < 4.05 ? 0.85 : 1;
+      cursor.style.opacity = animar && t >= 2.9 ? '1' : '0';
+      cursor.style.transform = `translate(${cx.toFixed(1)}px, ${cy.toFixed(1)}px) scale(${press})`;
+    },
+  };
+  tocador(box, cena, animar, observar);
+  return cena;
+}
+
 export const CENAS = { valor: cenaValor, barato: cenaBarato, medir: cenaMedir, proteger: cenaProteger };
 
 /** Monta a cena no card; com movimento, toca ao entrar na tela e de novo ao passar o mouse. */
@@ -451,6 +497,7 @@ export function enableMotion(doc = document) {
   doc.querySelectorAll('[data-cena]').forEach((card) => montarCena(card, animar, observar));
   montarEtapas(doc.querySelector('#como .etapas'), animar, observar);
   montarHub(doc.querySelector('[data-hub]'), animar, observar);
+  montarDemo(doc.querySelector('[data-demo]'), animar, observar);
   montarKin(doc.querySelector('#final .kin'), animar, observar);
   montarMarca(doc.querySelector('.marca-r2s'), animar, observar);
   doc.querySelectorAll('.numeros .n, .levar .num').forEach((el) => contar(el, animar, observar));
