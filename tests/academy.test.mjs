@@ -172,7 +172,7 @@ test('the outline lists lessons, quizzes and the completion badge', async () => 
   await withPage({}, async (page, url) => {
     await page.goto(url + COURSE('p1'), { waitUntil: 'load' });
     const items = await rows(page, '#outline li');
-    assert.deepEqual(items, ['Como um LLM gera texto Quiz', 'Prompting que funciona Quiz', 'Regra, ML, LLM ou agente? Quiz', 'Selo de conclusão']);
+    assert.deepEqual(items, ['Como um LLM gera texto Quiz', 'Prompting que funciona Quiz', 'Regra, ML, LLM ou agente? Quiz', 'Quizzes do curso 0 / 3', 'Selo de conclusão']);
   });
 });
 
@@ -547,7 +547,7 @@ test('the standalone SVG badges exist for every course and match the generator',
 
 /* ---------- qualidade ---------- */
 
-const PAGES = [HOME, COURSE('p1'), LESSON('p1', '1.3'), LESSON('p4', '4.2'), BADGE('p5'), BADGE('p4'), COURSE('s4'), LESSON('s1', 's1.1'), LESSON('s1', 's1.2')];
+const PAGES = [HOME, COURSE('p1'), LESSON('p1', '1.3'), LESSON('p4', '4.2'), BADGE('p5'), BADGE('p4'), 'academy/jornada.html', COURSE('s4'), LESSON('s1', 's1.1'), LESSON('s1', 's1.2')];
 
 test('no page loads anything external, scrolls sideways at 360 px or throws', async () => {
   for (const p of PAGES) {
@@ -561,7 +561,7 @@ test('no page loads anything external, scrolls sideways at 360 px or throws', as
       assert.deepEqual(page.errors || [], [], p);
     });
   }
-  for (const f of ['academy/index.html', 'academy/curso.html', 'academy/licao.html', 'academy/selo.html', 'js/academy.js', 'css/academy.css']) {
+  for (const f of ['academy/index.html', 'academy/curso.html', 'academy/licao.html', 'academy/selo.html', 'academy/jornada.html', 'js/academy.js', 'css/academy.css']) {
     const t = readFileSync(path.join(root, f), 'utf8');
     assert.ok(!t.includes('Requirement-to-Solution'), f);
     assert.ok(!/innerHTML\s*=/.test(t), `${f} writes HTML from strings`);
@@ -613,4 +613,94 @@ test('with motion allowed, the earned badge animates and the cards rise in', asy
     const anim = await page.evaluate(() => [...document.querySelectorAll('.faixa .badge.ganho, .faixa .badge.ganho *')].map((e) => getComputedStyle(e).animationName).filter((n) => n !== 'none'));
     assert.ok(anim.length > 0, 'the earned badge has an animation');
   });
+});
+
+/* ---------- estado derivado, salvos e sua jornada ---------- */
+
+const JOURNEY = 'academy/jornada.html';
+const uiSeed = (page, patch) => page.addInitScript((p) => { if (!sessionStorage.getItem('ui')) { sessionStorage.setItem('ui', '1'); localStorage.setItem('r2s-academy-ui-v1', JSON.stringify(p)); } }, patch);
+
+test('the card status chip is derived from progress: none, enrolled, n / N, take quiz, completed', async () => {
+  await withPage({}, async (page, url) => {
+    await page.goto(url + HOME, { waitUntil: 'load' });
+    assert.equal(await page.locator('#cursos li.curso .capa-chip').count(), 0, 'nothing started shows no chip');
+  });
+  await withPage({}, async (page, url) => {
+    await uiSeed(page, { matriculado: { p2: true } });
+    await page.goto(url + HOME, { waitUntil: 'load' });
+    assert.equal(await text(page, '#cursos li.curso:nth-child(2) .capa-chip'), 'Matriculado');
+  });
+  await withPage({}, async (page, url) => {
+    await seed(page, { '1.1': true, '1.2': true, '5.1': true, '5.2': true });
+    await page.goto(url + HOME, { waitUntil: 'load' });
+    assert.equal(await text(page, '#cursos li.curso:nth-child(1) .capa-chip'), '2 / 3');
+    assert.equal(await text(page, '#cursos li.curso:nth-child(5) .capa-chip'), 'Concluído');
+    assert.equal(await page.getAttribute('#cursos li.curso:nth-child(5)', 'data-estado'), 'concluido');
+  });
+  await withPage({}, async (page, url) => {
+    await seed(page, { '1.1': true, '1.2': true, '1.3': true });
+    await page.goto(url + HOME, { waitUntil: 'load' });
+    assert.equal(await text(page, '#cursos li.curso:nth-child(1) .capa-chip'), 'Fazer quiz');
+    assert.equal(await page.locator('#selos li.selo.ganho').count(), 1, 'the badge still follows the lessons');
+  });
+});
+
+test('opening a lesson enrols the learner and the course page shows the status', async () => {
+  await withPage({}, async (page, url) => {
+    await page.goto(url + LESSON('p2', '2.1'), { waitUntil: 'load' });
+    await page.goto(url + COURSE('p2'), { waitUntil: 'load' });
+    assert.equal(await text(page, '#estado-curso'), 'Matriculado');
+  });
+});
+
+test('a course can be saved to the journey and unsaved', async () => {
+  await withPage({}, async (page, url) => {
+    await page.goto(url + COURSE('p3'), { waitUntil: 'load' });
+    assert.equal(await page.getAttribute('#salvar', 'aria-pressed'), 'false');
+    await page.click('#salvar');
+    assert.equal(await page.getAttribute('#salvar', 'aria-pressed'), 'true');
+    await page.goto(url + JOURNEY, { waitUntil: 'load' });
+    assert.deepEqual(await rows(page, '#j-salvos li .j-titulo'), ['Valor e custo']);
+    await page.goto(url + COURSE('p3'), { waitUntil: 'load' });
+    assert.equal(await page.getAttribute('#salvar', 'aria-pressed'), 'true');
+    await page.click('#salvar');
+    await page.goto(url + JOURNEY, { waitUntil: 'load' });
+    assert.equal(await page.locator('#j-salvos li').count(), 0);
+  });
+});
+
+test('Sua jornada is empty at first and offers a way into the catalog', async () => {
+  await withPage({}, async (page, url) => {
+    await page.goto(url + JOURNEY, { waitUntil: 'load' });
+    assert.equal(await page.title(), 'Sua jornada · R2S Academy');
+    assert.equal(await text(page, 'h1'), 'Sua jornada');
+    assert.equal(await page.locator('.j-linha').count(), 0);
+    assert.equal(await page.locator('#v-andamento').isVisible(), true);
+    assert.match(await page.getAttribute('#v-andamento a', 'href'), /index\.html#cursos-titulo$/);
+  });
+});
+
+test('Sua jornada groups in progress and completed, and Continuar goes to the latest course', async () => {
+  await withPage({}, async (page, url) => {
+    await uiSeed(page, { recente: 'p2' });
+    await seed(page, { '1.1': true, '2.1': true, '5.1': true, '5.2': true });
+    await page.goto(url + JOURNEY, { waitUntil: 'load' });
+    assert.deepEqual(await rows(page, '#j-andamento li .j-titulo'), ['GenAI na prática', 'Do pedido ao problema']);
+    assert.deepEqual(await rows(page, '#j-concluidos li .j-titulo'), ['Exercício final']);
+    assert.equal(await page.locator('#j-andamento a.btn').count(), 1, 'one Continuar only');
+    assert.equal(await text(page, '#j-andamento li[data-curso="p2"] a.btn'), 'Continuar');
+    assert.match(await page.getAttribute('#j-andamento a.btn', 'href'), /licao\.html\?c=p2&l=2\.2$/);
+    assert.equal(await text(page, '#j-andamento li[data-curso="p1"] .chip'), '1 / 3');
+    assert.equal(await page.locator('#v-andamento').isHidden(), true);
+  });
+});
+
+test('every academy page links to Sua jornada in the header and the footer', async () => {
+  for (const p of [HOME, COURSE('p1'), LESSON('p1', '1.1'), BADGE('p1'), JOURNEY]) {
+    await withPage({}, async (page, url) => {
+      await page.goto(url + p, { waitUntil: 'load' });
+      assert.equal(await page.locator('.top-nav a[href="jornada.html"]').count(), 1, p);
+      assert.equal(await page.locator('#rodape a[href="jornada.html"]').count(), 1, p);
+    });
+  }
 });

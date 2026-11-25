@@ -316,3 +316,16 @@ html{overflow-x:clip}
 .modelo-campos li::marker{color:var(--muted)}
 .badge:not(.ganho) .badge-brilho{display:none}
 .curso-capa .badge{overflow:hidden}
+
+/* estado derivado e sua jornada */
+.curso-capa{position:relative}
+.chip.estado{font-weight:700;color:var(--brand-text);border-color:currentColor}
+.chip.e-concluido{color:var(--ok)}
+.chip.e-quiz{color:var(--fg)}
+.capa-chip{position:absolute;top:10px;left:10px;background:var(--surface)}
+.outline-quiz{font-size:.93rem}
+.j-lista{display:grid;gap:10px;margin-top:12px}
+.j-linha{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;padding:14px 18px;background:var(--surface);border:1px solid var(--line);border-radius:14px}
+.j-corpo{display:grid;gap:2px;flex:1 1 14rem;min-width:0}
+.j-titulo{font-family:var(--serif);font-size:1.2rem;color:var(--fg);text-decoration:none;overflow-wrap:anywhere}
+.j-titulo:hover{text-decoration:underline}

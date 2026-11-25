@@ -133,6 +133,33 @@
   function concluido(c, state) { return feitas(c, state).length === licoes(c).length; }
   function prework(c) { return '../00-prework/index.html#p' + c.parte + 'h'; }
 
+  /* Estado do curso: sempre derivado do progresso, nunca gravado. Matrícula, salvos e "recente" são só da interface.
+   * O selo continua vindo das lições; os quizzes não o travam, mas "Fazer quiz" avisa o que falta. */
+  function respondeu(state, id) { var q = state.prework.quizzes[id]; return !!(q && q.answered > 0); }
+  function quizzesPendentes(c, state) { return c.quizzes.filter(function (id) { return !respondeu(state, id); }); }
+  function estado(c, state) {
+    var n = feitas(c, state).length;
+    if (concluido(c, state)) return quizzesPendentes(c, state).length ? { chave: 'quiz', rotulo: 'Fazer quiz' } : { chave: 'concluido', rotulo: 'Concluído' };
+    if (n) return { chave: 'andamento', rotulo: n + ' / ' + licoes(c).length };
+    if ((ui().matriculado || {})[c.id]) return { chave: 'matriculado', rotulo: 'Matriculado' };
+    return { chave: 'nenhum', rotulo: '' };
+  }
+  function marcarUi(mapa, id, valor) {
+    var m = ui()[mapa] || {};
+    if (valor) m[id] = true; else delete m[id];
+    var patch = {}; patch[mapa] = m; setUi(patch);
+  }
+  function salvo(c) { return (ui().salvos || {})[c.id] === true; }
+  function proximaLicao(c, state) {
+    var lic = licoes(c);
+    var pend = lic.filter(function (l) { return !feito(c, l.id, state); })[0] || lic[0];
+    return 'licao.html?c=' + c.id + '&l=' + pend.id;
+  }
+  function chipEstado(e) {
+    var chip = el('span', 'chip estado e-' + e.chave, e.rotulo);
+    return chip;
+  }
+
   function meta(c) {
     var parts = ['Curso', plural(licoes(c).length, 'lição', 'lições')];
     if (c.quizzes.length) parts.push(plural(c.quizzes.length, 'quiz', 'quizzes'));
@@ -199,7 +226,7 @@
     inner.appendChild(coluna('Pre-work', CURSOS.filter(function (c) { return c.fonte !== 'squad'; }).map(function (c) { return [c.titulo, 'curso.html?c=' + c.id]; })));
     inner.appendChild(coluna('Jornada da squad', CURSOS.filter(function (c) { return c.fonte === 'squad'; }).map(function (c) { return [c.titulo, 'curso.html?c=' + c.id]; })));
     inner.appendChild(coluna('Temas', TEMAS.map(function (t) { return [t.titulo, 'index.html#temas-titulo']; })));
-    inner.appendChild(coluna('R2S Lab', [['Pre-work', '../00-prework/index.html'], ['Pesquisa de satisfação', '../05-encerramento/pesquisa.html']]));
+    inner.appendChild(coluna('R2S Lab', [['Sua jornada', 'jornada.html'], ['Pre-work', '../00-prework/index.html'], ['Pesquisa de satisfação', '../05-encerramento/pesquisa.html']]));
     var base = el('div', 'rodape-base');
     base.appendChild(el('p', null, 'R2S Lab · Avanade Brazil Engineering HUB'));
     base.appendChild(el('p', null, 'Seu progresso fica neste navegador.'));
@@ -252,6 +279,9 @@
         var capa = el('span', 'curso-capa');
         capa.style.background = MATERIA[c.id].fundo;
         capa.appendChild(badge(c, concluido(c, state), 104));
+        var est = estado(c, state);
+        li.setAttribute('data-estado', est.chave);
+        if (est.rotulo) { var chip = chipEstado(est); chip.classList.add('capa-chip'); capa.appendChild(chip); }
         a.appendChild(capa);
         var corpo = el('span', 'curso-corpo');
         corpo.appendChild(el('b', 'curso-titulo', c.titulo));
@@ -313,6 +343,19 @@
     var cta = $('#cta');
     cta.textContent = feitasIds.length === 0 ? 'Começar curso' : completo ? 'Revisar' : 'Continuar';
     cta.href = 'licao.html?c=' + c.id + '&l=' + (pendente || lic[0]).id;
+    var est = estado(c, state);
+    var chipC = $('#estado-curso');
+    chipC.textContent = est.rotulo;
+    chipC.className = 'chip estado e-' + est.chave;
+    chipC.hidden = !est.rotulo;
+    var salvar = $('#salvar');
+    function pintarSalvo() {
+      var on = salvo(c);
+      salvar.setAttribute('aria-pressed', on ? 'true' : 'false');
+      salvar.textContent = on ? 'Salvo na sua jornada' : 'Salvar na sua jornada';
+    }
+    pintarSalvo();
+    salvar.addEventListener('click', function () { marcarUi('salvos', c.id, !salvo(c)); pintarSalvo(); });
     var minFeitos = lic.reduce(function (a, l) { return a + (feitasIds.indexOf(l.id) !== -1 ? l.min : 0); }, 0);
     $('#progresso').textContent = feitasIds.length + ' de ' + lic.length + ' lições · ' + minFeitos + ' de ' + minutos(c) + ' min';
     $('#barra').style.width = Math.round((100 * minFeitos) / minutos(c)) + '%';
@@ -342,6 +385,16 @@
       if (conteudo(l.id).quizzes.length) { oli.appendChild(document.createTextNode(' ')); oli.appendChild(el('span', 'chip', 'Quiz')); }
       $('#outline').appendChild(oli);
     });
+    if (c.quizzes.length) {
+      var respondidos = c.quizzes.length - quizzesPendentes(c, state).length;
+      var qli = el('li', 'outline-quiz' + (respondidos === c.quizzes.length ? ' feita' : ''));
+      var qa = el('a', null, 'Quizzes do curso');
+      qa.href = prework(c);
+      qli.appendChild(qa);
+      qli.appendChild(document.createTextNode(' '));
+      qli.appendChild(el('span', 'chip', respondidos + ' / ' + c.quizzes.length));
+      $('#outline').appendChild(qli);
+    }
     var fim = el('li', 'outline-selo' + (completo ? ' feita' : ''));
     fim.appendChild(badge(c, completo, 20));
     var verSelo = el('a', null, 'Selo de conclusão');
@@ -463,6 +516,8 @@
     if (!c || idx === -1) { $('#nao-encontrado').hidden = false; return; }
     var l = lic[idx];
     var dados = conteudo(l.id);
+    marcarUi('matriculado', c.id, true);
+    setUi({ recente: c.id });
 
     document.title = l.title + ' · R2S Academy';
     migalhas($('#migalhas'), [
@@ -705,8 +760,48 @@
     alinharTudo();
   }
 
+  /* ---------- sua jornada ---------- */
+  function jornada() {
+    var state = store.load();
+    var recente = ui().recente;
+    var grupos = { andamento: [], concluidos: [], salvos: [] };
+    CURSOS.forEach(function (c) {
+      var e = estado(c, state);
+      if (e.chave === 'concluido' || e.chave === 'quiz') grupos.concluidos.push(c);
+      else if (e.chave === 'andamento' || e.chave === 'matriculado') grupos.andamento.push(c);
+      if (salvo(c)) grupos.salvos.push(c);
+    });
+    var alvo = grupos.andamento.filter(function (c) { return c.id === recente; })[0] || grupos.andamento[0];
+    function linha(c, comContinuar) {
+      var li = el('li', 'j-linha t-' + c.id);
+      li.setAttribute('data-curso', c.id);
+      li.appendChild(badge(c, concluido(c, state), 56));
+      var corpo = el('div', 'j-corpo');
+      var a = el('a', 'j-titulo', c.titulo);
+      a.href = 'curso.html?c=' + c.id;
+      corpo.appendChild(a);
+      corpo.appendChild(el('span', 'curso-meta', meta(c)));
+      li.appendChild(corpo);
+      var e = estado(c, state);
+      if (e.rotulo) li.appendChild(chipEstado(e));
+      if (comContinuar) {
+        var b = el('a', 'btn', 'Continuar');
+        b.href = proximaLicao(c, state);
+        li.appendChild(b);
+      }
+      return li;
+    }
+    [['andamento', '#j-andamento'], ['concluidos', '#j-concluidos'], ['salvos', '#j-salvos']].forEach(function (par) {
+      var ul = $(par[1]);
+      grupos[par[0]].forEach(function (c) { ul.appendChild(linha(c, par[0] === 'andamento' && c === alvo)); });
+      $('#' + ul.getAttribute('data-vazio')).hidden = grupos[par[0]].length > 0;
+    });
+    alinharTudo();
+  }
+
   chrome();
-  if ($('#cursos')) home();
+  if ($('#j-andamento')) jornada();
+  else if ($('#cursos')) home();
   else if ($('#curso')) curso();
   else if ($('#licao')) licao();
   else if ($('#selo-pagina')) seloPagina();
