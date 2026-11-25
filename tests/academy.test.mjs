@@ -660,7 +660,7 @@ test('the Avanade re-skin: Segoe UI, light headings and an orange primary button
     }));
     assert.match(m.font, /^"?Segoe UI/);
     assert.equal(m.h1, '300');
-    assert.equal(m.btn, 'rgb(220, 70, 0)');
+    assert.equal(m.btn, 'rgb(180, 60, 20)');
     assert.equal(m.btnFg, 'rgb(255, 255, 255)');
     const css = readFileSync(path.join(root, 'css', 'academy.css'), 'utf8');
     assert.match(css, /--ava-orange:#FF5800/);

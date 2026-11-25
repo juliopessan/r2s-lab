@@ -14,7 +14,7 @@
   --bg:var(--ava-white);--surface:var(--ava-white);--soft:#F4F4F4;--fg:var(--ava-grey-80);--muted:var(--ava-grey-60);
   --line:var(--ava-grey-10);--field:var(--ava-grey-50);
   --brand:var(--ava-orange);--brand-hover:var(--ava-dark-orange);--brand-ink:var(--ava-white);--brand-text:var(--ava-dark-orange);
-  --cta-bg:var(--ava-dark-orange);--cta-fg:var(--ava-white);--cta-hover:var(--ava-flame);
+  --cta-bg:var(--ava-flame);--cta-fg:var(--ava-white);--cta-hover:#8F2F10;
   --ok:#007A3D;--foot-bg:var(--ava-grey-80);--foot-fg:var(--ava-white);--foot-muted:var(--ava-grey-20);
   --serif:var(--ava-font);--sans:var(--ava-font);
   --shadow-sm:0 1px 3px rgba(0,0,0,.08);--shadow-md:0 4px 12px rgba(0,0,0,.10);
@@ -381,3 +381,4 @@ html{overflow-x:clip}
 .passo-estado{font-size:.85rem;font-weight:700;color:var(--brand-text);text-align:right}
 .passo.feito .passo-estado{color:var(--ok)}
 @media (max-width:560px){.passo a{grid-template-columns:auto minmax(0,1fr)}.passo-estado{grid-column:2;text-align:left}}
+.top-nav{align-items:center}

@@ -1,11 +1,40 @@
 :root {
+  /* primitivos Avanade */
+  --ava-orange: #FF5800;
+  --ava-dark-orange: #DC4600;
+  --ava-flame: #B43C14;
+  --ava-grey-80: #333333;
+  --ava-grey-60: #666666;
+  --ava-grey-10: #e5e5e5;
+  --font: 'Segoe UI', 'Segoe UI Variable', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+
+  /* papéis: tema escuro (padrão da marca no vídeo) */
   --bg: #0E1116;
   --card: #151A21;
   --fg: #F2F4F7;
   --muted: #A8B0BC;
-  --brand: #FF5800;
-  --font: 'Segoe UI', 'Segoe UI Variable', system-ui, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  --line: #2A313B;
+  --brand: var(--ava-orange);
+  --brand-text: var(--ava-orange);
+  --on-brand: #0E1116;
+  --cta-bg: var(--ava-orange);
+  --cta-fg: #0E1116;
+  --focus-on-brand: #FFFFFF;
   color-scheme: dark;
+}
+
+/* tema claro: pela preferência do sistema ou pelo botão (data-theme) */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bg: #FFFFFF; --card: #F4F4F4; --fg: var(--ava-grey-80); --muted: var(--ava-grey-60); --line: var(--ava-grey-10);
+    --brand-text: var(--ava-flame); --on-brand: #FFFFFF; --cta-bg: var(--ava-flame); --cta-fg: #FFFFFF; --focus-on-brand: #333333;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bg: #FFFFFF; --card: #F4F4F4; --fg: var(--ava-grey-80); --muted: var(--ava-grey-60); --line: var(--ava-grey-10);
+  --brand-text: var(--ava-flame); --on-brand: #FFFFFF; --cta-bg: var(--ava-flame); --cta-fg: #FFFFFF; --focus-on-brand: #333333;
+  color-scheme: light;
 }
 
 * { box-sizing: border-box; }
@@ -21,7 +50,7 @@ body {
   line-height: 1.6;
 }
 
-a { color: var(--brand); }
+a { color: var(--brand-text); }
 
 main {
   max-width: 72rem;
@@ -111,7 +140,7 @@ main {
   color: var(--fg);
 }
 
-.rs li:nth-child(2) .letter { color: var(--brand); }
+.rs li:nth-child(2) .letter { color: var(--brand-text); }
 
 .word {
   font-size: 1.25rem;
@@ -172,12 +201,12 @@ main {
 .chips li {
   padding: 0.4rem 0.9rem;
   background: var(--card);
-  border: 1px solid #2A313B;
+  border: 1px solid var(--line);
   border-radius: 999px;
   font-weight: 600;
 }
 
-.decisions li { border-color: var(--brand); }
+.decisions li { border-color: var(--brand-text); }
 
 .start {
   max-width: 48rem;
@@ -205,8 +234,8 @@ main {
 .template .button {
   display: inline-block;
   padding: 0.6rem 1.1rem;
-  background: var(--brand);
-  color: #0E1116;
+  background: var(--cta-bg);
+  color: var(--cta-fg);
   border-radius: 8px;
   font-weight: 700;
   text-decoration: none;
@@ -216,7 +245,7 @@ main {
   margin-top: 3rem;
   padding: 2rem 1rem;
   text-align: center;
-  border-top: 1px solid #2A313B;
+  border-top: 1px solid var(--line);
 }
 
 .lockup { margin: 0 0 0.25rem; letter-spacing: 0.02em; }
@@ -229,8 +258,8 @@ main {
   top: -4rem;
   z-index: 10;
   padding: 0.6rem 1rem;
-  background: var(--brand);
-  color: #0E1116;
+  background: var(--cta-bg);
+  color: var(--cta-fg);
   font-weight: 700;
   text-decoration: none;
   border-radius: 8px;
@@ -243,7 +272,7 @@ main {
   outline-offset: 3px;
 }
 
-.skip-link:focus-visible { outline-color: #FFFFFF; }
+.skip-link:focus-visible { outline-color: var(--focus-on-brand); }
 
 main:focus-visible { outline: none; }
 
@@ -268,3 +297,55 @@ main:focus-visible { outline: none; }
     transform: none !important;
   }
 }
+
+/* topo com o botão de tema */
+.topo {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.topo-marca { font-weight: 600; color: var(--fg); text-decoration: none; }
+.topo-marca b { color: var(--brand-text); }
+.topo-acoes { display: flex; align-items: center; gap: 0.75rem; }
+.topo-acoes a { color: var(--fg); text-decoration: none; font-weight: 600; }
+.tema-btn {
+  display: inline-grid; place-items: center; width: 40px; height: 40px;
+  border-radius: 999px; border: 1px solid var(--line); background: var(--card); color: var(--fg); cursor: pointer;
+}
+.tema-btn svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.tema-btn .sol { display: none; }
+:root[data-theme="dark"] .tema-btn .lua, :root:not([data-theme]) .tema-btn .lua { display: inline; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .tema-btn .lua { display: none; } :root:not([data-theme="light"]) .tema-btn .sol { display: inline; } }
+:root[data-theme="dark"] .tema-btn .lua { display: none; }
+:root[data-theme="dark"] .tema-btn .sol { display: inline; }
+:root[data-theme="light"] .tema-btn .sol { display: none; }
+:root[data-theme="light"] .tema-btn .lua { display: inline; }
+
+/* gancho, re-gancho, o que você leva e a chamada final */
+.kicker { margin: 0 0 0.75rem; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; color: var(--brand-text); }
+.hook { max-width: 40rem; margin: 1rem auto 1.5rem; font-size: clamp(1.15rem, 2.6vw, 1.45rem); font-weight: 300; line-height: 1.45; }
+.ctas { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; margin-top: 1.5rem; }
+.cta {
+  display: inline-block; padding: 0.8rem 1.4rem; border-radius: 8px; font-weight: 700; text-decoration: none;
+  background: var(--cta-bg); color: var(--cta-fg);
+}
+.cta.sec { background: transparent; color: var(--fg); border: 2px solid var(--fg); padding: 0.7rem 1.3rem; }
+.rehook, .levar, .final {
+  max-width: 48rem; margin: 0 auto; padding: 3rem 0;
+}
+.rehook h2, .levar h2, .final h2 {
+  margin: 0 0 1rem; font-size: clamp(1.8rem, 5vw, 2.6rem); font-weight: 300; line-height: 1.15;
+}
+.rehook p, .final p { font-size: 1.1rem; }
+.levar ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 0.75rem; }
+.levar li {
+  display: grid; grid-template-columns: auto 1fr; gap: 0.25rem 1rem; align-items: baseline;
+  padding: 1rem 1.2rem; background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--brand); border-radius: 8px;
+}
+.levar .num { font-size: 1.6rem; font-weight: 300; color: var(--brand-text); font-variant-numeric: tabular-nums; }
+.final { text-align: center; }
+.final .cta { font-size: 1.1rem; }

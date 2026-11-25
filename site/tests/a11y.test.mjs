@@ -37,8 +37,9 @@ test('video is usable at 360 px', async () => {
   });
 });
 
-test('contrast meets AA', async () => {
+for (const scheme of ['light', 'dark']) test(`contrast meets AA (${scheme})`, async () => {
   await withPage({}, async (page, url) => {
+    await page.emulateMedia({ colorScheme: scheme });
     await page.goto(url, { waitUntil: 'load' });
     const pairs = [
       ['.hero h1', 'body'],
@@ -53,6 +54,13 @@ test('contrast meets AA', async () => {
       ['.meaning', '#marca .rs li'],
       ['.roles li', '.roles li'],
       ['.foot-note', 'body'],
+      ['.kicker', 'body'],
+      ['.hook', 'body'],
+      ['#cta-academy', '#cta-academy'],
+      ['.levar .num', '.levar li'],
+      ['.levar li span:last-child', '.levar li'],
+      ['.rehook p', 'body'],
+      ['.tema-btn', '.tema-btn'],
     ];
     for (const [fgSel, bgSel] of pairs) {
       const [fg, bg] = await page.evaluate(
@@ -63,7 +71,7 @@ test('contrast meets AA', async () => {
         [fgSel, bgSel],
       );
       const ratio = contrast(parseRgb(fg), parseRgb(bg));
-      assert.ok(ratio >= 4.5, `${fgSel} on ${bgSel}: ${ratio.toFixed(2)}`);
+      assert.ok(ratio >= 4.5, `${scheme} ${fgSel} on ${bgSel}: ${ratio.toFixed(2)}`);
     }
   });
 });
