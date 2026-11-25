@@ -1,19 +1,19 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const readme = readFileSync(
-  path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'README.md'),
+  path.join(root, 'README.md'),
   'utf8',
 );
 
-test('has the R·2·S narrative', () => {
-  assert.ok(readme.includes('R de **Reskilling**'));
-  assert.ok(readme.includes('2 de **too**'));
-  assert.ok(readme.includes('S de **Skilling**'));
+test('has the name and the hook of the landing', () => {
   assert.ok(readme.includes('R2S Lab — Reskilling too Skilling'));
+  assert.ok(readme.includes('“Dá pra resolver isso com IA?”'));
+  assert.ok(!readme.includes('## R · 2 · S'), 'the acronym section left the landing and the README');
 });
 
 test('has the start instructions', () => {
@@ -22,7 +22,7 @@ test('has the start instructions', () => {
 });
 
 test('lists the planned structure', () => {
-  for (const dir of ['00-prework/', '05-encerramento/', 'templates/', 'starter-kits/', 'squad/', 'progress/']) {
+  for (const dir of ['site/', 'academy/', '00-prework/', '05-encerramento/', 'templates/', 'starter-kits/', 'squad/', 'progress/', 'admin/']) {
     assert.ok(readme.includes(dir), `missing ${dir}`);
   }
 });
@@ -43,12 +43,14 @@ test('has the required sections in order', () => {
   const headings = [...readme.matchAll(/^#{1,2} (.+)$/gm)].map((m) => m[1]);
   assert.deepEqual(headings, [
     'R2S Lab',
-    'Veja o método em 90 segundos',
-    'R · 2 · S',
+    'Curso não muda papel. Caso real muda.',
+    'Como funciona',
     'Comece aqui',
+    'R2S Academy',
     'A jornada da squad',
     'Estrutura do repositório',
     'Regras do lab',
+    'Para quem mantém o lab',
   ]);
 });
 
@@ -61,16 +63,23 @@ test('sends people to their own private repo, not to the shared template', () =>
 
 const MP4 =
   'https://raw.githubusercontent.com/juliopessan/r2s-lab/main/docs/source-assets/R2S_Lab_teaser_90s_narrado_16x9.mp4';
+const PLAYER = 'https://github.com/juliopessan/r2s-lab/blob/main/site/assets/teaser.mp4';
 
-test('embeds the teaser video with a plain link fallback', () => {
-  assert.ok(readme.includes(`<video src="${MP4}"`), 'missing <video> embed');
-  assert.match(readme, /<video[^>]*\bcontrols\b[^>]*>/);
+test('the hero carries the teaser with sound: a player, a clickable poster and plain links', () => {
+  const video = /<video[^>]*>/.exec(readme);
+  assert.ok(video, 'missing <video> embed');
+  assert.ok(video[0].includes(`src="${MP4}"`));
+  assert.match(video[0], /\bcontrols\b/);
+  assert.doesNotMatch(video[0], /\bmuted\b/, 'the narration must be heard');
+  assert.ok(readme.includes(`<a href="${PLAYER}"><img src="docs/readme/teaser-play.jpg"`), 'poster fallback opens the player with sound');
+  assert.ok(existsSync(path.join(root, 'docs/readme/teaser-play.jpg')));
+  assert.ok(readme.includes(`[assistir com som](${PLAYER})`));
   assert.ok(readme.includes(`](${MP4})`), 'missing plain link to the mp4');
 });
 
-test('the video is shown before the R·2·S section', () => {
+test('the video sits in the hero, before the first section', () => {
   assert.ok(readme.indexOf('<video') > -1);
-  assert.ok(readme.indexOf('<video') < readme.indexOf('## R · 2 · S'));
+  assert.ok(readme.indexOf('<video') < readme.indexOf('\n## '));
 });
 
 test('explains how to open the pages and how to export', () => {

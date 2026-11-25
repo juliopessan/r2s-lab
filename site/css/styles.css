@@ -99,6 +99,12 @@ main {
 .etapas li:has(.gate) { border-top-color: var(--brand); }
 .etapa-nome { font-weight: 600; }
 .gate { justify-self: start; font-size: 0.78rem; font-weight: 700; padding: 0.1rem 0.6rem; border-radius: 999px; background: var(--cta-bg); color: var(--cta-fg); }
+/* corrida do ponto pelas etapas (js/motion.js); só existe com movimento permitido */
+.etapas.mo-etapas li, .etapas.mo-etapas li:has(.gate) { border-top-color: var(--field); will-change: transform; }
+.etapa-trilho { position: absolute; top: -3px; left: -1px; right: -1px; height: 3px; border-radius: 12px 12px 0 0; background: var(--field); transform-origin: left center; transform: scaleX(0); pointer-events: none; }
+.etapa-trilho.gate-on { background: var(--brand); }
+.etapa-ponto { position: absolute; top: -7px; width: 11px; height: 11px; border-radius: 50%; background: var(--brand); opacity: 0; pointer-events: none; }
+.mo-etapas .gate { opacity: 0; }
 
 /* princípios */
 .principios { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1rem; }
