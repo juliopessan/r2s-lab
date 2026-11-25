@@ -11,6 +11,7 @@ const root = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const HOME = 'academy/index.html';
 const COURSE = (c) => `academy/curso.html?c=${c}`;
 const LESSON = (c, l) => `academy/licao.html?c=${c}&l=${l}`;
+const BADGE = (c) => `academy/selo.html?c=${c}`;
 const text = async (page, sel) => (await page.locator(sel).innerText()).replace(/\s+/g, ' ').trim();
 const rows = async (page, sel) => (await page.locator(sel).allInnerTexts()).map((t) => t.replace(/\s+/g, ' ').trim());
 const KEY = 'r2s-progress-v1';
@@ -319,9 +320,99 @@ test('an unknown lesson shows a way back', async () => {
   });
 });
 
+/* ---------- selo de conclusão ---------- */
+
+const svgText = (page, sel) => page.locator(sel).evaluate((n) => n.textContent.replace(/\s+/g, ' ').trim());
+
+test('an earned badge follows the Academy completion badge layout', async () => {
+  await withPage({}, async (page, url) => {
+    await seed(page, { '5.1': true, '5.2': true });
+    await page.goto(url + BADGE('p5'), { waitUntil: 'load' });
+    assert.equal(await page.title(), 'Selo Exercício final · R2S Academy');
+    assert.equal(await svgText(page, '#arte-selo textPath'), 'SELO DE CONCLUSÃO DE CURSO');
+    assert.equal(await svgText(page, '#selo-curso'), 'Exercício final');
+    assert.equal(await svgText(page, '#selo-nome'), 'Seu nome');
+    assert.match(await svgText(page, '#selo-data'), /^EMITIDO EM \d{1,2} DE [A-ZÇ]+ DE \d{4}$/);
+    assert.match(await svgText(page, '#arte-selo'), /Concedido a/);
+    assert.match(await svgText(page, '#arte-selo'), /R2S Academy/);
+    assert.match(await text(page, '#estado'), /Você concluiu Exercício final em/);
+  });
+});
+
+test('the name typed on the badge page goes on the badge and is remembered', async () => {
+  await withPage({}, async (page, url) => {
+    await seed(page, { '5.1': true, '5.2': true });
+    await page.goto(url + BADGE('p5'), { waitUntil: 'load' });
+    await page.fill('#nome-selo', 'Ana Souza');
+    assert.equal(await svgText(page, '#selo-nome'), 'Ana Souza');
+    await page.reload({ waitUntil: 'load' });
+    assert.equal(await page.inputValue('#nome-selo'), 'Ana Souza');
+    assert.equal(await svgText(page, '#selo-nome'), 'Ana Souza');
+    const progress = await page.evaluate((key) => localStorage.getItem(key), KEY);
+    assert.ok(!progress.includes('Ana Souza'), 'the name never enters the exportable progress');
+  });
+});
+
+test('a long course title wraps into two lines on the badge', async () => {
+  await withPage({}, async (page, url) => {
+    await seed(page, { '4.1': true, '4.2': true });
+    await page.goto(url + BADGE('p4'), { waitUntil: 'load' });
+    assert.deepEqual(await page.locator('#selo-curso tspan').allTextContents(), ['Responsabilidade', 'e decisão']);
+  });
+});
+
+test('every course has its own colour and icon', async () => {
+  const seen = new Set();
+  for (const c of ['p1', 'p2', 'p3', 'p4', 'p5']) {
+    await withPage({}, async (page, url) => {
+      await page.goto(url + BADGE(c), { waitUntil: 'load' });
+      const sig = await page.evaluate(() => {
+        const svg = document.querySelector('#selo-svg');
+        return svg.querySelector('rect').getAttribute('fill') + '|' + [...svg.querySelectorAll('.selo-icone path')].map((p) => p.getAttribute('d')).join('|');
+      });
+      seen.add(sig);
+    });
+  }
+  assert.equal(seen.size, 5);
+});
+
+test('a locked badge says what is missing and hides the name field', async () => {
+  await withPage({}, async (page, url) => {
+    await seed(page, { '1.1': true });
+    await page.goto(url + BADGE('p1'), { waitUntil: 'load' });
+    assert.equal(await text(page, '#estado'), 'Bloqueado. Conclua 2 lições de GenAI na prática para ganhar este selo.');
+    assert.equal(await page.locator('#nome-selo').isVisible(), false);
+    assert.equal(await page.locator('#arte-selo.bloqueado').count(), 1);
+    assert.match(await page.getAttribute('#ir-curso', 'href'), /curso\.html\?c=p1$/);
+  });
+});
+
+test('the course, the outline, the collection and the lesson all lead to the badge page', async () => {
+  await withPage({}, async (page, url) => {
+    await seed(page, { '5.1': true });
+    await page.goto(url + LESSON('p5', '5.2'), { waitUntil: 'load' });
+    await page.click('#concluir');
+    assert.match(await page.getAttribute('#conquista a', 'href'), /selo\.html\?c=p5$/);
+    await page.goto(url + COURSE('p5'), { waitUntil: 'load' });
+    assert.match(await page.getAttribute('#selo a', 'href'), /selo\.html\?c=p5$/);
+    assert.match(await page.getAttribute('#outline li:last-child a', 'href'), /selo\.html\?c=p5$/);
+    await page.goto(url + HOME, { waitUntil: 'load' });
+    assert.match(await page.getAttribute('#selos li.selo.ganho a', 'href'), /selo\.html\?c=p5$/);
+    await page.goto(url + BADGE('p5'), { waitUntil: 'load' });
+    const today = await page.evaluate(() => new Date().getDate());
+    assert.match(await svgText(page, '#selo-data'), new RegExp('^EMITIDO EM ' + today + ' DE'));
+  });
+});
+
+test('the badge prints alone on an A4 landscape page', () => {
+  const css = readFileSync(path.join(root, 'css', 'academy.css'), 'utf8');
+  assert.match(css, /@page\s*\{[^}]*A4 landscape/);
+  assert.match(css, /@media print[^{]*\{[\s\S]*\.noprint[^}]*display:\s*none/);
+});
+
 /* ---------- qualidade ---------- */
 
-const PAGES = [HOME, COURSE('p1'), LESSON('p1', '1.3'), LESSON('p4', '4.2')];
+const PAGES = [HOME, COURSE('p1'), LESSON('p1', '1.3'), LESSON('p4', '4.2'), BADGE('p5'), BADGE('p4')];
 
 test('no page loads anything external, scrolls sideways at 360 px or throws', async () => {
   for (const p of PAGES) {
@@ -335,7 +426,7 @@ test('no page loads anything external, scrolls sideways at 360 px or throws', as
       assert.deepEqual(page.errors || [], [], p);
     });
   }
-  for (const f of ['academy/index.html', 'academy/curso.html', 'academy/licao.html', 'js/academy.js', 'css/academy.css']) {
+  for (const f of ['academy/index.html', 'academy/curso.html', 'academy/licao.html', 'academy/selo.html', 'js/academy.js', 'css/academy.css']) {
     const t = readFileSync(path.join(root, f), 'utf8');
     assert.ok(!t.includes('Requirement-to-Solution'), f);
     assert.ok(!/innerHTML\s*=/.test(t), `${f} writes HTML from strings`);

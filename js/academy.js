@@ -131,36 +131,142 @@
     });
   }
 
-  /* ---------- selo (badge) ---------- */
-  var ICONES = {
-    p1: 'M16 18h16a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-8l-5 4v-4h-3a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2z',
-    p2: 'M24 16a8 8 0 1 1 0 16a8 8 0 1 1 0-16zM24 20.5a3.5 3.5 0 1 1 0 7a3.5 3.5 0 1 1 0-7z',
-    p3: 'M17 31v-7M24 31V17M31 31v-10M14 31h20',
-    p4: 'M24 15v17M18 32h12M15 19h18M15 19l-3 7h6zM33 19l-3 7h6z',
-    p5: 'M18 15h9l5 5v13H18zM27 15v5h5M21 25h8M21 29h6',
+  /* ---------- selo (badge), no modelo do selo de conclusão da Claude Academy ----------
+   * Cartão de cor cheia, polígono irregular claro, ícone de traço com a interseção preenchida na cor do curso.
+   * As cores são da "arte" do selo e não mudam com o tema, como o papel do certificado. */
+  var MATERIA = {
+    p1: { fundo: '#5F927E', papel: '#D6E6DE', // conversa com o modelo: dois balões
+      a: 'M40 14c15 0 27 10 27 23s-12 23-27 23c-4 0-7-1-10-2l-14 6 4-12c-4-4-7-9-7-15 0-13 12-23 27-23z',
+      b: 'M62 40c13 0 24 9 24 20 0 5-2 10-6 13l4 11-13-5c-3 1-6 1-9 1-13 0-24-9-24-20s11-20 24-20z', extra: '' },
+    p2: { fundo: '#7A73B3', papel: '#DEDBF0', // do pedido ao problema: lupa sobre o alvo
+      a: 'M40 16a24 24 0 1 1 0 48a24 24 0 1 1 0-48z',
+      b: 'M64 34a20 20 0 1 1 0 40a20 20 0 1 1 0-40z', extra: 'M57 57L76 76M64 48a6 6 0 1 1 0 12a6 6 0 1 1 0-12z' },
+    p3: { fundo: '#D97757', papel: '#F1CDBC', // valor e custo: duas moedas e as barras
+      a: 'M40 20a24 24 0 1 1 0 48a24 24 0 1 1 0-48z',
+      b: 'M62 34a24 24 0 1 1 0 48a24 24 0 1 1 0-48z', extra: 'M30 44h20M30 52h14M14 90h72' },
+    p4: { fundo: '#5A80AD', papel: '#D5E1EF', // responsabilidade: escudo e a pessoa que responde
+      a: 'M50 12l30 12v24c0 20-13 32-30 38-17-6-30-18-30-38V24z',
+      b: 'M50 34a12 12 0 1 1 0 24a12 12 0 1 1 0-24z', extra: 'M30 92c3-13 14-20 20-20s17 7 20 20' },
+    p5: { fundo: '#C0953A', papel: '#F0E2BF', // case brief: documento com o visto
+      a: 'M22 12h34l18 18v58H22z',
+      b: 'M70 54a18 18 0 1 1 0 36a18 18 0 1 1 0-36z', extra: 'M56 12v18h18M32 44h26M32 56h18M62 72l6 6 11-12' },
   };
-  function contornoSelo() {
+  var TINTA = '#191A1D';
+  var uid = 0;
+
+  /** Polígono irregular, sempre igual para o mesmo curso (como um selo recortado à mão). */
+  function poligono(c, cx, cy, rx, ry) {
+    var seed = c.parte * 9973;
+    function rnd() { seed = (seed * 16807) % 2147483647; return seed / 2147483647; }
+    var n = 11;
     var pts = [];
-    for (var i = 0; i < 24; i++) {
-      var r = i % 2 ? 20.6 : 22.6;
-      var a = (Math.PI * 2 * i) / 24 - Math.PI / 2;
-      pts.push((24 + r * Math.cos(a)).toFixed(2) + ' ' + (24 + r * Math.sin(a)).toFixed(2));
+    for (var i = 0; i < n; i++) {
+      var ang = (Math.PI * 2 * (i + rnd() * 0.18)) / n - Math.PI / 2;
+      var k = 0.95 + rnd() * 0.06;
+      pts.push((cx + rx * k * Math.cos(ang)).toFixed(1) + ' ' + (cy + ry * k * Math.sin(ang)).toFixed(1));
     }
     return 'M' + pts.join('L') + 'Z';
   }
-  var CONTORNO = contornoSelo();
 
-  /** Selo de um curso: ganho (colorido, com brilho) ou bloqueado (apagado). Decorativo: o estado vai em texto ao lado. */
+  /** Ícone em 0..100, posicionado em (x, y) com o lado `lado`. */
+  function icone(c, x, y, lado, contorno) {
+    var m = MATERIA[c.id];
+    var id = 'clip-' + c.id + '-' + (uid++);
+    var g = svgEl('g', { transform: 'translate(' + x + ' ' + y + ') scale(' + (lado / 100) + ')', class: 'selo-icone' });
+    var defs = svgEl('defs');
+    var clip = svgEl('clipPath', { id: id });
+    clip.appendChild(svgEl('path', { d: m.a }));
+    defs.appendChild(clip);
+    g.appendChild(defs);
+    g.appendChild(svgEl('path', { d: m.b, fill: m.fundo, 'clip-path': 'url(#' + id + ')' }));
+    var traco = { fill: 'none', stroke: TINTA, 'stroke-width': String(contorno), 'stroke-linecap': 'round', 'stroke-linejoin': 'round' };
+    [m.a, m.b, m.extra].forEach(function (d) { if (d) { var p = svgEl('path', traco); p.setAttribute('d', d); g.appendChild(p); } });
+    return g;
+  }
+
+  /** Selo pequeno (cards, listas): fundo de cor cheia, polígono e ícone. Decorativo: o estado vai em texto ao lado. */
   function badge(c, ganho, tamanho) {
+    var m = MATERIA[c.id];
     var wrap = el('span', 'badge t-' + c.id + (ganho ? ' ganho' : ' bloqueado'));
     wrap.style.setProperty('--tam', (tamanho || 48) + 'px');
-    var svg = svgEl('svg', { viewBox: '0 0 48 48', 'aria-hidden': 'true', focusable: 'false' });
-    svg.appendChild(svgEl('path', { d: CONTORNO, class: 'badge-forma' }));
-    svg.appendChild(svgEl('circle', { cx: '24', cy: '24', r: '15.5', class: 'badge-anel' }));
-    svg.appendChild(svgEl('path', { d: ICONES[c.id], class: 'badge-icone' }));
+    var svg = svgEl('svg', { viewBox: '0 0 100 100', 'aria-hidden': 'true', focusable: 'false' });
+    svg.appendChild(svgEl('rect', { width: '100', height: '100', rx: '16', fill: m.fundo }));
+    svg.appendChild(svgEl('path', { d: poligono(c, 50, 51, 44, 42), fill: m.papel }));
+    svg.appendChild(icone(c, 24, 24, 52, 4.2));
     wrap.appendChild(svg);
     wrap.appendChild(el('span', 'badge-brilho'));
     return wrap;
+  }
+
+  var MESES = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+  function dataLonga(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso || '');
+    return m ? Number(m[3]) + ' de ' + MESES[Number(m[2]) - 1] + ' de ' + m[1] : '';
+  }
+  function hoje() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  /** Quebra o título em até duas linhas, no espaço mais perto do meio. */
+  function linhas(titulo) {
+    if (titulo.length <= 16) return [titulo];
+    var meio = titulo.length / 2;
+    var melhor = -1;
+    for (var i = 0; i < titulo.length; i++) if (titulo[i] === ' ' && (melhor === -1 || Math.abs(i - meio) < Math.abs(melhor - meio))) melhor = i;
+    return melhor === -1 ? [titulo] : [titulo.slice(0, melhor), titulo.slice(melhor + 1)];
+  }
+
+  /** Selo completo, no formato do selo de conclusão da Claude Academy (1100 × 750). */
+  function seloCompleto(c, nome, dataIso) {
+    var m = MATERIA[c.id];
+    var svg = svgEl('svg', { viewBox: '0 0 1100 750', id: 'selo-svg', role: 'img', 'aria-labelledby': 'selo-svg-titulo' });
+    var titulo = svgEl('title', { id: 'selo-svg-titulo' });
+    titulo.textContent = 'Selo de conclusão do curso ' + c.titulo + (nome ? ', concedido a ' + nome : '');
+    svg.appendChild(titulo);
+    svg.appendChild(svgEl('rect', { width: '1100', height: '750', fill: m.fundo }));
+    svg.appendChild(svgEl('path', { d: poligono(c, 550, 372, 335, 312), fill: m.papel }));
+
+    var arcoId = 'arco-' + c.id + '-' + (uid++);
+    var defs = svgEl('defs');
+    defs.appendChild(svgEl('path', { id: arcoId, d: 'M355 318 A195 195 0 0 1 745 318' }));
+    svg.appendChild(defs);
+    var arco = svgEl('text', { class: 'selo-arco', fill: m.fundo, 'font-size': '27', 'letter-spacing': '6' });
+    var tp = svgEl('textPath', { href: '#' + arcoId, startOffset: '50%', 'text-anchor': 'middle' });
+    tp.textContent = 'SELO DE CONCLUSÃO DE CURSO';
+    arco.appendChild(tp);
+    svg.appendChild(arco);
+
+    svg.appendChild(icone(c, 494, 176, 112, 3.2));
+
+    var ls = linhas(c.titulo);
+    var tam = ls.length === 1 ? 92 : 66;
+    var curso = svgEl('text', { id: 'selo-curso', x: '550', y: ls.length === 1 ? '438' : '400', 'text-anchor': 'middle', fill: TINTA, 'font-size': String(tam), class: 'selo-serif' });
+    ls.forEach(function (t, i) {
+      var span = svgEl('tspan', { x: '550', dy: i ? String(Math.round(tam * 1.08)) : '0' });
+      span.textContent = t;
+      curso.appendChild(span);
+    });
+    svg.appendChild(curso);
+
+    var para = svgEl('text', { x: '550', y: '528', 'text-anchor': 'middle', fill: TINTA, 'font-size': '28', class: 'selo-serif' });
+    para.textContent = 'Concedido a';
+    svg.appendChild(para);
+    var quem = svgEl('text', { id: 'selo-nome', x: '550', y: '576', 'text-anchor': 'middle', fill: TINTA, 'font-size': '40', class: 'selo-serif' });
+    quem.textContent = nome || 'Seu nome';
+    svg.appendChild(quem);
+
+    var marca = svgEl('g', { transform: 'translate(40 668)' });
+    marca.appendChild(svgEl('path', { d: 'M18 0l5 13 14 1-11 9 4 14-12-8-12 8 4-14-11-9 14-1z', fill: '#FFFFFF' }));
+    var nomeMarca = svgEl('text', { x: '48', y: '30', fill: '#FFFFFF', 'font-size': '36', class: 'selo-serif' });
+    nomeMarca.textContent = 'R2S Academy';
+    marca.appendChild(nomeMarca);
+    svg.appendChild(marca);
+
+    var data = svgEl('text', { id: 'selo-data', x: '1060', y: '698', 'text-anchor': 'end', fill: '#FFFFFF', 'font-size': '20', 'letter-spacing': '2', class: 'selo-sans' });
+    data.textContent = ('Emitido em ' + dataLonga(dataIso)).toUpperCase();
+    svg.appendChild(data);
+    return svg;
   }
 
   /* ---------- cabeçalho e rodapé ---------- */
@@ -235,7 +341,8 @@
         var a = el('a');
         a.href = 'curso.html?c=' + c.id;
         var capa = el('span', 'curso-capa');
-        capa.appendChild(badge(c, concluido(c, state), 64));
+        capa.style.background = MATERIA[c.id].fundo;
+        capa.appendChild(badge(c, concluido(c, state), 104));
         a.appendChild(capa);
         var corpo = el('span', 'curso-corpo');
         corpo.appendChild(el('b', 'curso-titulo', c.titulo));
@@ -262,7 +369,7 @@
       var li = el('li', 'selo' + (ok ? ' ganho' : ''));
       li.appendChild(badge(c, ok, 56));
       var a = el('a', 'selo-titulo', c.titulo);
-      a.href = 'curso.html?c=' + c.id;
+      a.href = ok ? 'selo.html?c=' + c.id : 'curso.html?c=' + c.id;
       li.appendChild(a);
       li.appendChild(el('span', 'selo-estado', ok ? 'Concluído' : 'Bloqueado'));
       selos.appendChild(li);
@@ -324,7 +431,9 @@
     });
     var fim = el('li', 'outline-selo' + (completo ? ' feita' : ''));
     fim.appendChild(badge(c, completo, 20));
-    fim.appendChild(el('span', null, 'Selo de conclusão'));
+    var verSelo = el('a', null, 'Selo de conclusão');
+    verSelo.href = 'selo.html?c=' + c.id;
+    fim.appendChild(verSelo);
     $('#outline').appendChild(fim);
 
     if (completo) {
@@ -334,6 +443,9 @@
       t.appendChild(el('b', 'selo-titulo', c.titulo));
       t.appendChild(el('span', 'selo-estado', 'Concluído'));
       t.appendChild(el('p', 'muted', 'Você concluiu todas as lições deste curso.'));
+      var link = el('a', 'btn-sec', 'Ver seu selo');
+      link.href = 'selo.html?c=' + c.id;
+      t.appendChild(link);
       selo.appendChild(t);
       selo.hidden = false;
     }
@@ -548,13 +660,15 @@
       pintar(!feito);
       var conquista = $('#conquista');
       if (!antesCompleto && concluido(c, fresh)) {
+        var datas = ui().concluidoEm || {};
+        if (!datas[c.id]) { datas[c.id] = hoje(); setUi({ concluidoEm: datas }); }
         clear(conquista);
         conquista.appendChild(badge(c, true, 96));
         var t = el('div');
         t.appendChild(el('b', null, 'Você ganhou o selo ' + c.titulo));
         t.appendChild(el('p', 'muted', 'Todas as lições deste curso estão concluídas.'));
-        var ver = el('a', null, 'Ver o curso');
-        ver.href = 'curso.html?c=' + c.id;
+        var ver = el('a', 'btn-sec', 'Ver seu selo');
+        ver.href = 'selo.html?c=' + c.id;
         t.appendChild(ver);
         conquista.appendChild(t);
         conquista.hidden = false;
@@ -580,8 +694,54 @@
     $('#licao').hidden = false;
   }
 
+  /* ---------- página do selo ---------- */
+  function seloPagina() {
+    var c = cursoPorId(param('c'));
+    if (!c) { $('#nao-encontrado').hidden = false; return; }
+    var state = store.load();
+    var ganho = concluido(c, state);
+    document.title = 'Selo ' + c.titulo + ' · R2S Academy';
+    migalhas($('#migalhas'), [
+      { texto: 'Academy', href: 'index.html' },
+      { texto: 'Cursos', href: 'index.html#cursos-titulo' },
+      { texto: c.titulo, href: 'curso.html?c=' + c.id },
+    ]);
+    $('#titulo').textContent = 'Selo ' + c.titulo;
+    $('#voltar').href = 'curso.html?c=' + c.id;
+
+    var datas = ui().concluidoEm || {};
+    if (ganho && !datas[c.id]) { datas[c.id] = hoje(); setUi({ concluidoEm: datas }); }
+    var arte = $('#arte-selo');
+    function desenhar() {
+      clear(arte);
+      arte.appendChild(seloCompleto(c, ganho ? (ui().nome || '') : '', ganho ? datas[c.id] : hoje()));
+    }
+    desenhar();
+
+    if (!ganho) {
+      var faltam = licoes(c).length - feitas(c, state).length;
+      $('#estado').textContent = 'Bloqueado. Conclua ' + plural(faltam, 'lição', 'lições') + ' de ' + c.titulo + ' para ganhar este selo.';
+      arte.classList.add('bloqueado');
+      $('#personalizar').hidden = true;
+      $('#ir-curso').hidden = false;
+      $('#ir-curso').href = 'curso.html?c=' + c.id;
+    } else {
+      $('#estado').textContent = 'Você concluiu ' + c.titulo + ' em ' + dataLonga(datas[c.id]) + '.';
+      var nome = $('#nome-selo');
+      nome.value = ui().nome || '';
+      nome.addEventListener('input', function () {
+        setUi({ nome: nome.value.trim() });
+        $('#selo-nome').textContent = nome.value.trim() || 'Seu nome';
+      });
+      $('#imprimir').addEventListener('click', function () { window.print(); });
+      arte.classList.add('ganho');
+    }
+    $('#selo-pagina').hidden = false;
+  }
+
   chrome();
   if ($('#cursos')) home();
   else if ($('#curso')) curso();
   else if ($('#licao')) licao();
+  else if ($('#selo-pagina')) seloPagina();
 })();

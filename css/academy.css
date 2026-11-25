@@ -262,3 +262,32 @@ html{overflow-x:clip}
 @keyframes selo-entrar{from{opacity:0;transform:scale(.9) rotate(-8deg)}}
 @keyframes selo-brilho{0%,70%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
 @keyframes estalo{50%{transform:scale(1.05)}}
+
+/* selo: arte de papel, independente do tema */
+.badge svg{border-radius:16%}
+.badge.bloqueado{filter:grayscale(1);opacity:.5}
+.curso-capa{height:148px}
+.curso-capa .badge.bloqueado{filter:none;opacity:1}
+.curso-capa .badge svg{border-radius:0}
+.selo-serif{font-family:var(--serif)}
+.selo-sans{font-family:var(--sans);font-weight:600}
+.selo-arco{font-family:var(--sans);font-weight:600}
+.pagina-selo{padding-top:40px}
+.pagina-selo h1{margin-top:14px}
+.arte-selo{margin-top:24px;max-width:66rem;border-radius:14px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.12)}
+.arte-selo svg{display:block;width:100%;height:auto}
+.arte-selo.bloqueado{filter:grayscale(1);opacity:.55}
+.selo-acoes{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:end;margin-top:22px}
+.personalizar{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:end}
+.personalizar label{flex-basis:100%;font-size:.9rem;font-weight:600}
+#nome-selo{font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--field);border-radius:8px;padding:9px 12px;min-width:0;width:min(100%,22rem)}
+.selo-nota{margin-top:14px;font-size:.9rem}
+@media (prefers-reduced-motion:no-preference){.arte-selo.ganho{animation:selo-entrar .7s cubic-bezier(.2,.8,.25,1) both}}
+@page{size:A4 landscape;margin:0}
+@media print{
+  body{background:#fff;padding:0}
+  .top,.rodape,.noprint{display:none !important}
+  main{max-width:none;padding:0}
+  .arte-selo{margin:0;max-width:none;border-radius:0;box-shadow:none}
+  .arte-selo svg{width:100vw;height:auto;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}

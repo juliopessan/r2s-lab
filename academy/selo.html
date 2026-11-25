@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Selo · R2S Academy</title>
+<link rel="stylesheet" href="../css/academy.css">
+</head>
+<body>
+<header class="top" role="banner">
+ <div class="top-in">
+  <a class="brand" href="index.html"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" class="brand-mark"><path d="M12 2l2.2 6.8L21 9.5l-5.4 4.3 1.9 6.9L12 16.9 6.5 20.7l1.9-6.9L3 9.5l6.8-.7z"/></svg><span><b>R2S</b> Academy</span></a>
+  <nav aria-label="Principal" class="top-nav"><a href="index.html#cursos-titulo">Explorar</a><a href="index.html#selos-titulo">Selos</a></nav>
+  <button type="button" id="tema-toggle" class="icon-btn" aria-label="Alternar entre tema claro e escuro"><svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg></button>
+ </div>
+</header>
+
+<main id="conteudo" class="pagina-selo">
+ <p id="nao-encontrado" class="aviso" hidden>Curso não encontrado. <a href="index.html">Volte ao catálogo</a>.</p>
+ <div id="selo-pagina" hidden>
+  <div class="noprint">
+   <nav id="migalhas" class="migalhas" aria-label="Você está em"></nav>
+   <h1 id="titulo"></h1>
+   <p id="estado" class="lede" role="status"></p>
+  </div>
+  <div id="arte-selo" class="arte-selo"></div>
+  <div class="noprint selo-acoes">
+   <div id="personalizar" class="personalizar">
+    <label for="nome-selo">Seu nome como vai no selo</label>
+    <input id="nome-selo" type="text" autocomplete="name">
+    <button type="button" id="imprimir" class="btn">Imprimir ou salvar em PDF</button>
+   </div>
+   <a id="ir-curso" class="btn" href="#" hidden>Ir para o curso</a>
+   <a id="voltar" class="btn-sec" href="#">Voltar ao curso</a>
+  </div>
+  <p class="muted noprint selo-nota">O selo fica neste navegador. Imprima ou salve em PDF para guardar ou compartilhar.</p>
+ </div>
+</main>
+
+<footer class="rodape" id="rodape"></footer>
+
+<script src="../lib/progress.js"></script>
+<script src="../lib/store.js"></script>
+<script src="../js/academy-content.js"></script>
+<script src="../js/academy.js"></script>
+</body>
+</html>
