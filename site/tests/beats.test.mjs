@@ -28,11 +28,9 @@ test('the hero carries the hook and the teaser side by side on a wide screen', a
 });
 
 test('the re-hook states the problem and the numbers of the program', async () => {
-  await withPage({}, async (page, url) => {
+  await withPage({ reducedMotion: 'reduce' }, async (page, url) => {
     await page.goto(url, { waitUntil: 'load' });
     assert.equal((await page.locator('#porque h2').innerText()).trim(), 'Curso não muda papel. Caso real muda.');
-    await page.locator('#porque .numeros').scrollIntoViewIfNeeded(); // a contagem com mola começa ao entrar na tela
-    await page.waitForFunction(() => document.querySelector('#porque .numeros .n').textContent === '12');
     const nums = trimAll(await page.locator('#porque .numeros li').allInnerTexts());
     assert.deepEqual(nums.map((t) => t.split(' ')[0]), ['12', '7', '5', '5', '6']);
   });

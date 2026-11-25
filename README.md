@@ -2,20 +2,41 @@
 
 **R2S Lab — Reskilling too Skilling.** Menos curso. Mais lab.
 
-Aqui você aprende fazendo: leva um requisito real do negócio até uma solução pronta para demonstrar,
-passando por gates que pedem evidência, e não presença.
+> “Dá pra resolver isso com IA?” Em 12 semanas, a sua squad responde com número, custo e uma decisão do negócio.
 
-## Veja o método em 90 segundos
+Para a prática de Data & AI do Brazil Engineering HUB.
 
-<video src="https://raw.githubusercontent.com/juliopessan/r2s-lab/main/docs/source-assets/R2S_Lab_teaser_90s_narrado_16x9.mp4" controls muted playsinline width="100%"></video>
+<video src="https://raw.githubusercontent.com/juliopessan/r2s-lab/main/docs/source-assets/R2S_Lab_teaser_90s_narrado_16x9.mp4" poster="docs/readme/teaser-play.jpg" controls playsinline width="100%"><a href="https://github.com/juliopessan/r2s-lab/blob/main/site/assets/teaser.mp4"><img src="docs/readme/teaser-play.jpg" alt="Teaser do R2S Lab: o método em 90 segundos, com narração. Clique para assistir com som." width="100%"></a></video>
 
-Se o vídeo não aparecer na sua tela, [abra o arquivo MP4](https://raw.githubusercontent.com/juliopessan/r2s-lab/main/docs/source-assets/R2S_Lab_teaser_90s_narrado_16x9.mp4).
+O método em 90 segundos, com narração: [assistir com som](https://github.com/juliopessan/r2s-lab/blob/main/site/assets/teaser.mp4) · [baixar o MP4](https://raw.githubusercontent.com/juliopessan/r2s-lab/main/docs/source-assets/R2S_Lab_teaser_90s_narrado_16x9.mp4) · [ler a transcrição](site/assets/teaser.pt-BR.txt)
 
-## R · 2 · S
+## Curso não muda papel. Caso real muda.
 
-- R de **Reskilling**: quem muda de papel aprende fazendo, em um caso real.
-- 2 de **too**: o mesmo laboratório recebe quem se recicla e quem se aprofunda.
-- S de **Skilling**: quem evolui no papel atual leva o caso até a decisão do negócio.
+Trilha de vídeo termina em certificado. O R2S Lab termina em decisão: a sua squad pega um problema real de
+um patrocinador, prova que o valor supera o custo, constrói a solução mais barata que funciona e leva o
+resultado ao negócio. Quem está mudando de papel aprende fazendo; quem já domina o papel leva o caso até o
+fim. Os dois no mesmo laboratório.
+
+| 12 semanas | 7 etapas | 5 gates | 5 pessoas por squad | 6 horas protegidas por semana |
+|:---:|:---:|:---:|:---:|:---:|
+
+## Como funciona
+
+A squad só avança quando prova o que o gate pede. Encerrar cedo também é um resultado: poupa a construção
+do que não vale o que custa.
+
+| # | Etapa | Gate |
+|---|---|---|
+| 1 | Intake | **G0** |
+| 2 | Discover | |
+| 3 | Frame Value | **G1** |
+| 4 | Design | **G2** |
+| 5 | Build | |
+| 6 | Evaluate | **G3** |
+| 7 | Pitch & Hand off | **G4** |
+
+Os papéis giram a cada gate (Product Lead, Data Lead, AI Engineer, Eval & Risk Lead, Storyteller). No demo
+day, dez minutos para pedir uma decisão ao negócio: **escalar**, **iterar** ou **encerrar**.
 
 ## Comece aqui
 
@@ -27,12 +48,20 @@ Se o vídeo não aparecer na sua tela, [abra o arquivo MP4](https://raw.githubus
    ```
 
 3. Abra a pasta no VS Code.
-4. Faça o pre-work: abra `00-prework/index.html` no navegador (duplo clique no arquivo ou a extensão de servidor local do VS Code). Ele leva um dia útil, e o seu andamento fica salvo no navegador.
-5. Quando quiser registrar o andamento, clique em **Exportar progresso**, coloque o arquivo gerado em `progress/`, faça o commit e o push no seu repositório privado. Detalhes em `progress/README.md`.
-6. No fim da turma, responda a pesquisa em `05-encerramento/pesquisa.html` e exporte de novo.
+4. Entre pela landing (`site/index.html`) ou direto pela R2S Academy (`academy/index.html`). A Academy mostra o caminho do lab nesta ordem: **pre-work → jornada da squad → pesquisa → certificado → painel**.
+5. Faça o pre-work: cinco cursos na Academy, ou a página única `00-prework/index.html`. Ele leva um dia útil, e o seu andamento fica salvo no navegador.
+6. Quando quiser registrar o andamento, clique em **Exportar progresso** (em *Sua jornada*), coloque o arquivo gerado em `progress/`, faça o commit e o push no seu repositório privado. Detalhes em `progress/README.md`.
+7. No fim da turma, responda a pesquisa em `05-encerramento/pesquisa.html` e exporte de novo.
 
 Nada do que você faz aqui é enviado a ninguém até você fazer o push: o seu progresso é privado e só a
-coordenação o consolida.
+coordenação o consolida no painel.
+
+## R2S Academy
+
+Catálogo de cursos no padrão da Claude Academy, em `academy/`: 5 cursos de pre-work (GenAI na prática, do
+pedido ao problema, valor e custo, IA responsável e o case brief) e 6 cursos da jornada da squad, um por
+etapa do Lab Loop. Cada curso concluído rende um selo; a coleção e o seu progresso ficam em *Sua jornada*.
+Tema claro ou escuro pelo interruptor no topo: a escolha vale em todas as páginas do lab.
 
 ## A jornada da squad
 
@@ -46,25 +75,45 @@ Cada squad trabalha no seu próprio repositório (`r2s-lab-squad-<nome>`), copia
 
 ## Estrutura do repositório
 
-A estrutura abaixo é a prevista; cada pasta chega na sua fase.
-
 ```
 r2s-lab/
-├─ academy/              catálogo de cursos (R2S Academy), sobre o pre-work: academy/index.html
+├─ site/                 landing page com o teaser (cd site && npm run serve)
+├─ academy/              R2S Academy: catálogo, cursos, lições, selos e Sua jornada
 ├─ 00-prework/           pre-work de 8 horas, em 5 partes
 ├─ 05-encerramento/      pesquisa de satisfação e certificado
-├─ templates/            A brief · B ADR · C pitch · D Social Impact Statement · E hearing
-├─ starter-kits/         RAG · agente · avaliação · custo por transação
 ├─ squad/                dossiê A–E, golden set, gates.json e assessment.json da sua squad
-├─ tools/                check-squad.mjs: confere a pasta squad/
-├─ site/                 landing page com o teaser (npm run serve)
-├─ admin/                painel da coordenação (npm run demo); a lista do RH real nunca entra no git
-└─ progress/             seu progresso individual
+├─ tools/                check-squad.mjs e os geradores da Academy e dos selos
+├─ progress/             seu progresso individual (arquivo exportado)
+├─ admin/                painel da coordenação (cd admin && npm run demo); a lista do RH real nunca entra no git
+├─ css/ · js/ · lib/     tema único, scripts das páginas e bibliotecas sem dependências
+└─ docs/                 fontes do teaser e imagens deste README
 ```
+
+Ainda por vir: `templates/` (A brief · B ADR · C pitch · D Social Impact Statement · E hearing) como pasta
+própria e `starter-kits/` (RAG · agente · avaliação · custo por transação).
 
 ## Regras do lab
 
+- **Prove o valor.** Nenhum caso entra sem patrocinador, métrica e baseline. No G1, o valor anual precisa superar 3× o custo anual de execução.
+- **A técnica mais barata que funciona.** Regra ou SQL antes de ML, ML antes de LLM, uma chamada de LLM antes de um agente.
+- **Meça.** O golden set vem antes do primeiro prompt, e cada solução reporta o custo por transação.
 - **Sem dado de cliente.** Use dados sintéticos, públicos ou autorizados pelo responsável pelos dados.
 - **Uma pessoa nomeada responde por cada decisão** tomada ou informada por um algoritmo. "O algoritmo fez" nunca é uma resposta aceitável.
-- **A técnica mais barata que funciona.** Regra ou SQL antes de ML, ML antes de LLM, uma chamada de LLM antes de um agente.
 - **O seu progresso individual é privado.** Ninguém além da coordenação vê o que está no seu repositório.
+
+## Para quem mantém o lab
+
+Tudo é HTML, CSS e JavaScript sem build: as páginas abrem direto do disco. Os testes usam o runner do
+Node 22 e o Playwright.
+
+```bash
+npm test
+```
+
+```bash
+cd site && npm test
+```
+
+```bash
+cd admin && npm test
+```

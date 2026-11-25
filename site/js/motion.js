@@ -3,7 +3,7 @@
  * partícula; cada movimento nasce de um elemento que já está na tela.
  * Técnica: cada cena calcula TUDO a partir do tempo em seek(t), com molas de forma fechada (o gráfico e o
  * ponto usam a mesma função). Sem movimento permitido, a cena mostra direto o quadro final.
- * Cenas nos cards das quatro regras (data-cena) e contagem com mola nos números. */
+ * Cenas nos cards das quatro regras (data-cena), a corrida do ponto pelas 7 etapas e contagem com mola nos números. */
 
 const NS = 'http://www.w3.org/2000/svg';
 const clamp = (x, a = 0, b = 1) => Math.min(b, Math.max(a, x));
@@ -162,6 +162,69 @@ function cenaProteger(svg) {
   };
 }
 
+/** Impulso amortecido: sobe e volta ao repouso com um pequeno rebote (o "pulo" de um card). */
+export function impulso(t, z = 0.32, w = 16) {
+  if (t <= 0) return 0;
+  const wd = w * Math.sqrt(1 - z * z);
+  return Math.exp(-z * w * t) * Math.sin(wd * t);
+}
+
+/* As 7 etapas: o ponto laranja corre pela borda de cada card. O card pula quando o ponto chega, a borda
+ * enche atrás dele (laranja nos gates) e o selo do gate carimba com mola. Termina no Pitch & Hand off. */
+export function montarEtapas(ol, animar, observar) {
+  if (!ol || ol.dataset.mo) return null;
+  ol.dataset.mo = '1';
+  if (!animar) return null;
+  const itens = [...ol.children];
+  const partes = itens.map((li) => {
+    const trilho = document.createElement('span');
+    trilho.className = 'etapa-trilho' + (li.querySelector('.gate') ? ' gate-on' : '');
+    trilho.setAttribute('aria-hidden', 'true');
+    const ponto = document.createElement('span');
+    ponto.className = 'etapa-ponto';
+    ponto.setAttribute('aria-hidden', 'true');
+    li.append(trilho, ponto);
+    return { li, trilho, ponto, gate: li.querySelector('.gate') };
+  });
+  const T0 = 0.2, SLOT = 0.34;
+  const dur = T0 + itens.length * SLOT + 0.9;
+  const seek = (t) => {
+    partes.forEach((p, i) => {
+      const ti = T0 + i * SLOT;
+      const u = seg(t, ti, ti + SLOT);
+      p.trilho.style.transform = `scaleX(${u.toFixed(4)})`;
+      const ultimo = i === partes.length - 1;
+      const aqui = t >= ti && t < ti + SLOT + (ultimo ? 0.45 : 0); // no fim o ponto assenta e sai
+      p.ponto.style.opacity = aqui ? '1' : '0';
+      p.ponto.style.left = `calc(${(u * 100).toFixed(2)}% - 5.5px)`;
+      p.ponto.style.transform = `scale(${aqui ? Math.max(0, 1 + 0.35 * impulso(t - ti, 0.4, 20)) : 0})`;
+      p.li.style.transform = `translateY(${(-7 * impulso(t - ti)).toFixed(2)}px)`;
+      if (p.gate) {
+        const g = Math.max(0, spring(t - ti - SLOT * 0.55, 0.38, 15));
+        p.gate.style.opacity = t > ti + SLOT * 0.55 ? '1' : '0';
+        p.gate.style.transform = `scale(${g.toFixed(3)}) rotate(${(-14 * (1 - g)).toFixed(2)}deg)`;
+      }
+    });
+  };
+  ol.classList.add('mo-etapas');
+  seek(0);
+  let raf = 0, estado = 'parado';
+  const tocar = () => {
+    cancelAnimationFrame(raf);
+    const inicio = performance.now();
+    estado = 'tocando'; ol.dataset.estado = estado;
+    const quadro = (agora) => {
+      const t = (agora - inicio) / 1000;
+      seek(Math.min(t, dur));
+      if (t < dur) raf = requestAnimationFrame(quadro); else { estado = 'final'; ol.dataset.estado = estado; }
+    };
+    raf = requestAnimationFrame(quadro);
+  };
+  observar(ol, tocar);
+  ol.addEventListener('mouseenter', () => { if (estado === 'final') tocar(); });
+  return { seek, dur };
+}
+
 export const CENAS = { valor: cenaValor, barato: cenaBarato, medir: cenaMedir, proteger: cenaProteger };
 
 /** Monta a cena no card; com movimento, toca ao entrar na tela e de novo ao passar o mouse. */
@@ -210,6 +273,7 @@ export function contar(el, animar, observar) {
       if (t < 1.4) requestAnimationFrame(quadro);
     };
     requestAnimationFrame(quadro);
+    setTimeout(() => { el.textContent = alvo + resto; }, 1600); // garante o valor final mesmo com quadros atrasados
   });
 }
 
@@ -220,5 +284,6 @@ export function enableMotion(doc = document) {
   }, { threshold: 0.35 }) : null;
   const observar = (el, fn) => { el.__tocar = fn; io.observe(el); };
   doc.querySelectorAll('[data-cena]').forEach((card) => montarCena(card, animar, observar));
+  montarEtapas(doc.querySelector('#como .etapas'), animar, observar);
   doc.querySelectorAll('.numeros .n, .levar .num').forEach((el) => contar(el, animar, observar));
 }

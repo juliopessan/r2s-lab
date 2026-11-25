@@ -49,3 +49,27 @@ test('the scenes are decoration: hidden from assistive tech and never focusable'
     for (const a of attrs) assert.deepEqual(a, ['true', 'false']);
   });
 });
+
+test('the 7 stages: the dot runs across the cards and the page ends exactly like the static layout', async () => {
+  const estatico = async (page) => page.locator('#como .etapas li').evaluateAll((lis) => lis.map((li) => [getComputedStyle(li).borderTopColor, li.querySelector('.gate') ? getComputedStyle(li.querySelector('.gate')).opacity : null]));
+  let semMovimento;
+  await withPage({ reducedMotion: 'reduce' }, async (page, url) => {
+    await page.goto(url, { waitUntil: 'load' });
+    assert.equal(await page.locator('.etapa-ponto').count(), 0, 'no dot without motion');
+    semMovimento = await estatico(page);
+  });
+  await withPage({}, async (page, url) => {
+    await page.goto(url, { waitUntil: 'load' });
+    assert.equal(await page.locator('#como .etapa-ponto').count(), 7);
+    await page.locator('#como').scrollIntoViewIfNeeded();
+    await page.waitForFunction(() => document.querySelector('#como .etapas').dataset.estado === 'final', null, { timeout: 8000 });
+    const trilhos = await page.locator('#como .etapa-trilho').evaluateAll((t) => t.map((x) => [getComputedStyle(x).backgroundColor, x.style.transform]));
+    assert.deepEqual(trilhos.map((t) => t[1]), Array(7).fill('scaleX(1)'));
+    const gates = await page.locator('#como .gate').evaluateAll((g) => g.map((x) => x.style.opacity));
+    assert.deepEqual(gates, ['1', '1', '1', '1', '1']);
+    const cores = trilhos.map((t) => t[0]);
+    assert.deepEqual(cores.map((c, i) => c === cores[0]), [true, false, true, true, false, true, true], 'orange only on the gate cards');
+    assert.deepEqual(semMovimento.map((x) => x[1]), ['1', null, '1', '1', null, '1', '1']);
+    assert.deepEqual(page.errors, []);
+  });
+});
